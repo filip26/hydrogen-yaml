@@ -4,7 +4,7 @@ An implementation of [StrictYAML](https://github.com/crdoconnor/strictyaml) infl
 
 ## Removed Features
 - Implicit typing
-- Disallowed duplicate keys
+- Duplicate keys
 - Explicit tags
 - Node anchors and refs
 - Flow style

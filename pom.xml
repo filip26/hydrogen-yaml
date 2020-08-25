@@ -54,12 +54,26 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         
         <!--  test resources -->
-        <junit.version>4.13</junit.version>
-        <wiremock.version>2.27.1</wiremock.version>
+        <jakarta.json-p.version>1.1.6</jakarta.json-p.version> 
+        <junit.jupiter.version>5.6.2</junit.jupiter.version>               
     </properties>
 
     <dependencies>
-        <!--  Tests -->
+        <!--  Test -->
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.json</artifactId>
+            <version>${jakarta.json-p.version}</version>
+            <scope>test</scope>        
+        </dependency>
+        
+		<dependency>
+			<groupId>org.junit.jupiter</groupId>
+			<artifactId>junit-jupiter</artifactId>
+			<version>${junit.jupiter.version}</version>
+			<scope>test</scope>
+		</dependency>
+
     </dependencies>
 
     <build>        

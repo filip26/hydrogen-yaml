@@ -1,5 +1,5 @@
 package com.apicatalog.yaml;
 
-public interface YamlSequence extends YamlNode {
+public interface YamlSequence extends YamlCollection {
 
 }

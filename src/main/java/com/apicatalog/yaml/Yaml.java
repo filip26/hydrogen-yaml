@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.Collection;
 
 public final class Yaml {
 
@@ -48,4 +49,15 @@ public final class Yaml {
         //TODO
         return null;
     }
+    
+    public static final YamlScalar createScalar(String value) {
+        //TODO
+        return null;        
+    }
+
+    public static final YamlScalar createScalar(Collection<String> lines) {
+        //TODO
+        return null;        
+    }
+
 }

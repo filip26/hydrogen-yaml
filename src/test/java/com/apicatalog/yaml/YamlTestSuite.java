@@ -27,6 +27,10 @@ class YamlTestSuite {
             
             assertNotNull(is);
             
+            final YamlParser parser = Yaml.createParser(is);
+            
+            assertNotNull(parser);
+            
 //            document = (new JsonDocumentParser()).parse(URI.create("http://example.com"), is);
 //            
 //            assertTrue(testCase.isPositiveTest());

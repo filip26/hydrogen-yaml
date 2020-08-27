@@ -10,3 +10,8 @@ An implementation of [StrictYAML](https://github.com/crdoconnor/strictyaml) infl
 - Flow style
 
 See [What YAML features does StrictYAML remove?](https://hitchdev.com/strictyaml/features-removed/) for more details.
+
+Presense of a removed feature in an input raises an exception.
+
+## Ignored 
+- Directives

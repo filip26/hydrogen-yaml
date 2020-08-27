@@ -11,7 +11,9 @@ An implementation of [StrictYAML](https://github.com/crdoconnor/strictyaml) infl
 
 See [What YAML features does StrictYAML remove?](https://hitchdev.com/strictyaml/features-removed/) for more details.
 
-Presense of a removed feature in an input raises an exception.
+Presence of a removed feature raises an exception.
 
-## Ignored 
+## Ignored Features
 - Directives
+
+Ignored features are silently removed. No exception is thrown.

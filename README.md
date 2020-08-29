@@ -2,7 +2,7 @@
 
 An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml) and influenced by [Java API for JSON Processing](https://github.com/eclipse-ee4j/jsonp).
 
-## Removed Features
+## Unsupported Features
 - Implicit typing
 - Duplicate keys
 - Explicit tags

@@ -14,6 +14,8 @@ import javax.json.stream.JsonParser;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import com.apicatalog.yaml.io.YamlParser;
+
 class YamlTestSuite {
 
     @ParameterizedTest(name = "{0}")
@@ -24,7 +26,7 @@ class YamlTestSuite {
         assertNotNull(testCase.getInput());
         
         try (final InputStream is = YamlTestSuite.class.getResourceAsStream(testCase.getInput())) {
-            
+
             assertNotNull(is);
             
             final YamlParser parser = Yaml.createParser(is);

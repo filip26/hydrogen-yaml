@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.io;
 
-import java.util.List;
+import java.io.Serializable;
 
-public interface YamlSequence extends YamlCollection, List<YamlNode> {
+public interface YamlLocation extends Serializable {
 
-    YamlMapping getMapping(int index);
+    long getLineNumber();
     
-    YamlSequence getSequence(int index);
+    long getColumnNumber();
     
-    YamlScalar getScalar(int index);
-    
-    boolean isNull(int index);
 }

@@ -1,6 +1,6 @@
 # Java API for StrictYAML Processing
 
-An implementation of [StrictYAML](https://github.com/crdoconnor/strictyaml) influenced by [Java API for JSON Processing](https://github.com/eclipse-ee4j/jsonp).
+An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml) and influenced by [Java API for JSON Processing](https://github.com/eclipse-ee4j/jsonp).
 
 ## Removed Features
 - Implicit typing
@@ -10,3 +10,11 @@ An implementation of [StrictYAML](https://github.com/crdoconnor/strictyaml) infl
 - Flow style
 
 See [What YAML features does StrictYAML remove?](https://hitchdev.com/strictyaml/features-removed/) for more details.
+
+Presence of a removed feature raises an exception during parsing.
+
+## Ignored Features
+- Directives
+- Comments
+
+Ignored features are silently skipped by a parser. No exception is thrown.

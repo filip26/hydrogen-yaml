@@ -16,25 +16,25 @@
 package com.apicatalog.yaml;
 
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 
 import com.apicatalog.yaml.io.YamlParser;
+import com.apicatalog.yaml.io.impl.YamlParserImpl;
+import com.apicatalog.yaml.io.impl.YamlTokenizer;
 
 public final class Yaml {
 
     
     public static final YamlParser createParser(InputStream input) {
-        //TODO
-        return null;
+        return new YamlParserImpl(new YamlTokenizer(new InputStreamReader(input))); //TODO BOM
     }
 
-    
     public static final YamlParser createParser(Reader reader) {
-        //TODO
-        return null;
+        return new YamlParserImpl(new YamlTokenizer(reader));
     }
     
     public static final YamlWriter createWriter(OutputStream output) {

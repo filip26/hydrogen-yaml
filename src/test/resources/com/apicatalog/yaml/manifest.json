@@ -3,33 +3,39 @@
 	"sequence": [
 		{
 			"@id": "#t001",
-			"@type": ["PositiveEvaluationTest"],
+			"@type": ["PositiveEvaluationTest", "CommentTest"],
 			"name": "Only comments",
 			"input": "t001-in.yaml"
 		},
 		{
 			"@id": "#t002",
-			"@type": ["PositiveEvaluationTest"],
+			"@type": ["PositiveEvaluationTest", "StringTest"],
 			"name": "Simple string",
 			"input": "t002-in.yaml"
 		},
 		{
 			"@id": "#t003",
-			"@type": ["PositiveEvaluationTest"],
+			"@type": ["PositiveEvaluationTest", "StringTest"],
 			"name": "Single quoted string",
 			"input": "t003-in.yaml"
 		},
 		{
 			"@id": "#t004",
-			"@type": ["PositiveEvaluationTest"],
+			"@type": ["PositiveEvaluationTest", "StringTest"],
 			"name": "Double quoted string",
 			"input": "t004-in.yaml"
 		},
 		{
 			"@id": "#t005",
-			"@type": ["PositiveEvaluationTest"],
+			"@type": ["PositiveEvaluationTest", "StringTest"],
 			"name": "Single quote inside single quoted string",
 			"input": "t005-in.yaml"
+		},
+		{
+			"@id": "#t006",
+			"@type": ["PositiveEvaluationTest", "StringTest"],
+			"name": "Literal string",
+			"input": "t006-in.yaml"
 		}		
 	]
 }

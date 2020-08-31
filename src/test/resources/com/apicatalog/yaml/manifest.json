@@ -1,0 +1,35 @@
+{
+	"name": "Strict YAML test suite",
+	"sequence": [
+		{
+			"@id": "#t001",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Only comments",
+			"input": "t001-in.yaml"
+		},
+		{
+			"@id": "#t002",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Simple string",
+			"input": "t002-in.yaml"
+		},
+		{
+			"@id": "#t003",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Single quoted string",
+			"input": "t003-in.yaml"
+		},
+		{
+			"@id": "#t004",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Double quoted string",
+			"input": "t004-in.yaml"
+		},
+		{
+			"@id": "#t005",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Single quote inside single quoted string",
+			"input": "t005-in.yaml"
+		}		
+	]
+}

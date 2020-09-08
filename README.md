@@ -1,4 +1,4 @@
-# Java API for StrictYAML Processing
+# Java API for YAML Processing
 
 An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml) and influenced by [Java API for JSON Processing](https://github.com/eclipse-ee4j/jsonp).
 

@@ -11,13 +11,13 @@
     <version>0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <name>StrictYAML</name>
+    <name>PlainYAML</name>
     
     <description>
-        Java API for StrictYAML Processing
+        Java API for YAML Processing
     </description>
     
-    <url>https://github.com/filip26/strictyaml-java</url>
+    <url>https://github.com/filip26/plain-yaml</url>
     
     <licenses>
         <license>
@@ -28,13 +28,13 @@
    
     <issueManagement>
         <system>github</system>
-        <url>https://github.com/filip26/strictyaml-java/issues</url>
+        <url>https://github.com/filip26/plain-yaml/issues</url>
     </issueManagement>
     
     <scm>
-        <connection>scm:git:git://github.com/filip26/strictyaml-java.git</connection>
-        <developerConnection>scm:git:git://github.com/filip26/strictyaml-java.git</developerConnection>
-        <url>https://github.com/filip26/strictyaml-java/tree/master</url>
+        <connection>scm:git:git://github.com/filip26/plain-yaml.git</connection>
+        <developerConnection>scm:git:git://github.com/filip26/plain-yaml.git</developerConnection>
+        <url>https://github.com/filip26/plain-yaml/tree/master</url>
     </scm>
 
     <developers>

@@ -17,13 +17,13 @@ package com.apicatalog.yaml;
 
 import java.util.Map;
 
-public interface YamlMapping extends YamlCollection, Map<YamlNode, YamlNode> {
+public interface YamlMapping extends YamlCollection, Map<String, YamlNode> {
 
-    YamlSequence getSequence(YamlNode key);
+    YamlSequence getSequence(String key);
     
-    YamlMapping getMapping(YamlNode key);
+    YamlMapping getMapping(String key);
     
-    YamlScalar getScalar(YamlNode key);
+    YamlScalar getScalar(String key);
     
-    boolean isNull(YamlNode key);
+    boolean isNull(String key);
 }

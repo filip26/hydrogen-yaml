@@ -8,6 +8,7 @@ An implementation inspired by [StrictYAML](https://github.com/crdoconnor/stricty
 - Explicit tags
 - Node anchors and refs
 - Flow style
+- Complex mapping keys
 
 See [What YAML features does StrictYAML remove?](https://hitchdev.com/strictyaml/features-removed/) for more details.
 

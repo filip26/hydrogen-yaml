@@ -16,6 +16,7 @@
 package com.apicatalog.yaml.io;
 
 import java.io.Closeable;
+import java.io.IOException;
 
 import com.apicatalog.yaml.YamlMapping;
 import com.apicatalog.yaml.YamlNode;
@@ -49,5 +50,5 @@ public interface YamlParser extends Closeable {
     YamlSequence getSequence();
     
     @Override
-    void close();
+    void close() throws IOException;
 }

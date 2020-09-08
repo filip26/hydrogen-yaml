@@ -1,6 +1,8 @@
 package com.apicatalog.yaml.io.impl;
 
-import java.io.Reader;
+import java.io.IOException;
+import java.util.NoSuchElementException;
+import java.util.Objects;
 
 import com.apicatalog.yaml.YamlMapping;
 import com.apicatalog.yaml.YamlNode;
@@ -12,7 +14,9 @@ import com.apicatalog.yaml.io.YamlParsingException;
 
 public class YamlParserImpl implements YamlParser {
 
-    private final YamlTokenizer tokenizer; 
+    private final YamlTokenizer tokenizer;
+    
+    private Event currentEvent;
     
     public YamlParserImpl(YamlTokenizer tokenizer) {
         this.tokenizer = tokenizer;
@@ -26,14 +30,18 @@ public class YamlParserImpl implements YamlParser {
 
     @Override
     public Event next() throws YamlParsingException {
+        
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
+        
         // TODO Auto-generated method stub
         return null;
     }
 
     @Override
     public YamlLocation getLocation() {
-        // TODO Auto-generated method stub
-        return null;
+        return tokenizer.getLocation();
     }
 
     @Override
@@ -44,8 +52,20 @@ public class YamlParserImpl implements YamlParser {
 
     @Override
     public YamlNode getNode() {
-        // TODO Auto-generated method stub
-        return null;
+        
+        switch (currentEvent) {
+        case START_MAPPING:
+            break;
+            
+        case START_SEQUENCE:
+            break;
+            
+        case SCALAR:
+            break;
+            
+        default:
+        }
+        throw new IllegalStateException(/*TODO message*/);
     }
 
     @Override
@@ -61,8 +81,7 @@ public class YamlParserImpl implements YamlParser {
     }
 
     @Override
-    public void close() {
-        // TODO Auto-generated method stub
-        
+    public void close() throws IOException {
+        tokenizer.close();
     }
 }

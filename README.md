@@ -9,6 +9,7 @@ An implementation inspired by [StrictYAML](https://github.com/crdoconnor/stricty
 - Node anchors and refs
 - Flow style
 - Complex mapping keys
+- Multi-documents
 
 See [What YAML features does StrictYAML remove?](https://hitchdev.com/strictyaml/features-removed/) for more details.
 

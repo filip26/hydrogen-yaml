@@ -1,6 +1,7 @@
 package com.apicatalog.yaml;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +16,8 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.apicatalog.yaml.io.YamlParser;
+import com.apicatalog.yaml.io.YamlParser.Event;
+import com.apicatalog.yaml.io.YamlParsingException;
 
 class YamlTestSuite {
 
@@ -32,6 +35,12 @@ class YamlTestSuite {
             final YamlParser parser = Yaml.createParser(is);
             
             assertNotNull(parser);
+
+            while (parser.hasNext()) {
+                
+                Event event = parser.next();
+                
+            }
             
 //            document = (new JsonDocumentParser()).parse(URI.create("http://example.com"), is);
 //            
@@ -44,6 +53,8 @@ class YamlTestSuite {
 //            }
 //            
 //            fail(e.getMessage(), e);
+        } catch (YamlParsingException e) {
+            fail(e.getMessage());
         }
         
 //        assertNotNull(document);

@@ -2,7 +2,7 @@
 
 An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). 
 
-Hydrogen YAML is the simplest human-readable data-serialization language. Most of YAML 1.x features are not intentionally supported.
+Hydrogen YAML is the simplest human-readable data-serialization language. Most of YAML features are not intentionally supported.
 
 ## Unsupported Features
 - Implicit typing

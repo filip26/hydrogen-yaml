@@ -22,4 +22,5 @@ Presence of a removed feature raises an exception during parsing.
 - [ ] 0.1 Document API
 - [ ] 0.2 Writer API
 - [ ] 0.3 Parser API
-- [ ] 0.4 TBD
+- [ ] 0.4 Beans Binding
+- [ ] 0.5 TBD

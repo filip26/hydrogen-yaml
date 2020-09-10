@@ -13,16 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.writer;
 
 import java.io.Closeable;
 
+import com.apicatalog.yaml.YamlException;
+import com.apicatalog.yaml.YamlNode;
+
+/**
+ * Writes a {@link YamlNode node} to an output source.
+ *
+ */
 public interface YamlWriter extends Closeable {
-    
-    void write(YamlNode node) throws YamlException;
-    
-    
+
+    default void write(YamlNode node) throws YamlException {
+        throw new UnsupportedOperationException();
+    }
+
     @Override
-    void close();
-    
+    void close();    
 }

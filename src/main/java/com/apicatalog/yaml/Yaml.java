@@ -25,6 +25,7 @@ import java.util.Collection;
 import com.apicatalog.yaml.io.YamlParser;
 import com.apicatalog.yaml.io.impl.YamlParserImpl;
 import com.apicatalog.yaml.io.impl.YamlTokenizer;
+import com.apicatalog.yaml.writer.YamlWriter;
 
 public final class Yaml {
 

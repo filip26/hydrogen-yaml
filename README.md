@@ -9,7 +9,7 @@ Hydrogen YAML is the simplest human-readable data-serialization language. Most o
 - Duplicate keys
 - Explicit tags
 - Node anchors and refs
-- Flow style
+- Flow style (except strings)
 - Complex mapping keys
 - Multi-documents
 - Directives

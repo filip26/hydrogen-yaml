@@ -1,22 +1,26 @@
 # Java API for YAML Processing
 
-An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml) and influenced by [Java API for JSON Processing](https://github.com/eclipse-ee4j/jsonp).
+An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). 
+
+Hydrogen YAML is the simplest human-readable data-serialization language. Most of YAML features are not intentionally supported.
 
 ## Unsupported Features
 - Implicit typing
 - Duplicate keys
 - Explicit tags
 - Node anchors and refs
-- Flow style
+- Flow style (except scalars)
 - Complex mapping keys
 - Multi-documents
+- Directives
 
 See [What YAML features does StrictYAML remove?](https://hitchdev.com/strictyaml/features-removed/) for more details.
 
 Presence of a removed feature raises an exception during parsing.
 
-## Ignored Features
-- Directives
-- Comments
-
-Ignored features are silently skipped by a parser. No exception is thrown.
+## Roadmap
+- [ ] 0.1 Document API
+- [ ] 0.2 Writer API
+- [ ] 0.3 Parser API
+- [ ] 0.4 Beans Binding
+- [ ] 0.5 TBD

@@ -38,7 +38,7 @@ public final class TestDescription {
 
         testCase.name = jsonObject.getString("name");
         testCase.input = jsonObject.getString("input");
-        testCase.expected = jsonObject.getString("expected", null);
+        testCase.expected = jsonObject.getString("expect", null);
             
         return testCase;
     }

@@ -25,7 +25,6 @@ import java.util.Collection;
 import com.apicatalog.yaml.io.YamlParser;
 import com.apicatalog.yaml.io.impl.YamlParserImpl;
 import com.apicatalog.yaml.io.impl.YamlTokenizer;
-import com.apicatalog.yaml.writer.YamlWriter;
 
 public final class Yaml {
 
@@ -38,12 +37,12 @@ public final class Yaml {
         return new YamlParserImpl(new YamlTokenizer(reader));
     }
     
-    public static final YamlWriter createWriter(OutputStream output) {
+    public static final YamlWriterBuilder createWriter(OutputStream output) {
         //TODO
         return null;
     }
     
-    public static final YamlWriter createWriter(Writer writer) {
+    public static final YamlWriterBuilder createWriter(Writer writer) {
         //TODO
         return null;
     }

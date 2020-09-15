@@ -28,6 +28,14 @@
 			"name": "Block Sequence of Scalars",
 			"input": "t004-in.json",
 			"expect": "t004-out.yaml"			
+		},
+		{
+			"@id": "#t005",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Block Sequence of Sequences of Scalars",
+			"input": "t005-in.json",
+			"expect": "t005-out.yaml"			
 		}
+		
 	]
 }

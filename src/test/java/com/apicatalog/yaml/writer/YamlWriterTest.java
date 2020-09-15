@@ -81,7 +81,15 @@ class YamlWriterTest {
                 }
                 return;
             }
-            
+
+            if ("LiteralScalar".equals(type)) {
+                writer.writeLiteralScalar(ChompingStyle.CLIP);
+                for (JsonValue item : object.getJsonArray("@value")) {
+                    writer.writePlainScalar(((JsonString)item).getString());                    
+                }
+                return;
+            }
+
             
             fail("Unknown @type=" + type);
             return;

@@ -6,7 +6,11 @@ import java.util.Deque;
 
 public class YamlStreamWriterImpl implements YamlStreamWriter {
 
-    private enum State { INIT, BLOCK_LITERAL_SCALAR, PLAIN_SCALAR };
+    private enum State { 
+                    BLOCK_LITERAL_SCALAR, 
+                    BLOCK_FOLDED_SCALAR,
+                    PLAIN_SCALAR 
+                    };
     
     private final PrintWriter writer;
 
@@ -37,8 +41,20 @@ public class YamlStreamWriterImpl implements YamlStreamWriter {
 
     @Override
     public void writeFoldedScalar(ChompingStyle chomping) {
-        // TODO Auto-generated method stub
+        writer.print('>');
         
+        switch (chomping) {
+        case CLIP:
+            break;
+        case KEEP:
+            writer.print('+');
+            break;
+        case STRIP:
+            writer.print('-');
+            break;
+        }
+        writer.println();
+        state.push(State.BLOCK_FOLDED_SCALAR);        
     }
 
     @Override
@@ -49,11 +65,12 @@ public class YamlStreamWriterImpl implements YamlStreamWriter {
             state.push(State.PLAIN_SCALAR);
         }
         
-        for (int i=0; i < state.size() - 1; i++) {
-            writer.print("  ");    
+        if (value != null && !value.isBlank()) {
+            for (int i=0; i < state.size() - 1; i++) {
+                writer.print("  ");    
+            }
+            writer.print(value);
         }
-        
-        writer.print(value);
     }
 
     @Override

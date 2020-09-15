@@ -21,6 +21,13 @@
 			"name": "Folded Scalar",
 			"input": "t003-in.json",
 			"expect": "t003-out.yaml"			
+		},
+		{
+			"@id": "#t004",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Block Sequence of Scalars",
+			"input": "t004-in.json",
+			"expect": "t004-out.yaml"			
 		}
 	]
 }

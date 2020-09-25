@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.writer;
+package com.apicatalog.yaml.generator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -26,7 +26,7 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.apicatalog.yaml.TestDescription;
 
-class YamlWriterTest {
+class YamlGeneratorTest {
 
 
     @ParameterizedTest(name = "{0}")
@@ -38,7 +38,7 @@ class YamlWriterTest {
 
         StringWriter output = new StringWriter();
 
-        try (final InputStream is = YamlWriterTest.class.getResourceAsStream(testCase.getInput())) {
+        try (final InputStream is = YamlGeneratorTest.class.getResourceAsStream(testCase.getInput())) {
 
             assertNotNull(is);
 
@@ -60,7 +60,7 @@ class YamlWriterTest {
             return;
         }
         
-        try (final InputStream is = YamlWriterTest.class.getResourceAsStream(testCase.getExpected())) {
+        try (final InputStream is = YamlGeneratorTest.class.getResourceAsStream(testCase.getExpected())) {
 
             assertNotNull(is);
             
@@ -145,7 +145,7 @@ class YamlWriterTest {
     
     static final Stream<TestDescription> testCaseMethodSource() throws IOException {
         
-        try (final InputStream is = YamlWriterTest.class.getResourceAsStream("manifest.json")) {
+        try (final InputStream is = YamlGeneratorTest.class.getResourceAsStream("manifest.json")) {
             
             assertNotNull(is);
             

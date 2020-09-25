@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.writer;
+package com.apicatalog.yaml.generator;
 
 import java.io.IOException;
 import java.io.Writer;

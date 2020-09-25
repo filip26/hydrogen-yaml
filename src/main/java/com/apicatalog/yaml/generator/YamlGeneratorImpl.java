@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.writer;
+package com.apicatalog.yaml.generator;
 
 import java.util.ArrayDeque;
 import java.util.Deque;

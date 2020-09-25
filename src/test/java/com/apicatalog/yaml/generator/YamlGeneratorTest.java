@@ -103,7 +103,16 @@ class YamlGeneratorTest {
     }
     
     static final void writeScalar(final YamlGenerator writer, final String scalar) throws YamlGenerationException {
-        writer.writeFlowScalar(FlowScalarType.PLAIN, scalar);
+        
+        if (scalar.startsWith("\"")) {
+            writer.writeFlowScalar(FlowScalarType.DOUBLE_QUOTED, scalar.substring(1));
+            
+        } else if (scalar.startsWith("\'")) {
+            writer.writeFlowScalar(FlowScalarType.SINGLE_QUOTED, scalar.substring(1));
+            
+        } else {
+            writer.writeFlowScalar(FlowScalarType.PLAIN, scalar);
+        }
     }
     
     static final void writeObject(YamlGenerator writer, JsonObject object) throws YamlGenerationException {

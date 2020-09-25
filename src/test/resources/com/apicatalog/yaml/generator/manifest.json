@@ -25,7 +25,7 @@
 		{
 			"@id": "#t004",
 			"@type": ["PositiveEvaluationTest"],
-			"name": "Block Sequence of Plain Scalars",
+			"name": "Block Sequence of Mixed Scalars",
 			"input": "t004-in.json",
 			"expect": "t004-out.yaml"			
 		},
@@ -49,6 +49,13 @@
 			"name": "Block Mapping of Mappings of Plain Scalars",
 			"input": "t007-in.json",
 			"expect": "t007-out.yaml"			
-		}		
+		},
+		{
+			"@id": "#t008",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Block Mapping Keys",
+			"input": "t008-in.json",
+			"expect": "t008-out.yaml"			
+		}
 	]
 }

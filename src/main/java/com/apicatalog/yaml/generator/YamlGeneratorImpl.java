@@ -162,8 +162,22 @@ public class YamlGeneratorImpl implements YamlGenerator {
 
         beginScalar(false);
         
-        if (FlowScalarType.PLAIN.equals(type)) {
+        switch (type) {
+        case PLAIN:
             writer.print(value);
+            break;
+            
+        case DOUBLE_QUOTED:
+            writer.print('"');
+            writer.print(escape(type, value));
+            writer.print('"');
+            break;
+            
+        case SINGLE_QUOTED:
+            writer.print('\'');
+            writer.print(escape(type, value));
+            writer.print('\'');
+            break;
         }
 
         endScalar();
@@ -206,5 +220,10 @@ public class YamlGeneratorImpl implements YamlGenerator {
             context.pop();
             context.push(Context.BLOCK_MAPPING_VALUE);            
         }
+    }
+    
+    protected String escape(FlowScalarType type, String value) {
+        //TODO
+        return value;
     }
 }

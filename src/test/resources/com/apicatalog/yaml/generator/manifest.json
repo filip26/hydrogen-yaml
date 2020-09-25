@@ -51,11 +51,11 @@
 			"expect": "t007-out.yaml"			
 		},
 		{
-			"@id": "#t008",
+			"@id": "#t009",
 			"@type": ["PositiveEvaluationTest"],
-			"name": "Block Mapping Keys",
-			"input": "t008-in.json",
-			"expect": "t008-out.yaml"			
+			"name": "Block Mapping Values",
+			"input": "t009-in.json",
+			"expect": "t009-out.yaml"			
 		}
 	]
 }

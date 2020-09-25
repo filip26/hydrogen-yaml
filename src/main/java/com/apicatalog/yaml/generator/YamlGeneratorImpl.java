@@ -65,7 +65,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
             context.push(Context.BLOCK_SCALAR_NEXT);
             
         } else {
-            //TODO error
+            throw new YamlGenerationException();
         }
         
         if (value != null && !value.isBlank()) {
@@ -82,7 +82,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
            context.pop();
             
         } else {
-            //TODO error
+            throw new YamlGenerationException();
         }
         
         endScalar();
@@ -93,13 +93,23 @@ public class YamlGeneratorImpl implements YamlGenerator {
     @Override
     public YamlGenerator beginSequence(boolean compacted) throws YamlGenerationException {
         
-        final boolean newBlock = Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek());
+        final boolean newBlock;
         
-        if (newBlock) {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
             if (!compacted) {
                 writer.newLine();
             }
+            newBlock = true;
+            
+        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            if (!compacted) {
+                writer.newLine();
+            }
+            newBlock = true;
+            
+        } else {
+            newBlock = false;
         }
         
         context.push(Context.BLOCK_SEQUENCE);
@@ -117,7 +127,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
             context.pop();
              
          } else {
-             //TODO error
+             throw new YamlGenerationException();
          }
         
         endCollection();
@@ -128,7 +138,18 @@ public class YamlGeneratorImpl implements YamlGenerator {
     @Override
     public YamlGenerator beginMapping() throws YamlGenerationException {
         
-        final boolean newBlock = Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek());
+        final boolean newBlock;
+
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.print('-');
+            newBlock = true;
+            
+        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            newBlock = true;
+            
+        } else {
+            newBlock = false;
+        }
 
         if (newBlock) {
             writer.newLine();
@@ -150,7 +171,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
             context.pop();
              
          } else {
-             //TODO error
+             throw new YamlGenerationException();
          }
 
         endCollection();
@@ -160,7 +181,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
 
     @Override
     public YamlGenerator writeFlowScalar(FlowScalarType type, String value) throws YamlGenerationException {
-
+        
         beginScalar(false);
         
         switch (type) {
@@ -180,7 +201,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
             writer.print('\'');
             break;
         }
-
+        
         endScalar();
 
         return this;

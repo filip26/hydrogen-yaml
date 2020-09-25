@@ -76,7 +76,7 @@
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Compacted Block Sequence of Sequences",
 			"options": { "compactArrays": true },
-			"input": "t005-in.json",
+			"input": "t011-in.json",
 			"expect": "t011-out.yaml"
 		}		
 	]

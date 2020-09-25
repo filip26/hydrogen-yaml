@@ -9,7 +9,8 @@ public class YamlGeneratorImpl implements YamlGenerator {
                     DOCUMENT,
                     BLOCK_SCALAR,
                     BLOCK_SCALAR_NEXT,
-                    BLOCK_SEQUENCE, 
+                    BLOCK_SEQUENCE,
+                    COMPACT_BLOCK_SEQUENCE, 
                     BLOCK_MAPPING_KEY,
                     BLOCK_MAPPING_VALUE,
                     }
@@ -27,7 +28,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     @Override
     public YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping)  throws YamlGenerationException {
         
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
             writer.print(' ');
         }
@@ -97,24 +98,23 @@ public class YamlGeneratorImpl implements YamlGenerator {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
-            if (compacted) {
-                writer.print(' ');    
-            } else {
-                writer.newLine();
-            }
+            writer.newLine();
             newBlock = true;
             
+        } else if (Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.print('-');
+            writer.print(' ');    
+            newBlock = true;        
+
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            if (!compacted) {
-                writer.newLine();
-            }
+            writer.newLine();
             newBlock = true;
             
         } else {
             newBlock = false;
         }
         
-        context.push(Context.BLOCK_SEQUENCE);
+        context.push(compacted ? Context.COMPACT_BLOCK_SEQUENCE : Context.BLOCK_SEQUENCE);
         
         if (newBlock) {
             writer.beginBlock();
@@ -125,7 +125,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     @Override
     public YamlGenerator endSequence() throws YamlGenerationException {
         
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             context.pop();
              
          } else {
@@ -144,17 +144,19 @@ public class YamlGeneratorImpl implements YamlGenerator {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
+            writer.newLine();
+            newBlock = true;
+        } else if (Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.print('-');
+            writer.print(' ');
             newBlock = true;
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            writer.newLine();
             newBlock = true;
             
         } else {
             newBlock = false;
-        }
-
-        if (newBlock) {
-            writer.newLine();
         }
 
         context.push(Context.BLOCK_MAPPING_KEY);
@@ -218,7 +220,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     
     protected void beginScalar(boolean empty) throws YamlGenerationException {
 
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
             if (!empty) {
                 writer.print(' ');
@@ -231,7 +233,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
 
     protected void endScalar() throws YamlGenerationException {
 
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.newLine();
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
@@ -248,7 +250,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
 
     protected void endCollection() {
 
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.endBlock();
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {

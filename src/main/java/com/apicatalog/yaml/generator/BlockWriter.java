@@ -23,7 +23,7 @@ public final class BlockWriter {
     
     public BlockWriter(Writer writer) {
         this.writer = writer;
-        this.indentation = -2;
+        this.indentation = -1;
         this.newLine = false;
     }
     

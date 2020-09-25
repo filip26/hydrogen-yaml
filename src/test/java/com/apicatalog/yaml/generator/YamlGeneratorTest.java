@@ -86,10 +86,24 @@ class YamlGeneratorTest {
             return;
            
         case STRING:
-            writer.writeFlowScalar(FlowScalarType.PLAIN, ((JsonString)value).getString());
-        default:
+            writeScalar(writer, ((JsonString)value).getString());
+            return;
             
+        case NUMBER:
+            writer.writeFlowScalar(FlowScalarType.PLAIN, value.toString());
+            return;
+            
+        case NULL:
+            writer.writeUndefined();
+            return;
+            
+        default:
+            fail("Unhandled type: " + value.getValueType());
         }        
+    }
+    
+    static final void writeScalar(final YamlGenerator writer, final String scalar) throws YamlGenerationException {
+        writer.writeFlowScalar(FlowScalarType.PLAIN, scalar);
     }
     
     static final void writeObject(YamlGenerator writer, JsonObject object) throws YamlGenerationException {
@@ -98,11 +112,6 @@ class YamlGeneratorTest {
 
             final String type = object.getString("@type");
             
-            if ("PlainScalar".equals(type)) {
-                writer.writeFlowScalar(FlowScalarType.PLAIN, object.getString("@value"));    
-                return;
-            }
-
             if ("LiteralScalar".equals(type)) {
                 writer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
                 for (JsonValue item : object.getJsonArray("@value")) {
@@ -127,6 +136,9 @@ class YamlGeneratorTest {
         
         writer.beginMapping();
         for (Map.Entry<String, JsonValue> entry : object.entrySet()) {
+            
+            writeScalar(writer, entry.getKey());
+            write(writer, entry.getValue());
             
         }
         writer.endMapping();

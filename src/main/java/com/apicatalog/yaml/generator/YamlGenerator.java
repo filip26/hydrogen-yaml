@@ -21,4 +21,6 @@ public interface YamlGenerator {
     YamlGenerator beginMapping() throws YamlGenerationException;
     
     YamlGenerator endMapping() throws YamlGenerationException;
+    
+    YamlGenerator writeUndefined() throws YamlGenerationException;
 }

@@ -1,6 +1,1 @@
-{
-	"@type": "PlainScalar",
-	"@value":
-		"1st non-empty\n\n2nd non-empty\n3rd non-empty"
-		
-}
+"1st non-empty\n\n2nd non-empty\n3rd non-empty"

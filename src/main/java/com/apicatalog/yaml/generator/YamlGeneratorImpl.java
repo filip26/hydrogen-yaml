@@ -6,10 +6,12 @@ import java.util.Deque;
 public class YamlGeneratorImpl implements YamlGenerator {
 
     private enum Context { 
+                    DOCUMENT,
                     BLOCK_SCALAR,
                     BLOCK_SCALAR_NEXT,
-                    BLOCK_SEQUENCE,
-                    BLOCK_SEQUENCE_NEXT, 
+                    BLOCK_SEQUENCE, 
+                    BLOCK_MAPPING_KEY,
+                    BLOCK_MAPPING_VALUE,
                     };
     
     private final BlockWriter writer;
@@ -19,8 +21,9 @@ public class YamlGeneratorImpl implements YamlGenerator {
     public YamlGeneratorImpl(final BlockWriter writer) {
         this.writer = writer;
         this.context = new ArrayDeque<>(10);
+        this.context.push(Context.DOCUMENT);
     }
-    
+
     @Override
     public YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping)  throws YamlGenerationException {
         
@@ -84,15 +87,11 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
     
     @Override
-    public YamlGenerator beginMapping() {
-        // TODO Auto-generated method stub
-        return this;
-    }
-
-    @Override
     public YamlGenerator beginSequence(boolean compacted) throws YamlGenerationException {
         
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+        final boolean newBlock = Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek());
+        
+        if (newBlock) {
             writer.print('-');
             if (!compacted) {
                 writer.newLine();
@@ -100,7 +99,10 @@ public class YamlGeneratorImpl implements YamlGenerator {
         }
         
         context.push(Context.BLOCK_SEQUENCE);
-        writer.beginBlock();
+        
+        if (newBlock) {
+            writer.beginBlock();
+        }
         return this;
     }
 
@@ -113,7 +115,24 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
+    public YamlGenerator beginMapping() {
+        
+        final boolean newBlock = Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek());
+        
+        context.push(Context.BLOCK_MAPPING_KEY);
+        
+        if (newBlock) {
+            writer.beginBlock();
+        }
+
+        return this;
+    }
+
+    @Override
     public YamlGenerator endMapping() {
+        context.pop();
+        writer.endBlock();
+
         // TODO Auto-generated method stub
         return this;
     }
@@ -121,19 +140,49 @@ public class YamlGeneratorImpl implements YamlGenerator {
     @Override
     public YamlGenerator writeFlowScalar(FlowScalarType type, String value) throws YamlGenerationException {
 
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.print('-');
-            writer.print(' ');
-        }
+        beginScalar(false);
         
         if (FlowScalarType.PLAIN.equals(type)) {
             writer.print(value);
         }
 
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.newLine();
-        }
+        endScalar();
 
         return this;
-    }    
+    }
+
+    @Override
+    public YamlGenerator writeUndefined() throws YamlGenerationException {
+        beginScalar(true);
+        endScalar();
+        return null;
+    }
+    
+    protected void beginScalar(boolean empty) throws YamlGenerationException {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.print('-');
+            if (!empty) {
+                writer.print(' ');
+            }
+            
+        } else if (!empty && Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            writer.print(' ');
+        }
+    }
+
+    protected void endScalar() throws YamlGenerationException {
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.newLine();
+            
+        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            writer.newLine();
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_KEY);
+            
+        } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
+            writer.print(':');
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_VALUE);            
+        }
+    }
 }

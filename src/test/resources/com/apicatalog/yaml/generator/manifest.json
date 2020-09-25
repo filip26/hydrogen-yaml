@@ -25,17 +25,23 @@
 		{
 			"@id": "#t004",
 			"@type": ["PositiveEvaluationTest"],
-			"name": "Block Sequence of Scalars",
+			"name": "Block Sequence of Plain Scalars",
 			"input": "t004-in.json",
 			"expect": "t004-out.yaml"			
 		},
 		{
 			"@id": "#t005",
 			"@type": ["PositiveEvaluationTest"],
-			"name": "Block Sequence of Sequences of Scalars",
+			"name": "Block Sequence of Sequences of Plain Scalars",
 			"input": "t005-in.json",
-			"expect": "t005-out.yaml"			
+			"expect": "t005-out.yaml"
+		},
+		{
+			"@id": "#t006",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Block Mapping of Plain Scalars",
+			"input": "t006-in.json",
+			"expect": "t006-out.yaml"			
 		}
-		
 	]
 }

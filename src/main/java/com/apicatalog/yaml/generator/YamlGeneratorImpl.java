@@ -109,16 +109,28 @@ public class YamlGeneratorImpl implements YamlGenerator {
     @Override
     public YamlGenerator endSequence() {
         context.pop();
-        writer.endBlock();
-        // TODO Auto-generated method stub
+        
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.endBlock();
+            
+        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            
+            writer.endBlock();
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_KEY);
+        }
         return this;
     }
 
     @Override
-    public YamlGenerator beginMapping() {
+    public YamlGenerator beginMapping() throws YamlGenerationException {
         
         final boolean newBlock = Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek());
-        
+
+        if (newBlock) {
+            writer.newLine();
+        }
+
         context.push(Context.BLOCK_MAPPING_KEY);
         
         if (newBlock) {
@@ -131,9 +143,17 @@ public class YamlGeneratorImpl implements YamlGenerator {
     @Override
     public YamlGenerator endMapping() {
         context.pop();
-        writer.endBlock();
 
-        // TODO Auto-generated method stub
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.endBlock();
+            
+        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            
+            writer.endBlock();
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_KEY);
+        }
+
         return this;
     }
 
@@ -155,10 +175,11 @@ public class YamlGeneratorImpl implements YamlGenerator {
     public YamlGenerator writeUndefined() throws YamlGenerationException {
         beginScalar(true);
         endScalar();
-        return null;
+        return this;
     }
     
     protected void beginScalar(boolean empty) throws YamlGenerationException {
+
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
             if (!empty) {
@@ -171,6 +192,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     protected void endScalar() throws YamlGenerationException {
+
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             writer.newLine();
             

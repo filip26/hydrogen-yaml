@@ -42,6 +42,13 @@
 			"name": "Block Mapping of Plain Scalars",
 			"input": "t006-in.json",
 			"expect": "t006-out.yaml"			
-		}
+		},
+		{
+			"@id": "#t007",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Block Mapping of Mappings of Plain Scalars",
+			"input": "t007-in.json",
+			"expect": "t007-out.yaml"			
+		}		
 	]
 }

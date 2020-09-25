@@ -135,12 +135,12 @@ class YamlGeneratorTest {
         }
         
         writer.beginMapping();
-        for (Map.Entry<String, JsonValue> entry : object.entrySet()) {
-            
+        
+        for (Map.Entry<String, JsonValue> entry : object.entrySet()) {            
             writeScalar(writer, entry.getKey());
             write(writer, entry.getValue());
-            
         }
+        
         writer.endMapping();
     }
     

@@ -34,9 +34,10 @@ public final class BlockWriter {
 
     public BlockWriter endBlock() {
         indentation--;
+        this.newLine = true;
         return this;
     }
-    
+
     public BlockWriter newLine() throws YamlGenerationException {
 
         if (newLine) {

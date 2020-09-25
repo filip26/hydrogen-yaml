@@ -76,13 +76,17 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator endBlockScalar() {
+    public YamlGenerator endBlockScalar() throws YamlGenerationException {
+        
         if (Context.BLOCK_SCALAR_NEXT.equals(context.peek()) || Context.BLOCK_SCALAR.equals(context.peek())) {
            context.pop();
             
         } else {
             //TODO error
         }
+        
+        endScalar();
+        
         return this;
     }
     
@@ -107,18 +111,17 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator endSequence() {
-        context.pop();
+    public YamlGenerator endSequence() throws YamlGenerationException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.endBlock();
-            
-        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            
-            writer.endBlock();
             context.pop();
-            context.push(Context.BLOCK_MAPPING_KEY);
-        }
+             
+         } else {
+             //TODO error
+         }
+        
+        endCollection();
+        
         return this;
     }
 
@@ -141,19 +144,17 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator endMapping() {
-        context.pop();
-
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.endBlock();
-            
-        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            
-            writer.endBlock();
+    public YamlGenerator endMapping() throws YamlGenerationException {
+        
+        if (Context.BLOCK_MAPPING_KEY.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             context.pop();
-            context.push(Context.BLOCK_MAPPING_KEY);
-        }
+             
+         } else {
+             //TODO error
+         }
 
+        endCollection();
+        
         return this;
     }
 
@@ -221,7 +222,19 @@ public class YamlGeneratorImpl implements YamlGenerator {
             context.push(Context.BLOCK_MAPPING_VALUE);            
         }
     }
-    
+
+    protected void endCollection() throws YamlGenerationException {
+
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.endBlock();
+            
+        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            writer.endBlock();
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_KEY);            
+        }
+    }
+
     protected String escape(FlowScalarType type, String value) {
         //TODO
         return value;

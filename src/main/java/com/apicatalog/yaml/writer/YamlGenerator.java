@@ -2,19 +2,23 @@ package com.apicatalog.yaml.writer;
 
 public interface YamlGenerator {
 
-    YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping);
+    YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping) throws YamlGenerationException;
     
-    YamlGenerator writeBlockScalar(String value);
+    YamlGenerator writeBlockScalar(String value) throws YamlGenerationException;
     
-    YamlGenerator endBlockScalar();
+    YamlGenerator endBlockScalar() throws YamlGenerationException;
     
-    YamlGenerator writeFlowScalar(FlowScalarType type, String value);
+    YamlGenerator writeFlowScalar(FlowScalarType type, String value) throws YamlGenerationException;
 
-    YamlGenerator beginSequence();
-
-    YamlGenerator endSequence();
-
-    YamlGenerator beginMapping();
+    default YamlGenerator beginSequence() throws YamlGenerationException {
+        return beginSequence(false);
+    }
     
-    YamlGenerator endMapping();    
+    YamlGenerator beginSequence(boolean compacted) throws YamlGenerationException;
+
+    YamlGenerator endSequence() throws YamlGenerationException;
+
+    YamlGenerator beginMapping() throws YamlGenerationException;
+    
+    YamlGenerator endMapping() throws YamlGenerationException;
 }

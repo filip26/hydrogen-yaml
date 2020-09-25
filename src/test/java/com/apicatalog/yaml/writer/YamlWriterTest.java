@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -32,7 +31,7 @@ class YamlWriterTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCaseMethodSource")
-    void testStreamWriter(TestDescription testCase) throws IOException {
+    void testStreamWriter(TestDescription testCase) {
         
         assertNotNull(testCase);
         assertNotNull(testCase.getInput());
@@ -47,13 +46,15 @@ class YamlWriterTest {
             
             assertTrue(testParser.hasNext());
             
-            YamlGenerator yamlWriter = new YamlStreamWriterImpl(new PrintWriter(output));
+            YamlGenerator yamlWriter = new YamlGeneratorImpl(new BlockWriter(output));
             
             testParser.next();
             
             write(yamlWriter, testParser.getValue());
+            
+        } catch (YamlGenerationException | IOException e) {    
+            fail(e);
         }
-        
 
         if (testCase.getExpected() == null) {
             return;
@@ -65,11 +66,15 @@ class YamlWriterTest {
             
             String expected = new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
             
-            assertEquals(expected.replaceAll("\\ ", "."), output.toString().replaceAll("\\ ", "."));
-        }        
+            assertEquals(expected, output.toString());
+            
+        } catch (IOException e) {    
+            fail(e);
+        }
+        
     }
     
-    static final void write(YamlGenerator writer, JsonValue value) { 
+    static final void write(YamlGenerator writer, JsonValue value) throws YamlGenerationException { 
         
         switch (value.getValueType()) {
         case OBJECT:
@@ -87,7 +92,7 @@ class YamlWriterTest {
         }        
     }
     
-    static final void writeObject(YamlGenerator writer, JsonObject object) {
+    static final void writeObject(YamlGenerator writer, JsonObject object) throws YamlGenerationException {
 
         if (object.containsKey("@type")) {
 
@@ -127,7 +132,7 @@ class YamlWriterTest {
         writer.endMapping();
     }
     
-    static final void writeArray(YamlGenerator writer, JsonArray array) {
+    static final void writeArray(YamlGenerator writer, JsonArray array) throws YamlGenerationException {
         
         writer.beginSequence();        
         for (JsonValue value : array) {

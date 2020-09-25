@@ -1,10 +1,9 @@
 package com.apicatalog.yaml.writer;
 
-import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class YamlStreamWriterImpl implements YamlGenerator {
+public class YamlGeneratorImpl implements YamlGenerator {
 
     private enum Context { 
                     BLOCK_SCALAR,
@@ -13,23 +12,19 @@ public class YamlStreamWriterImpl implements YamlGenerator {
                     BLOCK_SEQUENCE_NEXT, 
                     };
     
-    private final PrintWriter writer;
+    private final BlockWriter writer;
 
-    private int indentation;
-    
     private Deque<Context> context;
     
-    public YamlStreamWriterImpl(final PrintWriter writer) {
+    public YamlGeneratorImpl(final BlockWriter writer) {
         this.writer = writer;
         this.context = new ArrayDeque<>(10);
-        this.indentation = 0;
     }
     
     @Override
-    public YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping) {
+    public YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping)  throws YamlGenerationException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writeIndentation();
             writer.print('-');
             writer.print(' ');
         }
@@ -51,16 +46,16 @@ public class YamlStreamWriterImpl implements YamlGenerator {
             writer.print('-');
             break;
         }
-        writer.println();
+        writer.newLine();
         context.push(Context.BLOCK_SCALAR);
         return this;
     }
 
     @Override
-    public YamlGenerator writeBlockScalar(String value) {
+    public YamlGenerator writeBlockScalar(String value) throws YamlGenerationException {
         
         if (Context.BLOCK_SCALAR_NEXT.equals(context.peek())) {
-            writer.println();          
+            writer.newLine();          
             
         } else if (Context.BLOCK_SCALAR.equals(context.peek())) {
             context.pop();
@@ -71,7 +66,6 @@ public class YamlStreamWriterImpl implements YamlGenerator {
         }
         
         if (value != null && !value.isBlank()) {
-            writeIndentation();
             writer.print(' ');
             writer.print(value);
         }
@@ -96,13 +90,24 @@ public class YamlStreamWriterImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator beginSequence() {
+    public YamlGenerator beginSequence(boolean compacted) throws YamlGenerationException {
+        
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.print('-');
+            if (!compacted) {
+                writer.newLine();
+            }
+        }
+        
         context.push(Context.BLOCK_SEQUENCE);
+        writer.beginBlock();
         return this;
     }
 
     @Override
     public YamlGenerator endSequence() {
+        context.pop();
+        writer.endBlock();
         // TODO Auto-generated method stub
         return this;
     }
@@ -114,10 +119,9 @@ public class YamlStreamWriterImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator writeFlowScalar(FlowScalarType type, String value) {
+    public YamlGenerator writeFlowScalar(FlowScalarType type, String value) throws YamlGenerationException {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writeIndentation();
             writer.print('-');
             writer.print(' ');
         }
@@ -127,17 +131,9 @@ public class YamlStreamWriterImpl implements YamlGenerator {
         }
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.println();
+            writer.newLine();
         }
 
         return this;
-    }
-    
-    private final void writeIndentation() {
-        for (int i=0; i < indentation; i++) {
-            writer.print(' ');
-            writer.print(' ');
-        }
-    }
-    
+    }    
 }

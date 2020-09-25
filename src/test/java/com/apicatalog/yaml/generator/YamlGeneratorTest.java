@@ -50,7 +50,7 @@ class YamlGeneratorTest {
             
             testParser.next();
             
-            write(yamlWriter, testParser.getValue());
+            write(testCase, yamlWriter, testParser.getValue());
             
         } catch (YamlGenerationException | IOException e) {    
             fail(e);
@@ -74,15 +74,15 @@ class YamlGeneratorTest {
         
     }
     
-    static final void write(YamlGenerator writer, JsonValue value) throws YamlGenerationException { 
+    static final void write(TestDescription test, YamlGenerator writer, JsonValue value) throws YamlGenerationException { 
         
         switch (value.getValueType()) {
         case OBJECT:
-            writeObject(writer, value.asJsonObject());
+            writeObject(test, writer, value.asJsonObject());
             return;
             
         case ARRAY:
-            writeArray(writer, value.asJsonArray());
+            writeArray(test, writer, value.asJsonArray());
             return;
            
         case STRING:
@@ -115,7 +115,7 @@ class YamlGeneratorTest {
         }
     }
     
-    static final void writeObject(YamlGenerator writer, JsonObject object) throws YamlGenerationException {
+    static final void writeObject(TestDescription test, YamlGenerator writer, JsonObject object) throws YamlGenerationException {
 
         if (object.containsKey("@type")) {
 
@@ -147,18 +147,18 @@ class YamlGeneratorTest {
         
         for (Map.Entry<String, JsonValue> entry : object.entrySet()) {            
             writeScalar(writer, entry.getKey());
-            write(writer, entry.getValue());
+            write(test, writer, entry.getValue());
         }
         
         writer.endMapping();
     }
     
-    static final void writeArray(YamlGenerator writer, JsonArray array) throws YamlGenerationException {
+    static final void writeArray(TestDescription test, YamlGenerator writer, JsonArray array) throws YamlGenerationException {
         
-        writer.beginSequence();        
+        writer.beginSequence(test.isCompactArrays());        
         for (JsonValue value : array) {
 
-            write(writer, value);
+            write(test, writer, value);
 
         }
         writer.endSequence();        

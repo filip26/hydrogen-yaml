@@ -12,8 +12,8 @@ public class YamlGeneratorImpl implements YamlGenerator {
                     BLOCK_SEQUENCE, 
                     BLOCK_MAPPING_KEY,
                     BLOCK_MAPPING_VALUE,
-                    };
-    
+                    }
+
     private final BlockWriter writer;
 
     private Deque<Context> context;
@@ -97,7 +97,9 @@ public class YamlGeneratorImpl implements YamlGenerator {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
-            if (!compacted) {
+            if (compacted) {
+                writer.print(' ');    
+            } else {
                 writer.newLine();
             }
             newBlock = true;
@@ -244,7 +246,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
         }
     }
 
-    protected void endCollection() throws YamlGenerationException {
+    protected void endCollection() {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             writer.endBlock();

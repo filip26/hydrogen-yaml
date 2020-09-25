@@ -28,6 +28,8 @@ public final class TestDescription {
     private String input;
     private String expected;
     
+    private boolean compactArrays;
+    
     private Set<String> type;
     
     public static final TestDescription of(JsonObject jsonObject) {
@@ -40,6 +42,13 @@ public final class TestDescription {
         testCase.input = jsonObject.getString("input");
         testCase.expected = jsonObject.getString("expect", null);
             
+        if (jsonObject.containsKey("options")) {
+            testCase.compactArrays = jsonObject.getJsonObject("options").getBoolean("compactArrays", false);
+                    
+        } else {
+            testCase.compactArrays = false;
+        }
+        
         return testCase;
     }
     
@@ -76,4 +85,7 @@ public final class TestDescription {
         return isType("#PositiveEvaluationTest");
     }
 
+    public boolean isCompactArrays() {
+        return compactArrays;
+    }
 }

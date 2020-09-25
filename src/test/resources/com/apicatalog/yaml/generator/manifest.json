@@ -70,6 +70,14 @@
 			"name": "Block Sequence of Block Mappings",
 			"input": "t010-in.json",
 			"expect": "t010-out.yaml"			
+		},
+				{
+			"@id": "#t011",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Compacted Block Sequence of Sequences",
+			"options": { "compactArrays": true },
+			"input": "t005-in.json",
+			"expect": "t011-out.yaml"
 		}		
 	]
 }

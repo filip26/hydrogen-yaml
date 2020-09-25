@@ -47,11 +47,11 @@ class YamlWriterTest {
             
             assertTrue(testParser.hasNext());
             
-            assertEquals(JsonParser.Event.START_OBJECT, testParser.next());
-
-            YamlStreamWriter yamlWriter = new YamlStreamWriterImpl(new PrintWriter(output));
+            YamlGenerator yamlWriter = new YamlStreamWriterImpl(new PrintWriter(output));
             
-            writeObject(yamlWriter, testParser.getObject());
+            testParser.next();
+            
+            write(yamlWriter, testParser.getValue());
         }
         
 
@@ -65,36 +65,54 @@ class YamlWriterTest {
             
             String expected = new BufferedReader(new InputStreamReader(is)).lines().collect(Collectors.joining("\n"));
             
-            assertEquals(expected, output.toString());
+            assertEquals(expected.replaceAll("\\ ", "."), output.toString().replaceAll("\\ ", "."));
         }        
     }
     
-    static final void writeObject(YamlStreamWriter writer, JsonObject object) {
+    static final void write(YamlGenerator writer, JsonValue value) { 
+        
+        switch (value.getValueType()) {
+        case OBJECT:
+            writeObject(writer, value.asJsonObject());
+            return;
+            
+        case ARRAY:
+            writeArray(writer, value.asJsonArray());
+            return;
+           
+        case STRING:
+            writer.writeFlowScalar(FlowScalarType.PLAIN, ((JsonString)value).getString());
+        default:
+            
+        }        
+    }
+    
+    static final void writeObject(YamlGenerator writer, JsonObject object) {
 
         if (object.containsKey("@type")) {
 
             final String type = object.getString("@type");
             
             if ("PlainScalar".equals(type)) {
-                for (JsonValue item : object.getJsonArray("@value")) {
-                    writer.writePlainScalar(((JsonString)item).getString());                    
-                }
+                writer.writeFlowScalar(FlowScalarType.PLAIN, object.getString("@value"));    
                 return;
             }
 
             if ("LiteralScalar".equals(type)) {
-                writer.writeLiteralScalar(ChompingStyle.CLIP);
+                writer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
                 for (JsonValue item : object.getJsonArray("@value")) {
-                    writer.writePlainScalar(((JsonString)item).getString());                    
+                    writer.writeBlockScalar(((JsonString)item).getString());                    
                 }
+                writer.endBlockScalar();
                 return;
             }
 
             if ("FoldedScalar".equals(type)) {
-                writer.writeFoldedScalar(ChompingStyle.CLIP);
+                writer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
                 for (JsonValue item : object.getJsonArray("@value")) {
-                    writer.writePlainScalar(((JsonString)item).getString());                    
+                    writer.writeBlockScalar(((JsonString)item).getString());                    
                 }
+                writer.endBlockScalar();
                 return;
             }
             
@@ -102,16 +120,24 @@ class YamlWriterTest {
             return;
         }
         
+        writer.beginMapping();
         for (Map.Entry<String, JsonValue> entry : object.entrySet()) {
             
         }
-        
+        writer.endMapping();
     }
     
-    
-    static final void writeValue(YamlStreamWriter writer, JsonValue value) {
+    static final void writeArray(YamlGenerator writer, JsonArray array) {
         
+        writer.beginSequence();        
+        for (JsonValue value : array) {
+
+            write(writer, value);
+
+        }
+        writer.endSequence();        
     }
+    
     static final Stream<TestDescription> testCaseMethodSource() throws IOException {
         
         try (final InputStream is = YamlWriterTest.class.getResourceAsStream("manifest.json")) {

@@ -4,26 +4,42 @@ import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class YamlStreamWriterImpl implements YamlStreamWriter {
+public class YamlStreamWriterImpl implements YamlGenerator {
 
-    private enum State { 
-                    BLOCK_LITERAL_SCALAR, 
-                    BLOCK_FOLDED_SCALAR,
-                    PLAIN_SCALAR 
+    private enum Context { 
+                    BLOCK_SCALAR,
+                    BLOCK_SCALAR_NEXT,
+                    BLOCK_SEQUENCE,
+                    BLOCK_SEQUENCE_NEXT, 
                     };
     
     private final PrintWriter writer;
 
-    private Deque<State> state;
+    private int indentation;
+    
+    private Deque<Context> context;
     
     public YamlStreamWriterImpl(final PrintWriter writer) {
         this.writer = writer;
-        this.state = new ArrayDeque<>(8);
+        this.context = new ArrayDeque<>(10);
+        this.indentation = 0;
     }
     
     @Override
-    public void writeLiteralScalar(ChompingStyle chomping) {
-        writer.print('|');
+    public YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping) {
+        
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writeIndentation();
+            writer.print('-');
+            writer.print(' ');
+        }
+        
+        if (BlockScalarType.FOLDED.equals(type)) {
+            writer.print('>');
+            
+        } else if (BlockScalarType.LITERAL.equals(type)) {
+            writer.print('|');
+        }
         
         switch (chomping) {
         case CLIP:
@@ -36,45 +52,92 @@ public class YamlStreamWriterImpl implements YamlStreamWriter {
             break;
         }
         writer.println();
-        state.push(State.BLOCK_LITERAL_SCALAR);
+        context.push(Context.BLOCK_SCALAR);
+        return this;
     }
 
     @Override
-    public void writeFoldedScalar(ChompingStyle chomping) {
-        writer.print('>');
+    public YamlGenerator writeBlockScalar(String value) {
         
-        switch (chomping) {
-        case CLIP:
-            break;
-        case KEEP:
-            writer.print('+');
-            break;
-        case STRIP:
-            writer.print('-');
-            break;
-        }
-        writer.println();
-        state.push(State.BLOCK_FOLDED_SCALAR);        
-    }
-
-    @Override
-    public void writePlainScalar(String value) {
-        if (State.PLAIN_SCALAR.equals(state.peek())) {
-            writer.println();            
+        if (Context.BLOCK_SCALAR_NEXT.equals(context.peek())) {
+            writer.println();          
+            
+        } else if (Context.BLOCK_SCALAR.equals(context.peek())) {
+            context.pop();
+            context.push(Context.BLOCK_SCALAR_NEXT);
+            
         } else {
-            state.push(State.PLAIN_SCALAR);
+            //TODO error
         }
         
         if (value != null && !value.isBlank()) {
-            for (int i=0; i < state.size() - 1; i++) {
-                writer.print("  ");    
-            }
+            writeIndentation();
+            writer.print(' ');
             writer.print(value);
         }
+        return this;
     }
 
     @Override
-    public void writeQuotedScalar(QuotesStyle style, String value) {
-        // TODO Auto-generated method stub   
+    public YamlGenerator endBlockScalar() {
+        if (Context.BLOCK_SCALAR_NEXT.equals(context.peek()) || Context.BLOCK_SCALAR.equals(context.peek())) {
+           context.pop();
+            
+        } else {
+            //TODO error
+        }
+        return this;
     }
+    
+    @Override
+    public YamlGenerator beginMapping() {
+        // TODO Auto-generated method stub
+        return this;
+    }
+
+    @Override
+    public YamlGenerator beginSequence() {
+        context.push(Context.BLOCK_SEQUENCE);
+        return this;
+    }
+
+    @Override
+    public YamlGenerator endSequence() {
+        // TODO Auto-generated method stub
+        return this;
+    }
+
+    @Override
+    public YamlGenerator endMapping() {
+        // TODO Auto-generated method stub
+        return this;
+    }
+
+    @Override
+    public YamlGenerator writeFlowScalar(FlowScalarType type, String value) {
+
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writeIndentation();
+            writer.print('-');
+            writer.print(' ');
+        }
+        
+        if (FlowScalarType.PLAIN.equals(type)) {
+            writer.print(value);
+        }
+
+        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
+            writer.println();
+        }
+
+        return this;
+    }
+    
+    private final void writeIndentation() {
+        for (int i=0; i < indentation; i++) {
+            writer.print(' ');
+            writer.print(' ');
+        }
+    }
+    
 }

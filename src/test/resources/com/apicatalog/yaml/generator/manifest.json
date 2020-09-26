@@ -71,13 +71,21 @@
 			"input": "t010-in.json",
 			"expect": "t010-out.yaml"			
 		},
-				{
+		{
 			"@id": "#t011",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Compacted Block Sequence of Sequences",
 			"options": { "compactArrays": true },
 			"input": "t011-in.json",
 			"expect": "t011-out.yaml"
+		},
+		{
+			"@id": "#t012",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Compacted Sequence with Plain Scalars",
+			"options": { "compactArrays": true },
+			"input": "t012-in.json",
+			"expect": "t012-out.yaml"
 		}		
 	]
 }

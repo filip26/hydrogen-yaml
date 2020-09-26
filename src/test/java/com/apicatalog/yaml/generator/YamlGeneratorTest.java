@@ -46,13 +46,14 @@ class YamlGeneratorTest {
             
             assertTrue(testParser.hasNext());
             
-            YamlGenerator yamlWriter = new YamlGeneratorImpl(new BlockWriter(output));
+            YamlGenerator yamlWriter = new YamlGeneratorImpl(new IndentedkWriter(output));
             
             testParser.next();
             
             write(testCase, yamlWriter, testParser.getValue());
             
         } catch (YamlGenerationException | IOException e) {    
+            e.printStackTrace();
             fail(e);
         }
 
@@ -89,12 +90,14 @@ class YamlGeneratorTest {
             writeScalar(writer, ((JsonString)value).getString());
             return;
             
+        case TRUE:
+        case FALSE:
         case NUMBER:
-            writer.writeFlowScalar(FlowScalarType.PLAIN, value.toString());
+            writeScalar(writer, value.toString());
             return;
             
         case NULL:
-            writer.writeUndefined();
+            writer.skip();
             return;
             
         default:
@@ -105,13 +108,31 @@ class YamlGeneratorTest {
     static final void writeScalar(final YamlGenerator writer, final String scalar) throws YamlGenerationException {
         
         if (scalar.startsWith("\"")) {
-            writer.writeFlowScalar(FlowScalarType.DOUBLE_QUOTED, scalar.substring(1));
+            writer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
+            writer.print(scalar.substring(1));
+            writer.endFlowScalar();
             
         } else if (scalar.startsWith("\'")) {
-            writer.writeFlowScalar(FlowScalarType.SINGLE_QUOTED, scalar.substring(1));
+            writer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
+            writer.print(scalar.substring(1));
+            writer.endFlowScalar();
             
         } else {
-            writer.writeFlowScalar(FlowScalarType.PLAIN, scalar);
+            writer.beginFlowScalar(FlowScalarType.PLAIN);
+            
+            boolean next = false;
+            
+            for (String line : scalar.split("\\r?\\n")) {
+                if (next) {
+                    writer.println();
+                }
+
+                writer.print(line);  
+                next = true;
+            }
+            
+
+            writer.endFlowScalar();
         }
     }
     
@@ -124,7 +145,8 @@ class YamlGeneratorTest {
             if ("LiteralScalar".equals(type)) {
                 writer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
                 for (JsonValue item : object.getJsonArray("@value")) {
-                    writer.writeBlockScalar(((JsonString)item).getString());                    
+                    writer.print(((JsonString)item).getString());  
+                    writer.println();
                 }
                 writer.endBlockScalar();
                 return;
@@ -133,7 +155,8 @@ class YamlGeneratorTest {
             if ("FoldedScalar".equals(type)) {
                 writer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
                 for (JsonValue item : object.getJsonArray("@value")) {
-                    writer.writeBlockScalar(((JsonString)item).getString());                    
+                    writer.print(((JsonString)item).getString());
+                    writer.println();
                 }
                 writer.endBlockScalar();
                 return;
@@ -143,25 +166,25 @@ class YamlGeneratorTest {
             return;
         }
         
-        writer.beginMapping();
+        writer.beginBlockMapping();
         
         for (Map.Entry<String, JsonValue> entry : object.entrySet()) {            
             writeScalar(writer, entry.getKey());
             write(test, writer, entry.getValue());
         }
         
-        writer.endMapping();
+        writer.enBlockdMapping();
     }
     
     static final void writeArray(TestDescription test, YamlGenerator writer, JsonArray array) throws YamlGenerationException {
         
-        writer.beginSequence(test.isCompactArrays());        
+        writer.beginBlockSequence(test.isCompactArrays());        
         for (JsonValue value : array) {
 
             write(test, writer, value);
 
         }
-        writer.endSequence();        
+        writer.endBlockSequence();        
     }
     
     static final Stream<TestDescription> testCaseMethodSource() throws IOException {

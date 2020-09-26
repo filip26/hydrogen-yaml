@@ -8,18 +8,20 @@ public class YamlGeneratorImpl implements YamlGenerator {
     private enum Context { 
                     DOCUMENT,
                     BLOCK_SCALAR,
-                    BLOCK_SCALAR_NEXT,
+                    FLOW_PLAIN_SCALAR,
+                    FLOW_DOUBLE_QUOTED_SCALAR,
+                    FLOW_SINGLE_QUOTED_SCALAR,
                     BLOCK_SEQUENCE,
                     COMPACT_BLOCK_SEQUENCE, 
                     BLOCK_MAPPING_KEY,
                     BLOCK_MAPPING_VALUE,
                     }
 
-    private final BlockWriter writer;
+    private final IndentedkWriter writer;
 
     private Deque<Context> context;
     
-    public YamlGeneratorImpl(final BlockWriter writer) {
+    public YamlGeneratorImpl(final IndentedkWriter writer) {
         this.writer = writer;
         this.context = new ArrayDeque<>(10);
         this.context.push(Context.DOCUMENT);
@@ -51,48 +53,57 @@ public class YamlGeneratorImpl implements YamlGenerator {
             break;
         }
         writer.newLine();
+        writer.beginBlock();
         context.push(Context.BLOCK_SCALAR);
         return this;
     }
 
     @Override
-    public YamlGenerator writeBlockScalar(String value) throws YamlGenerationException {
+    public YamlGenerator print(String value) throws YamlGenerationException {
         
-        if (Context.BLOCK_SCALAR_NEXT.equals(context.peek())) {
-            writer.newLine();          
+        if (value.isBlank()) {
+            return this;
+        }
+        
+        if (Context.BLOCK_SCALAR.equals(context.peek())) {
+
+            writer.print(value);
             
-        } else if (Context.BLOCK_SCALAR.equals(context.peek())) {
-            context.pop();
-            context.push(Context.BLOCK_SCALAR_NEXT);
+        } else if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
+            
+            writer.print(value);
+            
+        } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
+            
+            writer.print(escape(FlowScalarType.SINGLE_QUOTED, value));
+            
+        } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
+            
+            writer.print(escape(FlowScalarType.DOUBLE_QUOTED, value));
             
         } else {
             throw new YamlGenerationException();
         }
         
-        if (value != null && !value.isBlank()) {
-            writer.print(' ');
-            writer.print(value);
-        }
         return this;
     }
 
     @Override
     public YamlGenerator endBlockScalar() throws YamlGenerationException {
         
-        if (Context.BLOCK_SCALAR_NEXT.equals(context.peek()) || Context.BLOCK_SCALAR.equals(context.peek())) {
+        if (Context.BLOCK_SCALAR.equals(context.peek())) {
            context.pop();
             
         } else {
             throw new YamlGenerationException();
         }
-        
-        endScalar();
+        writer.endBlock();
         
         return this;
     }
     
     @Override
-    public YamlGenerator beginSequence(boolean compacted) throws YamlGenerationException {
+    public YamlGenerator beginBlockSequence(boolean compacted) throws YamlGenerationException {
         
         final boolean newBlock;
         
@@ -123,7 +134,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator endSequence() throws YamlGenerationException {
+    public YamlGenerator endBlockSequence() throws YamlGenerationException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             context.pop();
@@ -138,7 +149,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator beginMapping() throws YamlGenerationException {
+    public YamlGenerator beginBlockMapping() throws YamlGenerationException {
         
         final boolean newBlock;
 
@@ -169,7 +180,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator endMapping() throws YamlGenerationException {
+    public YamlGenerator enBlockdMapping() throws YamlGenerationException {
         
         if (Context.BLOCK_MAPPING_KEY.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             context.pop();
@@ -184,35 +195,59 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator writeFlowScalar(FlowScalarType type, String value) throws YamlGenerationException {
+    public YamlGenerator beginFlowScalar(FlowScalarType type) throws YamlGenerationException {
         
         beginScalar(false);
-        
+
         switch (type) {
         case PLAIN:
-            writer.print(value);
+            context.push(Context.FLOW_PLAIN_SCALAR);
+            writer.beginFlow();
             break;
             
         case DOUBLE_QUOTED:
             writer.print('"');
-            writer.print(escape(type, value));
-            writer.print('"');
+            context.push(Context.FLOW_DOUBLE_QUOTED_SCALAR);
             break;
             
         case SINGLE_QUOTED:
             writer.print('\'');
-            writer.print(escape(type, value));
-            writer.print('\'');
+            context.push(Context.FLOW_SINGLE_QUOTED_SCALAR);
             break;
         }
-        
-        endScalar();
 
         return this;
     }
 
     @Override
-    public YamlGenerator writeUndefined() throws YamlGenerationException {
+    public YamlGenerator endFlowScalar() throws YamlGenerationException {
+
+        if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
+            writer.endFlow();
+            context.pop();
+            
+        } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
+            writer.print('\'');
+            context.pop();
+
+            
+        } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
+            writer.print('"');
+            context.pop();
+
+            
+        } else {
+            throw new YamlGenerationException();
+        }
+
+        
+        endScalar();
+        
+        return this;
+    }
+    
+    @Override
+    public YamlGenerator skip() throws YamlGenerationException {
         beginScalar(true);
         endScalar();
         return this;
@@ -232,7 +267,6 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     protected void endScalar() throws YamlGenerationException {
-
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.newLine();
             
@@ -263,5 +297,11 @@ public class YamlGeneratorImpl implements YamlGenerator {
     protected String escape(FlowScalarType type, String value) {
         //TODO
         return value;
+    }
+
+    @Override
+    public YamlGenerator println() throws YamlGenerationException {
+        writer.newLine();
+        return this;
     }
 }

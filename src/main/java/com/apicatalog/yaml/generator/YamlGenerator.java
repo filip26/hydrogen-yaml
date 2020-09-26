@@ -4,23 +4,27 @@ public interface YamlGenerator {
 
     YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping) throws YamlGenerationException;
     
-    YamlGenerator writeBlockScalar(String value) throws YamlGenerationException;
-    
     YamlGenerator endBlockScalar() throws YamlGenerationException;
     
-    YamlGenerator writeFlowScalar(FlowScalarType type, String value) throws YamlGenerationException;
+    YamlGenerator beginFlowScalar(FlowScalarType type) throws YamlGenerationException;
+    
+    YamlGenerator endFlowScalar() throws YamlGenerationException;
 
-    default YamlGenerator beginSequence() throws YamlGenerationException {
-        return beginSequence(false);
+    YamlGenerator print(String value) throws YamlGenerationException;
+    
+    YamlGenerator println() throws YamlGenerationException;
+
+    default YamlGenerator beginBlockSequence() throws YamlGenerationException {
+        return beginBlockSequence(false);
     }
     
-    YamlGenerator beginSequence(boolean compacted) throws YamlGenerationException;
+    YamlGenerator beginBlockSequence(boolean compacted) throws YamlGenerationException;
 
-    YamlGenerator endSequence() throws YamlGenerationException;
+    YamlGenerator endBlockSequence() throws YamlGenerationException;
 
-    YamlGenerator beginMapping() throws YamlGenerationException;
+    YamlGenerator beginBlockMapping() throws YamlGenerationException;
     
-    YamlGenerator endMapping() throws YamlGenerationException;
+    YamlGenerator enBlockdMapping() throws YamlGenerationException;
     
-    YamlGenerator writeUndefined() throws YamlGenerationException;
+    YamlGenerator skip() throws YamlGenerationException;
 }

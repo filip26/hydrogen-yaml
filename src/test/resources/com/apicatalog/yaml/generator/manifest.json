@@ -87,13 +87,21 @@
 			"input": "t012-in.json",
 			"expect": "t012-out.yaml"
 		},
-				{
+		{
 			"@id": "#t013",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Double Quoted Flow Scalar",
 			"options": { "compactArrays": true },
 			"input": "t013-in.json",
 			"expect": "t013-out.yaml"
-		}				
+		},				
+		{
+			"@id": "#t014",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Invoice Example",
+			"options": { "compactArrays": true },
+			"input": "t014-in.json",
+			"expect": "t014-out.yaml"
+		}		
 	]
 }

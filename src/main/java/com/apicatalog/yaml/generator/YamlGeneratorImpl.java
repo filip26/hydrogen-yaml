@@ -35,6 +35,10 @@ public class YamlGeneratorImpl implements YamlGenerator {
             writer.print(' ');
         }
         
+        if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            writer.print(' ');
+        }
+        
         if (BlockScalarType.FOLDED.equals(type)) {
             writer.print('>');
             
@@ -42,7 +46,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
             writer.print('|');
         }
         
-        writer.beginBlock();
+        writer.beginFlow();
         
         switch (chomping) {
         case CLIP:
@@ -68,8 +72,18 @@ public class YamlGeneratorImpl implements YamlGenerator {
         } else {
             throw new YamlGenerationException();
         }
-        writer.endBlock();
+        writer.endFlow();
         
+        if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_KEY);
+            
+        } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
+            writer.print(':');
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_VALUE);            
+        }
+
         return this;
     }
 

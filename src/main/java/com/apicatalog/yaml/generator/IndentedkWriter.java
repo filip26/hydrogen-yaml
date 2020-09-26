@@ -119,7 +119,7 @@ public final class IndentedkWriter {
     private final void printIndentation() throws IOException {
         
         writer.write(new char[] {'\n'});
-        printed = 0;
+        printed = indentation.peek();
         newLine = false;
 
         if (indentation.peek() > 0) {

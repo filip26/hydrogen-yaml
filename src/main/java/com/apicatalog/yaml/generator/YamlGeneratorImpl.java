@@ -46,7 +46,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
             writer.print('|');
         }
         
-        writer.beginFlow();
+        writer.beginBlock();
         
         switch (chomping) {
         case CLIP:
@@ -72,7 +72,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
         } else {
             throw new YamlGenerationException();
         }
-        writer.endFlow();
+        writer.endBlock();
         
         if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             context.pop();

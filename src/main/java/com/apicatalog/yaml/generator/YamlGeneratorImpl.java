@@ -42,6 +42,8 @@ public class YamlGeneratorImpl implements YamlGenerator {
             writer.print('|');
         }
         
+        writer.beginBlock();
+        
         switch (chomping) {
         case CLIP:
             break;
@@ -53,8 +55,21 @@ public class YamlGeneratorImpl implements YamlGenerator {
             break;
         }
         writer.newLine();
-        writer.beginBlock();
         context.push(Context.BLOCK_SCALAR);
+        return this;
+    }
+    
+    @Override
+    public YamlGenerator endBlockScalar() throws YamlGenerationException {
+        
+        if (Context.BLOCK_SCALAR.equals(context.peek())) {
+           context.pop();
+            
+        } else {
+            throw new YamlGenerationException();
+        }
+        writer.endBlock();
+        
         return this;
     }
 
@@ -84,20 +99,6 @@ public class YamlGeneratorImpl implements YamlGenerator {
         } else {
             throw new YamlGenerationException();
         }
-        
-        return this;
-    }
-
-    @Override
-    public YamlGenerator endBlockScalar() throws YamlGenerationException {
-        
-        if (Context.BLOCK_SCALAR.equals(context.peek())) {
-           context.pop();
-            
-        } else {
-            throw new YamlGenerationException();
-        }
-        writer.endBlock();
         
         return this;
     }
@@ -207,11 +208,13 @@ public class YamlGeneratorImpl implements YamlGenerator {
             
         case DOUBLE_QUOTED:
             writer.print('"');
+            writer.beginFlow();
             context.push(Context.FLOW_DOUBLE_QUOTED_SCALAR);
             break;
             
         case SINGLE_QUOTED:
             writer.print('\'');
+            writer.beginFlow();
             context.push(Context.FLOW_SINGLE_QUOTED_SCALAR);
             break;
         }
@@ -223,7 +226,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     public YamlGenerator endFlowScalar() throws YamlGenerationException {
 
         if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
-            writer.endFlow();
+            
             context.pop();
             
         } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
@@ -240,7 +243,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
             throw new YamlGenerationException();
         }
 
-        
+        writer.endFlow();
         endScalar();
         
         return this;
@@ -267,6 +270,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     protected void endScalar() throws YamlGenerationException {
+        
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.newLine();
             

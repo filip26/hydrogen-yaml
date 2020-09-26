@@ -13,13 +13,26 @@ public final class IndentedkWriter {
     private int printed;
     
     private static final char[][] SPACES = {
+            { ' '},
             { ' ', ' ' },
+            { ' ', ' ', ' '},
             { ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ' },
             { ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' },
+            { ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ' , ' ' },
             { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
             { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
-            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '}
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
+            { ' ', ' ' , ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},
     };
     
     private Deque<Integer> indentation;
@@ -75,14 +88,9 @@ public final class IndentedkWriter {
         
         try {
             if (newLine) {
-                writer.write(new char[] {'\n'});
-                printed = 0;
-                newLine = false;
-
-                for (int i=0; i < indentation.peek(); i++) {
-                    writer.write(' ');
-                }
+                printIndentation();
             }
+            
             printed += line.length();
             writer.write(line);
             
@@ -95,14 +103,8 @@ public final class IndentedkWriter {
     public IndentedkWriter print(char ch)  throws YamlGenerationException {
 
         try {
-            if (newLine) {
-                writer.write(new char[] {'\n'});
-                printed = 0;
-                newLine = false;
-
-                for (int i=0; i < indentation.peek(); i++) {
-                    writer.write(' ');
-                }
+            if (newLine) {                
+                printIndentation();
             }
 
             printed += 1;
@@ -112,5 +114,25 @@ public final class IndentedkWriter {
             throw new YamlGenerationException(e);
         }
         return this;
+    }    
+    
+    private final void printIndentation() throws IOException {
+        
+        writer.write(new char[] {'\n'});
+        printed = 0;
+        newLine = false;
+
+        if (indentation.peek() > 0) {
+            
+            if (indentation.peek() < 20) {
+                writer.write(SPACES[indentation.peek() - 1]);
+                
+            } else {
+                writer.write(SPACES[19]);
+                for (int i=0; i < indentation.peek() - 20; i++) {
+                    writer.write(' ');
+                }
+            }
+        }        
     }    
 }

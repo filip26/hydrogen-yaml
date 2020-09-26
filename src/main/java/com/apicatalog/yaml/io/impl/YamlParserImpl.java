@@ -2,7 +2,6 @@ package com.apicatalog.yaml.io.impl;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 import com.apicatalog.yaml.YamlMapping;
 import com.apicatalog.yaml.YamlNode;

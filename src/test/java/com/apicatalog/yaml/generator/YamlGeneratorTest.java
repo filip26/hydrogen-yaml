@@ -109,30 +109,32 @@ class YamlGeneratorTest {
         
         if (scalar.startsWith("\"")) {
             writer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
-            writer.print(scalar.substring(1));
+            printLines(writer, scalar.substring(1));
             writer.endFlowScalar();
             
         } else if (scalar.startsWith("\'")) {
             writer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
-            writer.print(scalar.substring(1));
+            printLines(writer, scalar.substring(1));
             writer.endFlowScalar();
             
         } else {
             writer.beginFlowScalar(FlowScalarType.PLAIN);
-            
-            boolean next = false;
-            
-            for (String line : scalar.split("\\r?\\n")) {
-                if (next) {
-                    writer.println();
-                }
-
-                writer.print(line);  
-                next = true;
-            }
-            
+            printLines(writer, scalar);
 
             writer.endFlowScalar();
+        }
+    }
+    
+    static final void printLines(final YamlGenerator writer, final String scalar) throws YamlGenerationException {
+        boolean next = false;
+        
+        for (String line : scalar.split("\\r?\\n")) {
+            if (next) {
+                writer.println();
+            }
+
+            writer.print(line);  
+            next = true;
         }
     }
     

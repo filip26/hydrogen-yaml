@@ -25,7 +25,7 @@ class YamlParserTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCaseMethodSource")
-    void testCase(TestDescription testCase) throws IOException {
+    void testSuite(TestDescription testCase) throws IOException {
         
         assertNotNull(testCase);
         assertNotNull(testCase.getInput());

@@ -6,7 +6,8 @@ import java.util.Deque;
 public class YamlPrinterImpl implements YamlPrinter {
 
     private enum Context { 
-                    DOCUMENT,
+                    DOCUMENT_BEGIN,
+                    DOCUMENT_END,
                     BLOCK_SCALAR,
                     FLOW_PLAIN_SCALAR,
                     FLOW_DOUBLE_QUOTED_SCALAR,
@@ -24,7 +25,7 @@ public class YamlPrinterImpl implements YamlPrinter {
     public YamlPrinterImpl(final IndentedkWriter writer) {
         this.writer = writer;
         this.context = new ArrayDeque<>(10);
-        this.context.push(Context.DOCUMENT);
+        this.context.push(Context.DOCUMENT_BEGIN);
     }
 
     @Override
@@ -33,10 +34,16 @@ public class YamlPrinterImpl implements YamlPrinter {
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
             writer.print(' ');
-        }
-        
-        if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            
+        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             writer.print(' ');
+            
+        } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
+            context.pop();
+            context.push(Context.DOCUMENT_END);
+            
+        } else {
+            throw new IllegalStateException();
         }
         
         if (BlockScalarType.FOLDED.equals(type)) {
@@ -70,7 +77,7 @@ public class YamlPrinterImpl implements YamlPrinter {
            context.pop();
             
         } else {
-            throw new YamlPrinterException();
+            throw new IllegalStateException();
         }
         writer.endBlock();
         
@@ -107,7 +114,7 @@ public class YamlPrinterImpl implements YamlPrinter {
             doubleEscape(chars, offset, length);
             
         } else {
-            throw new YamlPrinterException();
+            throw new IllegalStateException();
         }
         
         return this;
@@ -132,8 +139,13 @@ public class YamlPrinterImpl implements YamlPrinter {
             writer.newLine();
             newBlock = true;
             
-        } else {
+        } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
+            context.pop();
+            context.push(Context.DOCUMENT_END);
             newBlock = false;
+            
+        } else {
+            throw new IllegalStateException();
         }
         
         context.push(compacted ? Context.COMPACT_BLOCK_SEQUENCE : Context.BLOCK_SEQUENCE);
@@ -151,7 +163,7 @@ public class YamlPrinterImpl implements YamlPrinter {
             context.pop();
              
          } else {
-             throw new YamlPrinterException();
+             throw new IllegalStateException();
          }
         
         endCollection();
@@ -177,8 +189,13 @@ public class YamlPrinterImpl implements YamlPrinter {
             writer.newLine();
             newBlock = true;
             
-        } else {
+        } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
+            context.pop();
+            context.push(Context.DOCUMENT_END);
             newBlock = false;
+            
+        } else {
+            throw new IllegalStateException();
         }
 
         context.push(Context.BLOCK_MAPPING_KEY);
@@ -197,7 +214,7 @@ public class YamlPrinterImpl implements YamlPrinter {
             context.pop();
              
          } else {
-             throw new YamlPrinterException();
+             throw new IllegalStateException();
          }
 
         endCollection();
@@ -236,24 +253,20 @@ public class YamlPrinterImpl implements YamlPrinter {
     public YamlPrinter endFlowScalar() throws YamlPrinterException {
 
         if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
-            
-            context.pop();
-            
+
         } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
             writer.print('\'');
-            context.pop();
-
             
         } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
             writer.print('"');
-            context.pop();
-
             
         } else {
-            throw new YamlPrinterException();
+            throw new IllegalStateException();
         }
 
+        context.pop();
         writer.endFlow();
+        
         endScalar();
         
         return this;
@@ -261,6 +274,11 @@ public class YamlPrinterImpl implements YamlPrinter {
     
     @Override
     public YamlPrinter skip() throws YamlPrinterException {
+
+        if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
+            throw new IllegalStateException();
+        }
+                
         beginScalar(true);
         endScalar();
         return this;
@@ -276,7 +294,19 @@ public class YamlPrinterImpl implements YamlPrinter {
             
         } else if (!empty && Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             writer.print(' ');
+            
+        } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())
+                || Context.BLOCK_MAPPING_VALUE.equals(context.peek())
+                ) {
+            
+        } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
+            context.pop();
+            context.push(Context.DOCUMENT_END);
+            
+        } else {
+            throw new IllegalStateException();
         }
+            
     }
 
     protected void endScalar() throws YamlPrinterException {

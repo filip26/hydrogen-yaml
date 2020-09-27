@@ -1,0 +1,12 @@
+{
+	"name": "YAML Writer Test Suite",
+	"sequence": [
+		{
+			"@id": "#t001",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Single Flow Plain Scalar",
+			"input": "t001-in.json",
+			"expect": "t001-out.yaml"
+		}
+	]
+}

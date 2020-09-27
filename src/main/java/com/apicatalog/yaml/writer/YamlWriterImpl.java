@@ -4,6 +4,7 @@ import java.util.Map;
 
 import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlNode;
+import com.apicatalog.yaml.YamlScalar;
 import com.apicatalog.yaml.printer.FlowScalarType;
 import com.apicatalog.yaml.printer.YamlPrinter;
 import com.apicatalog.yaml.printer.YamlPrinterException;
@@ -38,9 +39,15 @@ public class YamlWriterImpl implements YamlWriter {
                 break;
                 
             case SCALAR:
+                writeScalar(node.asScalar());
                 break;
                 
             case SEQUENCE:
+                
+                for (final YamlNode item : node.asSequence()) {
+                    write(item);
+                }
+
                 break;
                 
             }
@@ -61,6 +68,17 @@ public class YamlWriterImpl implements YamlWriter {
         printer.beginFlowScalar(FlowScalarType.PLAIN);
         printer.print(key.toCharArray());
         printer.endBlockScalar();
+    }
+
+    private final void writeScalar(final YamlScalar scalar) throws YamlPrinterException {
+        
+        
+        
+        //TODO choose style
+        printer.beginFlowScalar(FlowScalarType.PLAIN);
+        printer.print(scalar.getValue().toCharArray());
+        printer.endFlowScalar();
+        
     }
 
 }

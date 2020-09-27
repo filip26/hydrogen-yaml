@@ -17,8 +17,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 
 import com.apicatalog.yaml.TestDescription;
 import com.apicatalog.yaml.Yaml;
-import com.apicatalog.yaml.parser.YamlParser;
-import com.apicatalog.yaml.parser.YamlParsingException;
 import com.apicatalog.yaml.parser.YamlParser.Event;
 
 class YamlParserTest {

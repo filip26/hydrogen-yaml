@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 
+import com.apicatalog.yaml.impl.YamlScalarImpl;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.parser.impl.YamlParserImpl;
 import com.apicatalog.yaml.parser.impl.YamlTokenizer;
@@ -69,8 +70,7 @@ public final class Yaml {
     }
     
     public static final YamlScalar createScalar(String value) {
-        //TODO
-        return null;        
+        return new YamlScalarImpl(value);        
     }
 
     public static final YamlScalar createScalar(Collection<String> lines) {

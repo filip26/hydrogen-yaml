@@ -13,14 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.io;
+package com.apicatalog.yaml.parser;
 
-import java.io.Serializable;
+import com.apicatalog.yaml.YamlException;
 
-public interface YamlLocation extends Serializable {
+public class YamlParsingException extends YamlException {
 
-    long getLineNumber();
+    private static final long serialVersionUID = 706265442300521912L;
     
-    long getColumnNumber();
+    private final YamlLocation location;
+
+    public YamlParsingException(String message, YamlLocation location) {
+        super(message);
+        this.location = location;
+    }
+
+    public YamlParsingException(String message, Throwable cause, YamlLocation location) {
+        super(message, cause);
+        this.location = location;
+    }
     
+    public YamlLocation getLocation() {
+        return location;
+    }
 }

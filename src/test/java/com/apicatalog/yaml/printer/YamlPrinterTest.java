@@ -25,13 +25,6 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.apicatalog.yaml.TestDescription;
-import com.apicatalog.yaml.printer.BlockScalarType;
-import com.apicatalog.yaml.printer.ChompingStyle;
-import com.apicatalog.yaml.printer.FlowScalarType;
-import com.apicatalog.yaml.printer.IndentedkWriter;
-import com.apicatalog.yaml.printer.YamlPrinterException;
-import com.apicatalog.yaml.printer.YamlPrinterImpl;
-import com.apicatalog.yaml.printer.YamlPrinter;
 
 class YamlPrinterTest {
 
@@ -127,7 +120,6 @@ class YamlPrinterTest {
         } else {
             printer.beginFlowScalar(FlowScalarType.PLAIN);
             printLines(printer, scalar);
-
             printer.endFlowScalar();
         }
     }
@@ -193,7 +185,7 @@ class YamlPrinterTest {
             write(test, writer, entry.getValue());
         }
         
-        writer.enBlockdMapping();
+        writer.endBlockdMapping();
     }
     
     static final void writeArray(TestDescription test, YamlPrinter printer, JsonArray array) throws YamlPrinterException {
@@ -222,6 +214,4 @@ class YamlPrinterTest {
             return tests.stream().map(JsonObject.class::cast).map(TestDescription::of);
         }
     }
-
-    
 }

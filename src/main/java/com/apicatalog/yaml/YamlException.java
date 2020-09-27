@@ -22,7 +22,11 @@ public class YamlException extends Exception {
     public YamlException(String message) {
         super(message);
     }
-    
+
+    public YamlException(Throwable cause) {
+        super(cause);
+    }
+
     public YamlException(String message, Throwable cause) {
         super(message, cause);
     }

@@ -1,10 +1,10 @@
-package com.apicatalog.yaml.io.impl;
+package com.apicatalog.yaml.parser.impl;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Reader;
 
-import com.apicatalog.yaml.io.YamlLocation;
+import com.apicatalog.yaml.parser.YamlLocation;
 
 public final class YamlTokenizer implements Closeable {
 

@@ -191,7 +191,7 @@ public class YamlPrinterImpl implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter enBlockdMapping() throws YamlPrinterException {
+    public YamlPrinter endBlockdMapping() throws YamlPrinterException {
         
         if (Context.BLOCK_MAPPING_KEY.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             context.pop();

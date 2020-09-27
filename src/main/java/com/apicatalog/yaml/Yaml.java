@@ -22,9 +22,9 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 
-import com.apicatalog.yaml.io.YamlParser;
-import com.apicatalog.yaml.io.impl.YamlParserImpl;
-import com.apicatalog.yaml.io.impl.YamlTokenizer;
+import com.apicatalog.yaml.parser.YamlParser;
+import com.apicatalog.yaml.parser.impl.YamlParserImpl;
+import com.apicatalog.yaml.parser.impl.YamlTokenizer;
 
 public final class Yaml {
 

@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.io.impl;
+package com.apicatalog.yaml.parser.impl;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
@@ -7,9 +7,9 @@ import com.apicatalog.yaml.YamlMapping;
 import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlScalar;
 import com.apicatalog.yaml.YamlSequence;
-import com.apicatalog.yaml.io.YamlLocation;
-import com.apicatalog.yaml.io.YamlParser;
-import com.apicatalog.yaml.io.YamlParsingException;
+import com.apicatalog.yaml.parser.YamlLocation;
+import com.apicatalog.yaml.parser.YamlParser;
+import com.apicatalog.yaml.parser.YamlParsingException;
 
 public class YamlParserImpl implements YamlParser {
 

@@ -28,7 +28,7 @@ public interface YamlPrinter {
 
     YamlPrinter beginBlockMapping() throws YamlPrinterException;
     
-    YamlPrinter enBlockdMapping() throws YamlPrinterException;
+    YamlPrinter endBlockdMapping() throws YamlPrinterException;
     
     YamlPrinter skip() throws YamlPrinterException;
 }

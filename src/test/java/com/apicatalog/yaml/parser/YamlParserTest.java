@@ -1,4 +1,4 @@
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.parser;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.fail;
@@ -15,11 +15,13 @@ import javax.json.stream.JsonParser;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import com.apicatalog.yaml.io.YamlParser;
-import com.apicatalog.yaml.io.YamlParser.Event;
-import com.apicatalog.yaml.io.YamlParsingException;
+import com.apicatalog.yaml.TestDescription;
+import com.apicatalog.yaml.Yaml;
+import com.apicatalog.yaml.parser.YamlParser;
+import com.apicatalog.yaml.parser.YamlParsingException;
+import com.apicatalog.yaml.parser.YamlParser.Event;
 
-class YamlTestSuite {
+class YamlParserTest {
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCaseMethodSource")
@@ -28,7 +30,7 @@ class YamlTestSuite {
         assertNotNull(testCase);
         assertNotNull(testCase.getInput());
         
-        try (final InputStream is = YamlTestSuite.class.getResourceAsStream(testCase.getInput())) {
+        try (final InputStream is = YamlParserTest.class.getResourceAsStream(testCase.getInput())) {
 
             assertNotNull(is);
             
@@ -64,7 +66,7 @@ class YamlTestSuite {
     
     static final Stream<TestDescription> testCaseMethodSource() throws IOException {
         
-        try (final InputStream is = YamlTestSuite.class.getResourceAsStream("manifest.json")) {
+        try (final InputStream is = YamlParserTest.class.getResourceAsStream("manifest.json")) {
             
             assertNotNull(is);
             

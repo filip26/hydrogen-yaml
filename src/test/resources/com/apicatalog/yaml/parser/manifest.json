@@ -1,5 +1,5 @@
 {
-	"name": "Strict YAML test suite",
+	"name": "YAML Parser Test Suite",
 	"sequence": [
 		{
 			"@id": "#t001",

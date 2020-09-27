@@ -9,9 +9,8 @@ Hydrogen YAML is the simplest human-readable data-serialization language. Most o
 - Duplicate keys
 - Explicit tags
 - Node anchors and refs
-- Flow style (except scalars)
+- Flow style (except scalars and simple sequences)
 - Complex mapping keys
-- Multi-documents
 - Directives
 
 See [What YAML features does StrictYAML remove?](https://hitchdev.com/strictyaml/features-removed/) for more details.
@@ -22,5 +21,6 @@ Presence of a removed feature raises an exception during parsing.
 - [ ] 0.1 Document API
 - [ ] 0.2 Writer API
 - [ ] 0.3 Parser API
-- [ ] 0.4 Beans Binding
-- [ ] 0.5 TBD
+- [ ] 0.5 Flow Sequence of Scalars
+- [ ] 0.6 Multi-documents
+- [ ] 0.8 Beans Binding

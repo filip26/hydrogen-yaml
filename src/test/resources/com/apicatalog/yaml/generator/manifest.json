@@ -94,7 +94,7 @@
 			"options": { "compactArrays": true },
 			"input": "t013-in.json",
 			"expect": "t013-out.yaml"
-		},				
+		},
 		{
 			"@id": "#t014",
 			"@type": ["PositiveEvaluationTest"],
@@ -102,6 +102,13 @@
 			"options": { "compactArrays": true },
 			"input": "t014-in.json",
 			"expect": "t014-out.yaml"
+		},
+		{
+			"@id": "#t015",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Single Quoted with Quotes",
+			"input": "t015-in.json",
+			"expect": "t015-out.yaml"
 		}		
 	]
 }

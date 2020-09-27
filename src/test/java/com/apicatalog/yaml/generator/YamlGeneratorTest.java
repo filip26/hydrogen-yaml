@@ -132,8 +132,9 @@ class YamlGeneratorTest {
             if (next) {
                 writer.println();
             }
-
-            writer.print(line);  
+            if (!line.isBlank()) {
+                writer.print(line.toCharArray());
+            }
             next = true;
         }
     }
@@ -147,7 +148,12 @@ class YamlGeneratorTest {
             if ("LiteralScalar".equals(type)) {
                 writer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
                 for (JsonValue item : object.getJsonArray("@value")) {
-                    writer.print(((JsonString)item).getString());  
+                    
+                    final String value = ((JsonString)item).getString(); 
+                    
+                    if (!value.isBlank()) {
+                        writer.print(value.toCharArray());   
+                    }
                     writer.println();
                 }
                 writer.endBlockScalar();
@@ -157,8 +163,13 @@ class YamlGeneratorTest {
             if ("FoldedScalar".equals(type)) {
                 writer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
                 for (JsonValue item : object.getJsonArray("@value")) {
-                    writer.print(((JsonString)item).getString());
+                    final String value = ((JsonString)item).getString(); 
+                    
+                    if (!value.isBlank()) {
+                        writer.print(value.toCharArray());   
+                    }
                     writer.println();
+
                 }
                 writer.endBlockScalar();
                 return;

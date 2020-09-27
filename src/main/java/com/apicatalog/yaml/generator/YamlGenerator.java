@@ -10,7 +10,11 @@ public interface YamlGenerator {
     
     YamlGenerator endFlowScalar() throws YamlGenerationException;
 
-    YamlGenerator print(String value) throws YamlGenerationException;
+    default YamlGenerator print(char[] chars) throws YamlGenerationException {
+        return print(chars, 0, chars.length);
+    }
+    
+    YamlGenerator print(char[] chars, int offset, int length) throws YamlGenerationException;
     
     YamlGenerator println() throws YamlGenerationException;
 

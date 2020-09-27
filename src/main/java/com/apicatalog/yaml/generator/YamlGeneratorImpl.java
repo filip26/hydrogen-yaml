@@ -88,27 +88,27 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator print(String value) throws YamlGenerationException {
+    public YamlGenerator print(char[] chars, int offset, int length) throws YamlGenerationException {
         
-        if (value.isBlank()) {
-            return this;
-        }
+//        if (value.isBlank()) {
+//            return this;
+//        }
         
         if (Context.BLOCK_SCALAR.equals(context.peek())) {
 
-            writer.print(value);
+            writer.print(chars, offset, length);
             
         } else if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
             
-            writer.print(value);
+            writer.print(chars, offset, length);
             
         } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
             
-            writer.print(escape(FlowScalarType.SINGLE_QUOTED, value));
+            singleEscape(chars, offset, length);
             
         } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
             
-            writer.print(escape(FlowScalarType.DOUBLE_QUOTED, value));
+            doubleEscape(chars, offset, length);
             
         } else {
             throw new YamlGenerationException();
@@ -312,9 +312,31 @@ public class YamlGeneratorImpl implements YamlGenerator {
         }
     }
 
-    protected String escape(FlowScalarType type, String value) {
+    protected void  doubleEscape(char[] chars, int offset, int length) throws YamlGenerationException {
         //TODO
-        return value;
+        writer.print(chars, offset, length);
+    }
+
+    protected void singleEscape(final char[] chars, final int offset, final int length) throws YamlGenerationException {
+        
+        int start = 0;
+        
+        // find next single quote
+        for (int i=0; i < length; i++) {
+            if (chars[offset + i] == '\'') {
+                
+                // flush previous chars
+                if (i >= start) {
+                    writer.print(chars, offset + start, i - start + 1);
+                }
+                writer.print('\'');
+                start = i + 1;
+            }
+        }
+        // flush previous chars
+        if (length > start) {
+            writer.print(chars, offset + start, length - start);
+        }
     }
 
     @Override

@@ -84,15 +84,15 @@ public final class IndentedkWriter {
         return this;
     }
     
-    public IndentedkWriter print(String line)  throws YamlGenerationException {
+    public IndentedkWriter print(char[] chars, int offset, int length)  throws YamlGenerationException {
         
         try {
             if (newLine) {
                 printIndentation();
             }
             
-            printed += line.length();
-            writer.write(line);
+            printed += length;
+            writer.write(chars, offset, length);
             
         } catch (IOException e) {
             throw new YamlGenerationException(e);

@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.generator;
+package com.apicatalog.yaml.printer;
 
 public enum ChompingStyle {
 

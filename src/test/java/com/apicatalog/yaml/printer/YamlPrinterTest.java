@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.generator;
+package com.apicatalog.yaml.printer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -25,20 +25,27 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.apicatalog.yaml.TestDescription;
+import com.apicatalog.yaml.printer.BlockScalarType;
+import com.apicatalog.yaml.printer.ChompingStyle;
+import com.apicatalog.yaml.printer.FlowScalarType;
+import com.apicatalog.yaml.printer.IndentedkWriter;
+import com.apicatalog.yaml.printer.YamlPrinterException;
+import com.apicatalog.yaml.printer.YamlPrinterImpl;
+import com.apicatalog.yaml.printer.YamlPrinter;
 
-class YamlGeneratorTest {
+class YamlPrinterTest {
 
 
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCaseMethodSource")
-    void testStreamWriter(TestDescription testCase) {
+    void testSuite(TestDescription testCase) {
         
         assertNotNull(testCase);
         assertNotNull(testCase.getInput());
 
         StringWriter output = new StringWriter();
 
-        try (final InputStream is = YamlGeneratorTest.class.getResourceAsStream(testCase.getInput())) {
+        try (final InputStream is = YamlPrinterTest.class.getResourceAsStream(testCase.getInput())) {
 
             assertNotNull(is);
 
@@ -46,13 +53,13 @@ class YamlGeneratorTest {
             
             assertTrue(testParser.hasNext());
             
-            YamlGenerator yamlWriter = new YamlGeneratorImpl(new IndentedkWriter(output));
+            YamlPrinter yamlPrinter = new YamlPrinterImpl(new IndentedkWriter(output));
             
             testParser.next();
             
-            write(testCase, yamlWriter, testParser.getValue());
+            write(testCase, yamlPrinter, testParser.getValue());
             
-        } catch (YamlGenerationException | IOException e) {    
+        } catch (YamlPrinterException | IOException e) {    
             e.printStackTrace();
             fail(e);
         }
@@ -61,7 +68,7 @@ class YamlGeneratorTest {
             return;
         }
         
-        try (final InputStream is = YamlGeneratorTest.class.getResourceAsStream(testCase.getExpected())) {
+        try (final InputStream is = YamlPrinterTest.class.getResourceAsStream(testCase.getExpected())) {
 
             assertNotNull(is);
             
@@ -75,29 +82,29 @@ class YamlGeneratorTest {
         
     }
     
-    static final void write(TestDescription test, YamlGenerator writer, JsonValue value) throws YamlGenerationException { 
+    static final void write(TestDescription test, YamlPrinter printer, JsonValue value) throws YamlPrinterException { 
         
         switch (value.getValueType()) {
         case OBJECT:
-            writeObject(test, writer, value.asJsonObject());
+            writeObject(test, printer, value.asJsonObject());
             return;
             
         case ARRAY:
-            writeArray(test, writer, value.asJsonArray());
+            writeArray(test, printer, value.asJsonArray());
             return;
            
         case STRING:
-            writeScalar(writer, ((JsonString)value).getString());
+            writeScalar(printer, ((JsonString)value).getString());
             return;
             
         case TRUE:
         case FALSE:
         case NUMBER:
-            writeScalar(writer, value.toString());
+            writeScalar(printer, value.toString());
             return;
             
         case NULL:
-            writer.skip();
+            printer.skip();
             return;
             
         default:
@@ -105,41 +112,41 @@ class YamlGeneratorTest {
         }        
     }
     
-    static final void writeScalar(final YamlGenerator writer, final String scalar) throws YamlGenerationException {
+    static final void writeScalar(final YamlPrinter printer, final String scalar) throws YamlPrinterException {
         
         if (scalar.startsWith("\"")) {
-            writer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
-            printLines(writer, scalar.substring(1));
-            writer.endFlowScalar();
+            printer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
+            printLines(printer, scalar.substring(1));
+            printer.endFlowScalar();
             
         } else if (scalar.startsWith("\'")) {
-            writer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
-            printLines(writer, scalar.substring(1));
-            writer.endFlowScalar();
+            printer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
+            printLines(printer, scalar.substring(1));
+            printer.endFlowScalar();
             
         } else {
-            writer.beginFlowScalar(FlowScalarType.PLAIN);
-            printLines(writer, scalar);
+            printer.beginFlowScalar(FlowScalarType.PLAIN);
+            printLines(printer, scalar);
 
-            writer.endFlowScalar();
+            printer.endFlowScalar();
         }
     }
     
-    static final void printLines(final YamlGenerator writer, final String scalar) throws YamlGenerationException {
+    static final void printLines(final YamlPrinter printer, final String scalar) throws YamlPrinterException {
         boolean next = false;
         
         for (String line : scalar.split("\\r?\\n")) {
             if (next) {
-                writer.println();
+                printer.println();
             }
             if (!line.isBlank()) {
-                writer.print(line.toCharArray());
+                printer.print(line.toCharArray());
             }
             next = true;
         }
     }
     
-    static final void writeObject(TestDescription test, YamlGenerator writer, JsonObject object) throws YamlGenerationException {
+    static final void writeObject(TestDescription test, YamlPrinter writer, JsonObject object) throws YamlPrinterException {
 
         if (object.containsKey("@type")) {
 
@@ -189,20 +196,20 @@ class YamlGeneratorTest {
         writer.enBlockdMapping();
     }
     
-    static final void writeArray(TestDescription test, YamlGenerator writer, JsonArray array) throws YamlGenerationException {
+    static final void writeArray(TestDescription test, YamlPrinter printer, JsonArray array) throws YamlPrinterException {
         
-        writer.beginBlockSequence(test.isCompactArrays());        
+        printer.beginBlockSequence(test.isCompactArrays());        
         for (JsonValue value : array) {
 
-            write(test, writer, value);
+            write(test, printer, value);
 
         }
-        writer.endBlockSequence();        
+        printer.endBlockSequence();        
     }
     
     static final Stream<TestDescription> testCaseMethodSource() throws IOException {
         
-        try (final InputStream is = YamlGeneratorTest.class.getResourceAsStream("manifest.json")) {
+        try (final InputStream is = YamlPrinterTest.class.getResourceAsStream("manifest.json")) {
             
             assertNotNull(is);
             

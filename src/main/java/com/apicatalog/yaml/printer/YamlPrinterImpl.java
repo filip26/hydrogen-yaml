@@ -1,9 +1,9 @@
-package com.apicatalog.yaml.generator;
+package com.apicatalog.yaml.printer;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public class YamlGeneratorImpl implements YamlGenerator {
+public class YamlPrinterImpl implements YamlPrinter {
 
     private enum Context { 
                     DOCUMENT,
@@ -21,14 +21,14 @@ public class YamlGeneratorImpl implements YamlGenerator {
 
     private Deque<Context> context;
     
-    public YamlGeneratorImpl(final IndentedkWriter writer) {
+    public YamlPrinterImpl(final IndentedkWriter writer) {
         this.writer = writer;
         this.context = new ArrayDeque<>(10);
         this.context.push(Context.DOCUMENT);
     }
 
     @Override
-    public YamlGenerator beginBlockScalar(BlockScalarType type, ChompingStyle chomping)  throws YamlGenerationException {
+    public YamlPrinter beginBlockScalar(BlockScalarType type, ChompingStyle chomping)  throws YamlPrinterException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
@@ -64,13 +64,13 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
     
     @Override
-    public YamlGenerator endBlockScalar() throws YamlGenerationException {
+    public YamlPrinter endBlockScalar() throws YamlPrinterException {
         
         if (Context.BLOCK_SCALAR.equals(context.peek())) {
            context.pop();
             
         } else {
-            throw new YamlGenerationException();
+            throw new YamlPrinterException();
         }
         writer.endBlock();
         
@@ -88,7 +88,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator print(char[] chars, int offset, int length) throws YamlGenerationException {
+    public YamlPrinter print(char[] chars, int offset, int length) throws YamlPrinterException {
         
         if (Context.BLOCK_SCALAR.equals(context.peek())) {
 
@@ -107,14 +107,14 @@ public class YamlGeneratorImpl implements YamlGenerator {
             doubleEscape(chars, offset, length);
             
         } else {
-            throw new YamlGenerationException();
+            throw new YamlPrinterException();
         }
         
         return this;
     }
     
     @Override
-    public YamlGenerator beginBlockSequence(boolean compacted) throws YamlGenerationException {
+    public YamlPrinter beginBlockSequence(boolean compacted) throws YamlPrinterException {
         
         final boolean newBlock;
         
@@ -145,13 +145,13 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator endBlockSequence() throws YamlGenerationException {
+    public YamlPrinter endBlockSequence() throws YamlPrinterException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             context.pop();
              
          } else {
-             throw new YamlGenerationException();
+             throw new YamlPrinterException();
          }
         
         endCollection();
@@ -160,7 +160,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator beginBlockMapping() throws YamlGenerationException {
+    public YamlPrinter beginBlockMapping() throws YamlPrinterException {
         
         final boolean newBlock;
 
@@ -191,13 +191,13 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator enBlockdMapping() throws YamlGenerationException {
+    public YamlPrinter enBlockdMapping() throws YamlPrinterException {
         
         if (Context.BLOCK_MAPPING_KEY.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             context.pop();
              
          } else {
-             throw new YamlGenerationException();
+             throw new YamlPrinterException();
          }
 
         endCollection();
@@ -206,7 +206,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator beginFlowScalar(FlowScalarType type) throws YamlGenerationException {
+    public YamlPrinter beginFlowScalar(FlowScalarType type) throws YamlPrinterException {
         
         beginScalar(false);
 
@@ -233,7 +233,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator endFlowScalar() throws YamlGenerationException {
+    public YamlPrinter endFlowScalar() throws YamlPrinterException {
 
         if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
             
@@ -250,7 +250,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
 
             
         } else {
-            throw new YamlGenerationException();
+            throw new YamlPrinterException();
         }
 
         writer.endFlow();
@@ -260,13 +260,13 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
     
     @Override
-    public YamlGenerator skip() throws YamlGenerationException {
+    public YamlPrinter skip() throws YamlPrinterException {
         beginScalar(true);
         endScalar();
         return this;
     }
     
-    protected void beginScalar(boolean empty) throws YamlGenerationException {
+    protected void beginScalar(boolean empty) throws YamlPrinterException {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.print('-');
@@ -279,7 +279,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
         }
     }
 
-    protected void endScalar() throws YamlGenerationException {
+    protected void endScalar() throws YamlPrinterException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.newLine();
@@ -308,7 +308,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
         }
     }
 
-    protected void  doubleEscape(char[] chars, int offset, int length) throws YamlGenerationException {
+    protected void  doubleEscape(char[] chars, int offset, int length) throws YamlPrinterException {
         int start = 0;
         
         // find next single quote
@@ -408,7 +408,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
         }
     }
 
-    protected void singleEscape(final char[] chars, final int offset, final int length) throws YamlGenerationException {
+    protected void singleEscape(final char[] chars, final int offset, final int length) throws YamlPrinterException {
         
         int start = 0;
         
@@ -431,7 +431,7 @@ public class YamlGeneratorImpl implements YamlGenerator {
     }
 
     @Override
-    public YamlGenerator println() throws YamlGenerationException {
+    public YamlPrinter println() throws YamlPrinterException {
         writer.newLine();
         return this;
     }

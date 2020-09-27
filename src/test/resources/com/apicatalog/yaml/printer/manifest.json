@@ -1,5 +1,5 @@
 {
-	"name": "YamlStreamWriter Test Suite",
+	"name": "YAML Printer Test Suite",
 	"sequence": [
 		{
 			"@id": "#t001",

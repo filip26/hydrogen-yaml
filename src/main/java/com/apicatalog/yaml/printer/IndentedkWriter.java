@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.generator;
+package com.apicatalog.yaml.printer;
 
 import java.io.IOException;
 import java.io.Writer;
@@ -66,7 +66,7 @@ public final class IndentedkWriter {
         return this;        
     }
 
-    public IndentedkWriter newLine() throws YamlGenerationException {
+    public IndentedkWriter newLine() throws YamlPrinterException {
 
         if (newLine) {
             try {
@@ -76,7 +76,7 @@ public final class IndentedkWriter {
                 return this;
                 
             } catch (IOException e) {
-                throw new YamlGenerationException(e);
+                throw new YamlPrinterException(e);
             }
         }
         
@@ -84,11 +84,11 @@ public final class IndentedkWriter {
         return this;
     }
 
-    public IndentedkWriter print(char[] chars)  throws YamlGenerationException {
+    public IndentedkWriter print(char[] chars)  throws YamlPrinterException {
         return print(chars, 0, chars.length);
     }
     
-    public IndentedkWriter print(char[] chars, int offset, int length)  throws YamlGenerationException {
+    public IndentedkWriter print(char[] chars, int offset, int length)  throws YamlPrinterException {
         
         try {
             if (newLine) {
@@ -99,12 +99,12 @@ public final class IndentedkWriter {
             writer.write(chars, offset, length);
             
         } catch (IOException e) {
-            throw new YamlGenerationException(e);
+            throw new YamlPrinterException(e);
         }
         return this;
     }
 
-    public IndentedkWriter print(char ch)  throws YamlGenerationException {
+    public IndentedkWriter print(char ch)  throws YamlPrinterException {
         return print(new char[] {ch}, 0, 1);
     }
 

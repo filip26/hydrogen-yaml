@@ -83,6 +83,10 @@ public final class IndentedkWriter {
         this.newLine = true;
         return this;
     }
+
+    public IndentedkWriter print(char[] chars)  throws YamlGenerationException {
+        return print(chars, 0, chars.length);
+    }
     
     public IndentedkWriter print(char[] chars, int offset, int length)  throws YamlGenerationException {
         
@@ -101,21 +105,9 @@ public final class IndentedkWriter {
     }
 
     public IndentedkWriter print(char ch)  throws YamlGenerationException {
+        return print(new char[] {ch}, 0, 1);
+    }
 
-        try {
-            if (newLine) {                
-                printIndentation();
-            }
-
-            printed += 1;
-            writer.write(ch);
-            
-        } catch (IOException e) {
-            throw new YamlGenerationException(e);
-        }
-        return this;
-    }    
-    
     private final void printIndentation() throws IOException {
         
         writer.write(new char[] {'\n'});

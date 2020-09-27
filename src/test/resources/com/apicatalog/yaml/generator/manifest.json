@@ -109,6 +109,13 @@
 			"name": "Single Quoted with Quotes",
 			"input": "t015-in.json",
 			"expect": "t015-out.yaml"
-		}		
+		},
+		{
+			"@id": "#t016",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Escaped Double Quoted",
+			"input": "t016-in.json",
+			"expect": "t016-out.yaml"
+		}
 	]
 }

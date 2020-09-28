@@ -31,6 +31,7 @@ import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequenceBuilder;
 import com.apicatalog.yaml.printer.IndentedkWriter;
 import com.apicatalog.yaml.printer.YamlPrinterImpl;
+import com.apicatalog.yaml.writer.style.DefaultYamlStyle;
 
 class YamlWriterTest {
 
@@ -54,7 +55,7 @@ class YamlWriterTest {
 
             testParser.next();
 
-            try (YamlWriter yamlWriter = new YamlWriterImpl(new YamlPrinterImpl(new IndentedkWriter(output)))) {
+            try (YamlWriter yamlWriter = new YamlWriterImpl(new YamlPrinterImpl(new IndentedkWriter(output)), new DefaultYamlStyle())) {
 
                 yamlWriter.write(toYaml(testCase, testParser.getValue()));
             }

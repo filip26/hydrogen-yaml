@@ -1,22 +1,11 @@
 package com.apicatalog.yaml.printer;
 
 import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 
 public class YamlPrinterImpl implements YamlPrinter {
-
-    private enum Context { 
-                    DOCUMENT_BEGIN,
-                    DOCUMENT_END,
-                    BLOCK_SCALAR,
-                    FLOW_PLAIN_SCALAR,
-                    FLOW_DOUBLE_QUOTED_SCALAR,
-                    FLOW_SINGLE_QUOTED_SCALAR,
-                    BLOCK_SEQUENCE,
-                    COMPACT_BLOCK_SEQUENCE, 
-                    BLOCK_MAPPING_KEY,
-                    BLOCK_MAPPING_VALUE,
-                    }
 
     private final IndentedkWriter writer;
 
@@ -464,5 +453,10 @@ public class YamlPrinterImpl implements YamlPrinter {
     public YamlPrinter println() throws YamlPrinterException {
         writer.newLine();
         return this;
+    }
+    
+    @Override
+    public Collection<Context> getContext() {
+        return Collections.unmodifiableCollection(context);
     }
 }

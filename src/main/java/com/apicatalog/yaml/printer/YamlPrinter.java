@@ -1,7 +1,24 @@
 package com.apicatalog.yaml.printer;
 
+import java.util.Collection;
+
 public interface YamlPrinter {
 
+    enum Context { 
+        DOCUMENT_BEGIN,
+        DOCUMENT_END,
+        BLOCK_SCALAR,
+        FLOW_PLAIN_SCALAR,
+        FLOW_DOUBLE_QUOTED_SCALAR,
+        FLOW_SINGLE_QUOTED_SCALAR,
+        BLOCK_SEQUENCE,
+        COMPACT_BLOCK_SEQUENCE, 
+        BLOCK_MAPPING_KEY,
+        BLOCK_MAPPING_VALUE,
+        }
+
+    Collection<Context> getContext();
+    
     YamlPrinter beginBlockScalar(BlockScalarType type, ChompingStyle chomping) throws YamlPrinterException;
     
     YamlPrinter endBlockScalar() throws YamlPrinterException;

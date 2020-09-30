@@ -1,7 +1,6 @@
 package com.apicatalog.yaml.writer;
 
 import java.util.Map;
-import java.util.function.Predicate;
 
 import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlNode;
@@ -9,16 +8,16 @@ import com.apicatalog.yaml.YamlScalar;
 import com.apicatalog.yaml.printer.FlowScalarType;
 import com.apicatalog.yaml.printer.YamlPrinter;
 import com.apicatalog.yaml.printer.YamlPrinterException;
-import com.apicatalog.yaml.writer.style.YamlStyle;
+import com.apicatalog.yaml.printer.style.YamlPrinterStyle;
 
 public class YamlWriterImpl implements YamlWriter {
 
     private final YamlPrinter printer;
-    private final YamlStyle style;
+    private final YamlWriterOptions options;
     
-    public YamlWriterImpl(YamlPrinter printer, YamlStyle style) {
+    public YamlWriterImpl(YamlPrinter printer, YamlWriterOptions options) {
         this.printer  = printer;
-        this.style = style;
+        this.options = options;
     }
     
     @Override
@@ -74,11 +73,11 @@ public class YamlWriterImpl implements YamlWriter {
         printer.endBlockScalar();
     }
 
-    private final void writeScalar(final YamlStyle.Context context, final YamlScalar scalar) throws YamlPrinterException {
+    private final void writeScalar(final YamlPrinterStyle.Context context, final YamlScalar scalar) throws YamlPrinterException {
         
         final char[] value = scalar.getValue().toCharArray();
         
-        switch (style.scalar(context, value, 0, value.length)) {
+        switch (options.getStyle().scalar(context, 10, value, 0, value.length)) {
         case BLOCK_LITERAL:
             break;
             
@@ -86,12 +85,13 @@ public class YamlWriterImpl implements YamlWriter {
             break;
             
         case FLOW_PLAIN:
-            printer.beginFlowScalar(FlowScalarType.PLAIN);
-            printer.print(value, 0, value.length);
-            printer.endFlowScalar();
+            printFlowPlainScalar(value);
             break;
             
         case FLOW_SINGLE_QUOTED:
+            printer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
+            printer.print(value, 0, value.length);
+            printer.endFlowScalar();            
             break;
             
         case FLOW_DOUBLE_QUOTED:
@@ -101,33 +101,31 @@ public class YamlWriterImpl implements YamlWriter {
             break;
         }        
     }
+    
+    private final void printFlowPlainScalar(char[] value) throws YamlPrinterException {
+        printer.beginFlowScalar(FlowScalarType.PLAIN);
+        printer.print(value, 0, value.length);
+        printer.endFlowScalar();
+    }
 
-    private static final YamlStyle.Context toStyleContext(YamlPrinter.Context context) {
+    private static final YamlPrinterStyle.Context toStyleContext(YamlPrinter.Context context) {
         switch (context) {
         case BLOCK_MAPPING_KEY:
-            return YamlStyle.Context.BLOCK_MAPPING_KEY;
+            return YamlPrinterStyle.Context.BLOCK_MAPPING_KEY;
             
         case BLOCK_MAPPING_VALUE:
-            return YamlStyle.Context.BLOCK_MAPPING_VALUE;
+            return YamlPrinterStyle.Context.BLOCK_MAPPING_VALUE;
             
         case COMPACT_BLOCK_SEQUENCE:
         case BLOCK_SEQUENCE:
-            return YamlStyle.Context.SEQUENCE;
+            return YamlPrinterStyle.Context.SEQUENCE;
             
         case DOCUMENT_BEGIN:
         case DOCUMENT_END:
-            return YamlStyle.Context.DOCUMENT;
+            return YamlPrinterStyle.Context.DOCUMENT;
             
         default:
             throw new IllegalStateException();
         }
-    }
-    
-    private static final Predicate<Character> IS_PRINTABLE = ch ->
-                                                        ch == 0x9 || ch == 0xA || ch == 0xD
-                                                        || (ch >= 0x20 && ch <= 0x7E)
-                                                        || ch == 0x85
-                                                        || (ch >= 0xA0 && ch <= 0xD7FF)
-                                                        || (ch >= 0xE000 && ch <= 0xFFFD)
-                                                        ;
+    }    
 }

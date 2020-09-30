@@ -5,7 +5,7 @@ import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public final class IndentedkWriter {
+public final class IndentedkPrinter {
 
     private final Writer writer;
     
@@ -37,7 +37,7 @@ public final class IndentedkWriter {
     
     private Deque<Integer> indentation;
     
-    public IndentedkWriter(Writer writer) {
+    public IndentedkPrinter(Writer writer) {
         this.writer = writer;
         this.indentation = new ArrayDeque<>(30);
         this.indentation.push(0);
@@ -45,28 +45,28 @@ public final class IndentedkWriter {
         this.printed = 0;
     }
     
-    public IndentedkWriter beginBlock() {
+    public IndentedkPrinter beginBlock() {
         indentation.push(indentation.peek() + 2);
         return this;
     }
 
-    public IndentedkWriter endBlock() {
+    public IndentedkPrinter endBlock() {
         indentation.pop();
         newLine = true;
         return this;
     }
     
-    public IndentedkWriter beginFlow() {
+    public IndentedkPrinter beginFlow() {
         indentation.push(newLine ? indentation.peek() : printed);
         return this;
     }
     
-    public IndentedkWriter endFlow() {
+    public IndentedkPrinter endFlow() {
         indentation.pop();
         return this;        
     }
 
-    public IndentedkWriter newLine() throws YamlPrinterException {
+    public IndentedkPrinter newLine() throws YamlPrinterException {
 
         if (newLine) {
             try {
@@ -84,11 +84,11 @@ public final class IndentedkWriter {
         return this;
     }
 
-    public IndentedkWriter print(char[] chars)  throws YamlPrinterException {
+    public IndentedkPrinter print(char[] chars)  throws YamlPrinterException {
         return print(chars, 0, chars.length);
     }
     
-    public IndentedkWriter print(char[] chars, int offset, int length)  throws YamlPrinterException {
+    public IndentedkPrinter print(char[] chars, int offset, int length)  throws YamlPrinterException {
         
         try {
             if (newLine) {
@@ -104,7 +104,7 @@ public final class IndentedkWriter {
         return this;
     }
 
-    public IndentedkWriter print(char ch)  throws YamlPrinterException {
+    public IndentedkPrinter print(char ch)  throws YamlPrinterException {
         return print(new char[] {ch}, 0, 1);
     }
 
@@ -125,6 +125,6 @@ public final class IndentedkWriter {
                     writer.write(' ');
                 }
             }
-        }        
-    }    
+        }
+    }
 }

@@ -1,4 +1,4 @@
-package com.apicatalog.yaml.writer.style;
+package com.apicatalog.yaml.printer.style;
 
 public enum ScalarStyle {
 

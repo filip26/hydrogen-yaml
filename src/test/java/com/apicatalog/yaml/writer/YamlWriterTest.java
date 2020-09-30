@@ -29,9 +29,9 @@ import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlMappingBuilder;
 import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequenceBuilder;
-import com.apicatalog.yaml.printer.IndentedkWriter;
+import com.apicatalog.yaml.printer.IndentedkPrinter;
 import com.apicatalog.yaml.printer.YamlPrinterImpl;
-import com.apicatalog.yaml.writer.style.DefaultYamlStyle;
+import com.apicatalog.yaml.printer.style.DefaultYamlPrinterStyle;
 
 class YamlWriterTest {
 
@@ -55,7 +55,9 @@ class YamlWriterTest {
 
             testParser.next();
 
-            try (YamlWriter yamlWriter = new YamlWriterImpl(new YamlPrinterImpl(new IndentedkWriter(output)), new DefaultYamlStyle())) {
+            final YamlWriterOptions options = new YamlWriterOptions();
+            
+            try (YamlWriter yamlWriter = new YamlWriterImpl(new YamlPrinterImpl(new IndentedkPrinter(output)), options)) {
 
                 yamlWriter.write(toYaml(testCase, testParser.getValue()));
             }

@@ -7,11 +7,11 @@ import java.util.Deque;
 
 public class YamlPrinterImpl implements YamlPrinter {
 
-    private final IndentedkWriter writer;
+    private final IndentedkPrinter writer;
 
     private Deque<Context> context;
     
-    public YamlPrinterImpl(final IndentedkWriter writer) {
+    public YamlPrinterImpl(final IndentedkPrinter writer) {
         this.writer = writer;
         this.context = new ArrayDeque<>(10);
         this.context.push(Context.DOCUMENT_BEGIN);

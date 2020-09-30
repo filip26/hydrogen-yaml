@@ -5,6 +5,8 @@ import java.util.Map;
 import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlScalar;
+import com.apicatalog.yaml.printer.BlockScalarType;
+import com.apicatalog.yaml.printer.ChompingStyle;
 import com.apicatalog.yaml.printer.FlowScalarType;
 import com.apicatalog.yaml.printer.YamlPrinter;
 import com.apicatalog.yaml.printer.YamlPrinterException;
@@ -79,9 +81,15 @@ public class YamlWriterImpl implements YamlWriter {
         
         switch (options.getStyle().scalar(context, 10, value, 0, value.length)) {
         case BLOCK_LITERAL:
+            printer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
+            printer.print(value, 0, value.length);
+            printer.endBlockScalar();            
             break;
             
         case BLOCK_FOLDED:
+            printer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
+            printer.print(value, 0, value.length);
+            printer.endBlockScalar();                        
             break;
             
         case FLOW_PLAIN:

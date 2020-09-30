@@ -4,10 +4,13 @@ import java.util.function.Predicate;
 
 public final class DefaultYamlPrinterStyle implements YamlPrinterStyle {
 
+    public static final YamlPrinterStyle INSTANCE = new DefaultYamlPrinterStyle();
+    
     @Override
     public ScalarStyle scalar(YamlPrinterStyle.Context context,  int maxLineLength, char[] chars, int offset, int length) {
         
         boolean allPrintable = true;
+        int nlCount = 0;
         
         for (int i=0; i < length; i++) {
             
@@ -16,12 +19,19 @@ public final class DefaultYamlPrinterStyle implements YamlPrinterStyle {
             if (allPrintable) {
                 allPrintable = IS_PRINTABLE.test(ch); 
             }
-            
+            if ('\n' == ch) {
+                nlCount++;
+            }
         }
         
         if (YamlPrinterStyle.Context.DOCUMENT.equals(context)) {
             
             if (allPrintable) {
+           
+                if (nlCount == 0) {
+                    return ScalarStyle.FLOW_PLAIN;
+                }
+                
                 return ScalarStyle.BLOCK_LITERAL;
             }
             
@@ -38,5 +48,4 @@ public final class DefaultYamlPrinterStyle implements YamlPrinterStyle {
                                                                 || (ch >= 0xA0 && ch <= 0xD7FF)
                                                                 || (ch >= 0xE000 && ch <= 0xFFFD)
                                                                 ;
-
 }

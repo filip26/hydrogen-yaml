@@ -127,4 +127,8 @@ public final class IndentedkPrinter {
             }
         }
     }
+
+    public int indentation() {
+        return indentation.peek();
+    }
 }

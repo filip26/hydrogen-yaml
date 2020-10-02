@@ -1,18 +1,19 @@
 package com.apicatalog.yaml.writer;
 
-import com.apicatalog.yaml.printer.style.DefaultYamlPrinterStyle;
-import com.apicatalog.yaml.printer.style.YamlPrinterStyle;
+import com.apicatalog.yaml.printer.style.DefaultYamlPrintStyle;
+import com.apicatalog.yaml.printer.style.YamlPrintStyle;
 
-public class YamlWriterOptions {
-
+public final class YamlWriterOptions {
 
     private int maxLineWidth;
     private boolean compactArrays;
     
-    private YamlPrinterStyle style;
+    private YamlPrintStyle style;
     
     public YamlWriterOptions() {
-        this.style = DefaultYamlPrinterStyle.INSTANCE;
+        this.maxLineWidth = 100;
+        this.compactArrays = true;
+        this.style = DefaultYamlPrintStyle.INSTANCE;
     }
     
     public int getMaxLineWidth() {
@@ -27,10 +28,10 @@ public class YamlWriterOptions {
     public void setCompactArrays(boolean compactArrays) {
         this.compactArrays = compactArrays;
     }
-    public YamlPrinterStyle getStyle() {
+    public YamlPrintStyle getStyle() {
         return style;
     }
-    public void setStyle(YamlPrinterStyle style) {
+    public void setStyle(YamlPrintStyle style) {
         this.style = style;
     }   
 }

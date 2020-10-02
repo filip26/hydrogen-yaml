@@ -12,6 +12,7 @@ public interface YamlPrinter {
         FLOW_DOUBLE_QUOTED_SCALAR,
         FLOW_SINGLE_QUOTED_SCALAR,
         BLOCK_SEQUENCE,
+        @Deprecated
         COMPACT_BLOCK_SEQUENCE, 
         BLOCK_MAPPING_KEY,
         BLOCK_MAPPING_VALUE,
@@ -39,6 +40,7 @@ public interface YamlPrinter {
         return beginBlockSequence(false);
     }
     
+    @Deprecated
     YamlPrinter beginBlockSequence(boolean compacted) throws YamlPrinterException;
 
     YamlPrinter endBlockSequence() throws YamlPrinterException;
@@ -48,4 +50,6 @@ public interface YamlPrinter {
     YamlPrinter endBlockdMapping() throws YamlPrinterException;
     
     YamlPrinter skip() throws YamlPrinterException;
+
+    int indentation();
 }

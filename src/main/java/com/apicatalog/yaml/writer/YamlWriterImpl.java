@@ -1,5 +1,6 @@
 package com.apicatalog.yaml.writer;
 
+import java.util.Collection;
 import java.util.Map;
 
 import com.apicatalog.yaml.YamlException;
@@ -11,7 +12,7 @@ import com.apicatalog.yaml.printer.FlowScalarType;
 import com.apicatalog.yaml.printer.YamlPrinter;
 import com.apicatalog.yaml.printer.YamlPrinterException;
 import com.apicatalog.yaml.printer.style.TextPrintIndex;
-import com.apicatalog.yaml.printer.style.YamlPrinterStyle;
+import com.apicatalog.yaml.printer.style.YamlPrintStyle;
 
 public class YamlWriterImpl implements YamlWriter {
 
@@ -76,33 +77,23 @@ public class YamlWriterImpl implements YamlWriter {
         printer.endBlockScalar();
     }
 
-    private final void writeScalar(final YamlPrinterStyle.Context context, final YamlScalar scalar) throws YamlPrinterException {
+    private final void writeScalar(final YamlPrintStyle.Context context, final YamlScalar scalar) throws YamlPrinterException {
         
         final char[] value = scalar.getValue().toCharArray();
         
-        switch (options.getStyle().scalarStyle(context, 10, value, 0, value.length)) {
+        final int maxLength = options.getMaxLineWidth() - printer.indentation();
+        
+        switch (options.getStyle().styleScalar(context, maxLength, value, 0, value.length)) {
         case BLOCK_LITERAL:
             
-            printer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
-            
-            for (TextPrintIndex index : options.getStyle().formatBlockLiteral(10, value, 0, value.length)) {
-            
-                if (index.getOffset() != -1 && index.getLength() != -1) {
-                    printer.print(value, index.getOffset(), index.getLength());                    
-                }
-                
-                if (TextPrintIndex.Type.PRINT_LN.equals(index.getType())) {
-                    printer.println();
-                }
-            }
-            
-            
+            printer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);            
+            printText(options.getStyle().formatLiteral(maxLength, value, 0, value.length), value);
             printer.endBlockScalar();            
             break;
             
         case BLOCK_FOLDED:
             printer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
-            printer.print(value, 0, value.length);
+            printText(options.getStyle().formatFolded(maxLength, value, 0, value.length), value);
             printer.endBlockScalar();                        
             break;
             
@@ -130,24 +121,38 @@ public class YamlWriterImpl implements YamlWriter {
         printer.endFlowScalar();
     }
 
-    private static final YamlPrinterStyle.Context toStyleContext(YamlPrinter.Context context) {
+    private static final YamlPrintStyle.Context toStyleContext(YamlPrinter.Context context) {
         switch (context) {
         case BLOCK_MAPPING_KEY:
-            return YamlPrinterStyle.Context.BLOCK_MAPPING_KEY;
+            return YamlPrintStyle.Context.BLOCK_MAPPING_KEY;
             
         case BLOCK_MAPPING_VALUE:
-            return YamlPrinterStyle.Context.BLOCK_MAPPING_VALUE;
+            return YamlPrintStyle.Context.BLOCK_MAPPING_VALUE;
             
         case COMPACT_BLOCK_SEQUENCE:
         case BLOCK_SEQUENCE:
-            return YamlPrinterStyle.Context.SEQUENCE;
+            return YamlPrintStyle.Context.SEQUENCE;
             
         case DOCUMENT_BEGIN:
         case DOCUMENT_END:
-            return YamlPrinterStyle.Context.DOCUMENT;
+            return YamlPrintStyle.Context.DOCUMENT;
             
         default:
             throw new IllegalStateException();
         }
-    }    
+    }
+    
+    private final void printText(Collection<TextPrintIndex> indices, char[] value) throws YamlPrinterException {
+        
+        for (TextPrintIndex index : indices) {
+            
+            if (index.getOffset() != -1 && index.getLength() != -1) {
+                printer.print(value, index.getOffset(), index.getLength());                    
+            }
+            
+            if (TextPrintIndex.Type.PRINT_LN.equals(index.getType())) {
+                printer.println();
+            }
+        }        
+    }
 }

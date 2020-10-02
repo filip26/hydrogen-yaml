@@ -459,4 +459,9 @@ public class YamlPrinterImpl implements YamlPrinter {
     public Collection<Context> getContext() {
         return Collections.unmodifiableCollection(context);
     }
+
+    @Override
+    public int indentation() {
+        return writer.indentation();
+    }
 }

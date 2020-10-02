@@ -18,9 +18,17 @@
 		{
 			"@id": "#t003",
 			"@type": ["PositiveEvaluationTest"],
-			"name": "Printable multiline",
+			"name": "Literal Block",
 			"input": "t003-in.json",
 			"expect": "t003-out.yaml"
+		},
+		{
+			"@id": "#t004",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Folded Block",
+			"input": "t004-in.json",
+			"expect": "t004-out.yaml"
 		}
+		
 	]
 }

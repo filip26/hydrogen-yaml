@@ -55,6 +55,7 @@ class YamlWriterTest {
             testParser.next();
 
             final YamlWriterOptions options = new YamlWriterOptions();
+            options.setMaxLineWidth(10);
             
             try (YamlWriter yamlWriter = new YamlWriterImpl(new YamlPrinterImpl(new IndentedkPrinter(output)), options)) {
 

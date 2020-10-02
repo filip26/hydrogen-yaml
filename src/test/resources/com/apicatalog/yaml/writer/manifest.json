@@ -4,9 +4,16 @@
 		{
 			"@id": "#t001",
 			"@type": ["PositiveEvaluationTest"],
-			"name": "Single Flow Plain Scalar",
+			"name": "Printable one line text",
 			"input": "t001-in.json",
 			"expect": "t001-out.yaml"
+		},
+		{
+			"@id": "#t002",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Unicode one line text",
+			"input": "t002-in.json",
+			"expect": "t002-out.yaml"
 		}
 	]
 }

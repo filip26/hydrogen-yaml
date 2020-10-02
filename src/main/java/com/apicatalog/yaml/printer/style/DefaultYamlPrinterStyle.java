@@ -23,7 +23,7 @@ public final class DefaultYamlPrinterStyle implements YamlPrinterStyle {
                 nlCount++;
             }
         }
-        
+
         if (YamlPrinterStyle.Context.DOCUMENT.equals(context)) {
             
             if (allPrintable) {

@@ -10,6 +10,7 @@ import com.apicatalog.yaml.printer.ChompingStyle;
 import com.apicatalog.yaml.printer.FlowScalarType;
 import com.apicatalog.yaml.printer.YamlPrinter;
 import com.apicatalog.yaml.printer.YamlPrinterException;
+import com.apicatalog.yaml.printer.style.TextPrintIndex;
 import com.apicatalog.yaml.printer.style.YamlPrinterStyle;
 
 public class YamlWriterImpl implements YamlWriter {
@@ -79,10 +80,23 @@ public class YamlWriterImpl implements YamlWriter {
         
         final char[] value = scalar.getValue().toCharArray();
         
-        switch (options.getStyle().scalar(context, 10, value, 0, value.length)) {
+        switch (options.getStyle().scalarStyle(context, 10, value, 0, value.length)) {
         case BLOCK_LITERAL:
+            
             printer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
-            printer.print(value, 0, value.length);
+            
+            for (TextPrintIndex index : options.getStyle().formatBlockLiteral(10, value, 0, value.length)) {
+            
+                if (index.getOffset() != -1 && index.getLength() != -1) {
+                    printer.print(value, index.getOffset(), index.getLength());                    
+                }
+                
+                if (TextPrintIndex.Type.PRINT_LN.equals(index.getType())) {
+                    printer.println();
+                }
+            }
+            
+            
             printer.endBlockScalar();            
             break;
             

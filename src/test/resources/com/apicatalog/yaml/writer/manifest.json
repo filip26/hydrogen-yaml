@@ -14,6 +14,13 @@
 			"name": "Unicode one line text",
 			"input": "t002-in.json",
 			"expect": "t002-out.yaml"
+		},
+		{
+			"@id": "#t003",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Printable multiline",
+			"input": "t003-in.json",
+			"expect": "t003-out.yaml"
 		}
 	]
 }

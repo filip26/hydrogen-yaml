@@ -31,7 +31,6 @@ import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequenceBuilder;
 import com.apicatalog.yaml.printer.IndentedkPrinter;
 import com.apicatalog.yaml.printer.YamlPrinterImpl;
-import com.apicatalog.yaml.printer.style.DefaultYamlPrinterStyle;
 
 class YamlWriterTest {
 

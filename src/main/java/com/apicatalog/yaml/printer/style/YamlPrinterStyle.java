@@ -1,5 +1,7 @@
 package com.apicatalog.yaml.printer.style;
 
+import java.util.Collection;
+
 public interface YamlPrinterStyle {
 
     enum Context {
@@ -9,8 +11,9 @@ public interface YamlPrinterStyle {
         SEQUENCE
     }
     
-    ScalarStyle scalar(Context context, int maxLineLength, char[] chars, int offset, int length);
+    ScalarStyle scalarStyle(Context context, int maxLineLength, char[] chars, int offset, int length);
     
-    
+    Collection<TextPrintIndex> formatBlockLiteral(int maxLineLength, char[] chars, int offset, int length);
+        
     
 }

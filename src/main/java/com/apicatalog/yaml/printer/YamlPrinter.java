@@ -22,12 +22,14 @@ public interface YamlPrinter {
     
     YamlPrinter beginBlockScalar(BlockScalarType type, ChompingStyle chomping) throws YamlPrinterException;
     
-    YamlPrinter endBlockScalar() throws YamlPrinterException;
+    YamlPrinter beginPlainScalar() throws YamlPrinterException;
     
-    YamlPrinter beginFlowScalar(FlowScalarType type) throws YamlPrinterException;
+    YamlPrinter beginSingleQuotedScalar() throws YamlPrinterException;
     
-    YamlPrinter endFlowScalar() throws YamlPrinterException;
+    YamlPrinter beginDoubleQuotedScalar() throws YamlPrinterException;
 
+    YamlPrinter endScalar() throws YamlPrinterException;
+    
     default YamlPrinter print(char[] chars) throws YamlPrinterException {
         return print(chars, 0, chars.length);
     }

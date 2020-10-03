@@ -11,8 +11,8 @@ public final class YamlCharacters {
                                                                 || (ch >= 0xA0 && ch <= 0xD7FF)
                                                                 || (ch >= 0xE000 && ch <= 0xFFFD);
 
-    public static final Predicate<Character> IS_CONTROL = ch -> 
-                                                                ch == '{' || ch == '}' || ch == '['  || ch == ']'
+    public static final Predicate<Character> IS_CONTROL = ch ->  ch == ':'
+                                                                || ch == '{' || ch == '}' || ch == '['  || ch == ']'
                                                                 || ch == ',' || ch == '&' || ch == '*' || ch == '#' 
                                                                 || ch == '?' || ch == '|' || ch == '-' || ch == '<' 
                                                                 || ch == '>' || ch == '=' || ch == '!' || ch == '%' 

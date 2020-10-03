@@ -9,20 +9,20 @@ import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequence;
 import com.apicatalog.yaml.YamlSequenceBuilder;
 
-public class DefaultYamlSequenceBuilder implements YamlSequenceBuilder {
+public class YamlSequenceBuilderImpl implements YamlSequenceBuilder {
 
     private final ArrayList<YamlNode> items;
     
-    public DefaultYamlSequenceBuilder() {
+    public YamlSequenceBuilderImpl() {
         this(new ArrayList<>());
     }
 
-    protected DefaultYamlSequenceBuilder(final ArrayList<YamlNode> nodes) {
+    protected YamlSequenceBuilderImpl(final ArrayList<YamlNode> nodes) {
         this.items = nodes; 
     }
     
     public static final YamlSequenceBuilder of(final List<YamlNode> nodes) {
-        return new DefaultYamlSequenceBuilder(new ArrayList<>(nodes));
+        return new YamlSequenceBuilderImpl(new ArrayList<>(nodes));
     }
 
     @Override

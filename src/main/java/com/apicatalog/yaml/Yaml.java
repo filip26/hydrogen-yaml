@@ -20,10 +20,10 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.io.Writer;
-import java.util.Collection;
 
-import com.apicatalog.yaml.impl.DefaultYamlSequenceBuilder;
+import com.apicatalog.yaml.impl.YamlMappingBuilderImpl;
 import com.apicatalog.yaml.impl.YamlScalarImpl;
+import com.apicatalog.yaml.impl.YamlSequenceBuilderImpl;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.parser.impl.YamlParserImpl;
 import com.apicatalog.yaml.parser.impl.YamlTokenizer;
@@ -40,7 +40,6 @@ public final class Yaml {
     }
     
     public static final YamlWriterBuilder createWriter(OutputStream output) {
-//        return new YamlWriterImpl(new YamlPrinterImpl(new IndentedkWriter(new OutputStreamWriter(output))));
         //TODO
         return null;
     }
@@ -51,8 +50,7 @@ public final class Yaml {
     }
     
     public static final YamlMappingBuilder createMappingBuilder() {
-        //TODO
-        return null;        
+        return new YamlMappingBuilderImpl();
     }
 
     public static final YamlMappingBuilder createMappingBuilder(YamlMapping mapping) {
@@ -61,21 +59,14 @@ public final class Yaml {
     }
 
     public static final YamlSequenceBuilder createSequenceBuilder() {
-        return new DefaultYamlSequenceBuilder();
+        return new YamlSequenceBuilderImpl();
     }
     
     public static final YamlSequenceBuilder createSequenceBuilder(YamlSequence sequence) {
-        //TODO
-        return null;
+        return YamlSequenceBuilderImpl.of(sequence);
     }
     
     public static final YamlScalar createScalar(String value) {
         return new YamlScalarImpl(value);        
     }
-
-    public static final YamlScalar createScalar(Collection<String> lines) {
-        //TODO
-        return null;        
-    }
-
 }

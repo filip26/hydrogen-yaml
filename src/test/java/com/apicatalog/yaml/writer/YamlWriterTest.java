@@ -93,7 +93,7 @@ class YamlWriterTest {
         case OBJECT:
             final YamlMappingBuilder mb = Yaml.createMappingBuilder();
             
-            value.asJsonObject().entrySet().forEach(e -> mb.add(Yaml.createScalar(e.getKey()), toYaml(test, e.getValue())));
+            value.asJsonObject().entrySet().forEach(e -> mb.add(e.getKey(), toYaml(test, e.getValue())));
                             
             return mb.build();
             

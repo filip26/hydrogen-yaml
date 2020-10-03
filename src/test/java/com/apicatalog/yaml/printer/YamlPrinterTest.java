@@ -108,19 +108,19 @@ class YamlPrinterTest {
     static final void writeScalar(final YamlPrinter printer, final String scalar) throws YamlPrinterException {
         
         if (scalar.startsWith("\"")) {
-            printer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
+            printer.beginDoubleQuotedScalar();
             printLines(printer, scalar.substring(1));
-            printer.endFlowScalar();
+            printer.endScalar();
             
         } else if (scalar.startsWith("\'")) {
-            printer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
+            printer.beginSingleQuotedScalar();
             printLines(printer, scalar.substring(1));
-            printer.endFlowScalar();
+            printer.endScalar();
             
         } else {
-            printer.beginFlowScalar(FlowScalarType.PLAIN);
+            printer.beginPlainScalar();
             printLines(printer, scalar);
-            printer.endFlowScalar();
+            printer.endScalar();
         }
     }
     
@@ -155,7 +155,7 @@ class YamlPrinterTest {
                     }
                     writer.println();
                 }
-                writer.endBlockScalar();
+                writer.endScalar();
                 return;
             }
 
@@ -170,7 +170,7 @@ class YamlPrinterTest {
                     writer.println();
 
                 }
-                writer.endBlockScalar();
+                writer.endScalar();
                 return;
             }
             

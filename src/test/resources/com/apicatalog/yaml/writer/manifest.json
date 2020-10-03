@@ -43,6 +43,13 @@
 			"name": "Various block sequence scalars",
 			"input": "t006-in.json",
 			"expect": "t006-out.yaml"
+		},
+		{
+			"@id": "#t007",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Various block mapping keys",
+			"input": "t007-in.json",
+			"expect": "t007-out.yaml"
 		}
 	]
 }

@@ -60,27 +60,43 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
     
     @Override
-    public YamlPrinter endBlockScalar() throws YamlPrinterException {
-        
+    public YamlPrinter endScalar() throws YamlPrinterException {
+
         if (Context.BLOCK_SCALAR.equals(context.peek())) {
            context.pop();
-            
-        } else {
-            throw new IllegalStateException();
-        }
-        writer.endBlock();
-        
-        if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            context.pop();
-            context.push(Context.BLOCK_MAPPING_KEY);
-            
-        } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
-            writer.print(':');
-            context.pop();
-            context.push(Context.BLOCK_MAPPING_VALUE);            
-        }
 
-        return this;
+           writer.endBlock();
+           
+           if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+               context.pop();
+               context.push(Context.BLOCK_MAPPING_KEY);
+               
+           } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
+               writer.print(':');
+               context.pop();
+               context.push(Context.BLOCK_MAPPING_VALUE);            
+           }
+           
+           return this;
+
+        } else if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
+
+        } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
+            writer.print('\'');
+               
+        } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
+            writer.print('"');
+               
+       } else {
+               throw new IllegalStateException();
+       }
+
+       context.pop();
+       writer.endFlow();
+       
+       doEndScalar();
+
+       return this;
     }
 
     @Override
@@ -101,7 +117,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
             
             doubleEscape(chars, offset, length);
-            
+
         } else {
             throw new IllegalStateException();
         }
@@ -212,55 +228,39 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter beginFlowScalar(FlowScalarType type) throws YamlPrinterException {
+    public YamlPrinter beginDoubleQuotedScalar() throws YamlPrinterException {
         
         beginScalar(false);
-
-        switch (type) {
-        case PLAIN:
-            context.push(Context.FLOW_PLAIN_SCALAR);
-            writer.beginFlow();
-            break;
-            
-        case DOUBLE_QUOTED:
-            writer.print('"');
-            writer.beginFlow();
-            context.push(Context.FLOW_DOUBLE_QUOTED_SCALAR);
-            break;
-            
-        case SINGLE_QUOTED:
-            writer.print('\'');
-            writer.beginFlow();
-            context.push(Context.FLOW_SINGLE_QUOTED_SCALAR);
-            break;
-        }
+        writer.print('"');
+        writer.beginFlow();
+        context.push(Context.FLOW_DOUBLE_QUOTED_SCALAR);
 
         return this;
     }
 
     @Override
-    public YamlPrinter endFlowScalar() throws YamlPrinterException {
-
-        if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
-
-        } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
-            writer.print('\'');
-            
-        } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
-            writer.print('"');
-            
-        } else {
-            throw new IllegalStateException();
-        }
-
-        context.pop();
-        writer.endFlow();
+    public YamlPrinter beginSingleQuotedScalar() throws YamlPrinterException {
         
-        endScalar();
-        
+        beginScalar(false);
+
+        writer.print('\'');
+        writer.beginFlow();
+        context.push(Context.FLOW_SINGLE_QUOTED_SCALAR);
+
         return this;
     }
-    
+
+    @Override
+    public YamlPrinter beginPlainScalar() throws YamlPrinterException {
+        
+        beginScalar(false);
+
+        context.push(Context.FLOW_PLAIN_SCALAR);
+        writer.beginFlow();
+
+        return this;
+    }
+
     @Override
     public YamlPrinter printNull() throws YamlPrinterException {
 
@@ -269,7 +269,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         }
                 
         beginScalar(true);
-        endScalar();
+        doEndScalar();
         return this;
     }
     
@@ -298,7 +298,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
             
     }
 
-    protected void endScalar() throws YamlPrinterException {
+    protected void doEndScalar() throws YamlPrinterException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
             writer.newLine();

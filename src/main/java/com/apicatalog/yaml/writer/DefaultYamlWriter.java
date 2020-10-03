@@ -7,7 +7,6 @@ import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlScalar;
 import com.apicatalog.yaml.printer.BlockScalarType;
 import com.apicatalog.yaml.printer.ChompingStyle;
-import com.apicatalog.yaml.printer.FlowScalarType;
 import com.apicatalog.yaml.printer.YamlPrinter;
 import com.apicatalog.yaml.printer.YamlPrinter.Context;
 import com.apicatalog.yaml.printer.YamlPrinterException;
@@ -130,21 +129,26 @@ public class DefaultYamlWriter implements YamlWriter {
                 }
                                 
                 if (nlMaxDistance <= maxLineLength) {
+                    if (!includesControl) {
+                        writePlain(chars, offset, length);
+                        return;
+                    }
                     writeLiteral(maxLineLength, chars, offset, length);
 
                 } else {
                     writeFolded(maxLineLength, chars, offset, length);
                 }
+                
                 return;
             }
         }
 
-        if (allPrintable && !includesControl && nlCount == 0 && length < maxLineLength) {
+        if (allPrintable && !includesControl && nlCount == 0 && (length < maxLineLength || YamlPrinter.Context.BLOCK_MAPPING_KEY.equals(context))) {
             writePlain(chars, offset, length);
             return;
         }
         
-        if (allPrintable && includesControl && nlCount == 0 && length < maxLineLength) {
+        if (allPrintable && includesControl && nlCount == 0 && (length < maxLineLength || YamlPrinter.Context.BLOCK_MAPPING_KEY.equals(context))) {
             writeSingleQuoted(maxLineLength, chars, offset, length);
             return;
         }
@@ -157,10 +161,10 @@ public class DefaultYamlWriter implements YamlWriter {
             } else {
                 writeFolded(maxLineLength, chars, offset, length);
             }
-            return;
+            return;            
         }
 
-        writeDoubleQuoted(maxLineLength, chars, offset, length);
+        writeDoubleQuoted(!YamlPrinter.Context.BLOCK_MAPPING_KEY.equals(context), maxLineLength, chars, offset, length);
     }
     
     private static final boolean isDocumentContext(YamlPrinter.Context context) {
@@ -188,32 +192,36 @@ public class DefaultYamlWriter implements YamlWriter {
             printer.print(chars, offset + begin, length - begin);
         }        
         
-        printer.endBlockScalar();
+        printer.endScalar();
     }
 
     private void writePlain(char[] chars, int offset, int length) throws YamlPrinterException {
-        printer.beginFlowScalar(FlowScalarType.PLAIN);
+        printer.beginPlainScalar();
         printer.print(chars, offset, length);
-        printer.endFlowScalar();
+        printer.endScalar();
     }
 
     private void writeSingleQuoted(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
-        printer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
+        printer.beginSingleQuotedScalar();
         writeFoldedText(maxLineLength, chars, offset, length);
-        printer.endFlowScalar();
+        printer.endScalar();
     }
     
-    private void writeDoubleQuoted(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
-        printer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
-        writeFoldedText(maxLineLength, chars, offset, length);        
-        printer.endFlowScalar();
+    private void writeDoubleQuoted(boolean multiline, int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
+        printer.beginDoubleQuotedScalar();
+        if (multiline) {
+            writeFoldedText(maxLineLength, chars, offset, length);
+        } else {
+            printer.print(chars, offset, length);
+        }
+        printer.endScalar();
     }
 
     private void writeFolded(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
         
         printer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
         writeFoldedText(maxLineLength, chars, offset, length);
-        printer.endBlockScalar();
+        printer.endScalar();
     }
 
     private void writeFoldedText(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {

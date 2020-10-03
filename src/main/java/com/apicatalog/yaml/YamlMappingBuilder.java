@@ -18,13 +18,13 @@ package com.apicatalog.yaml;
 public interface YamlMappingBuilder {
 
     
-    YamlMappingBuilder add(YamlNode key, YamlNode value);
+    YamlMappingBuilder add(String key, YamlNode value);
     
-    YamlMappingBuilder addNull(YamlNode key);
+    YamlMappingBuilder addNull(String key);
     
-    YamlMappingBuilder add(YamlNode key, YamlMappingBuilder value);
+    YamlMappingBuilder add(String key, YamlMappingBuilder value);
     
-    YamlMappingBuilder add(YamlNode key, YamlSequenceBuilder value);
+    YamlMappingBuilder add(String key, YamlSequenceBuilder value);
 
     //TODO builder as a key
     

@@ -29,6 +29,7 @@ public final class TestDescription {
     private String expected;
     
     private boolean compactArrays;
+    private int maxLineLength;
     
     private Set<String> type;
     
@@ -43,10 +44,15 @@ public final class TestDescription {
         testCase.expected = jsonObject.getString("expect", null);
             
         if (jsonObject.containsKey("options")) {
-            testCase.compactArrays = jsonObject.getJsonObject("options").getBoolean("compactArrays", false);
+            
+            final JsonObject options = jsonObject.getJsonObject("options");
+            
+            testCase.compactArrays = options.getBoolean("compactArrays", false);
+            testCase.maxLineLength = options.getInt("maxLineLength", 100);
                     
         } else {
             testCase.compactArrays = false;
+            testCase.maxLineLength = 100;
         }
         
         return testCase;
@@ -66,6 +72,10 @@ public final class TestDescription {
     
     public String getExpected() {
         return expected;
+    }
+    
+    public int getMaxLineLength() {
+        return maxLineLength;
     }
     
     @Override

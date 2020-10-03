@@ -166,12 +166,17 @@ public class DefaultYamlWriter implements YamlWriter {
             
             if (allPrintable) {
            
-                if (nlCount == 0 && length < style.getMaxLineLength()) {
+                if (nlCount == 0 && !includesControl && length < maxLineLength) {
                     writePlain(chars, offset, length);
                     return;
                 }
                 
-                if (nlMaxDistance <= style.getMaxLineLength()) {
+                if (nlCount == 0 && includesControl && length < maxLineLength) {
+                    writeSingleQuoted(maxLineLength, chars, offset, length);
+                    return;
+                }
+                                
+                if (nlMaxDistance <= maxLineLength) {
                     writeLiteral(maxLineLength, chars, offset, length);
 
                 } else {
@@ -179,14 +184,28 @@ public class DefaultYamlWriter implements YamlWriter {
                 }
                 return;
             }
-            
-            if (includesControl) {
-                
-            }
-            
         }
         
-        // TODO Auto-generated method stub
+        if (allPrintable && !includesControl && nlCount == 0 && length < maxLineLength) {
+            writePlain(chars, offset, length);
+            return;
+        }
+        
+        if (allPrintable && includesControl && nlCount == 0 && length < maxLineLength) {
+            writeSingleQuoted(maxLineLength, chars, offset, length);
+            return;
+        }
+        
+        if (allPrintable && !YamlPrinter.Context.BLOCK_MAPPING_KEY.equals(context)) {
+
+            if (nlMaxDistance <= maxLineLength) {
+                writeLiteral(maxLineLength, chars, offset, length);
+
+            } else {
+                writeFolded(maxLineLength, chars, offset, length);
+            }            
+        }
+        
         writeDoubleQuoted(maxLineLength, chars, offset, length);
     }
     
@@ -219,14 +238,31 @@ public class DefaultYamlWriter implements YamlWriter {
     }
 
     private void writePlain(char[] chars, int offset, int length) throws YamlPrinterException {
-        
+        printer.beginFlowScalar(FlowScalarType.PLAIN);
+        printer.print(chars, offset, length);
+        printer.endFlowScalar();
     }
 
+    private void writeSingleQuoted(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
+        printer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
+        writeFoldedText(maxLineLength, chars, offset, length);
+        printer.endFlowScalar();
+    }
+    
     private void writeDoubleQuoted(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
-        
+        printer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
+        writeFoldedText(maxLineLength, chars, offset, length);        
+        printer.endFlowScalar();
     }
 
     private void writeFolded(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
+        
+        printer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
+        writeFoldedText(maxLineLength, chars, offset, length);
+        printer.endBlockScalar();
+    }
+
+    private void writeFoldedText(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
         
         int lineIndex = 0;
         int lastSpaceIndex = 0;
@@ -256,5 +292,4 @@ public class DefaultYamlWriter implements YamlWriter {
             printer.print(chars, offset + lineIndex, length - lineIndex);
         }
     }
-
 }

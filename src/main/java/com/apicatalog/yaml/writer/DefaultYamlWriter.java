@@ -9,6 +9,7 @@ import com.apicatalog.yaml.printer.BlockScalarType;
 import com.apicatalog.yaml.printer.ChompingStyle;
 import com.apicatalog.yaml.printer.FlowScalarType;
 import com.apicatalog.yaml.printer.YamlPrinter;
+import com.apicatalog.yaml.printer.YamlPrinter.Context;
 import com.apicatalog.yaml.printer.YamlPrinterException;
 
 public class DefaultYamlWriter implements YamlWriter {
@@ -31,7 +32,7 @@ public class DefaultYamlWriter implements YamlWriter {
                 printer.beginBlockMapping();
                 
                 for (final Map.Entry<String, YamlNode> entry : node.asMapping().entrySet()) {
-                    writeKey(entry.getKey());
+                    writeScalar(Context.BLOCK_MAPPING_KEY, entry.getKey());
                     write(entry.getValue());
                 }
                 
@@ -39,7 +40,7 @@ public class DefaultYamlWriter implements YamlWriter {
                 break;
                 
             case NULL:
-                printer.skip();
+                printer.printNull();
                 break;
                 
             case SCALAR:
@@ -48,10 +49,13 @@ public class DefaultYamlWriter implements YamlWriter {
                 
             case SEQUENCE:
                 
+                printer.beginBlockSequence();
+                
                 for (final YamlNode item : node.asSequence()) {
                     write(item);
                 }
 
+                printer.endBlockSequence();
                 break;
                 
             }
@@ -67,71 +71,20 @@ public class DefaultYamlWriter implements YamlWriter {
         
     }
     
-    private final void writeKey(final String key) throws YamlPrinterException {
-        //TODO choose style
-        printer.beginFlowScalar(FlowScalarType.PLAIN);
-        printer.print(key.toCharArray());
-        printer.endBlockScalar();
-    }
+    private final void writeScalar(final YamlPrinter.Context context, String scalar) throws YamlPrinterException {
 
-    private final void writeScalar(final YamlPrinter.Context context, final YamlScalar scalar) throws YamlPrinterException {
-        
-        final char[] value = scalar.getValue().toCharArray();
+        final char[] value = scalar.toCharArray();
         
         final int maxLength = style.getMaxLineLength() - printer.indentation();
         
         writeScalar(context, maxLength, value, 0, value.length);
-        
-//        switch (scalarWriter.styleScalar(context, maxLength, value, 0, value.length)) {
-//        case BLOCK_LITERAL:
-//            scalarWriter.printLiteral(maxLength, value, 0, value.length);   
-//            break;
-//            
-//        case BLOCK_FOLDED:
-//            printer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
-//            printText(scalarWriter.getStyle().formatFolded(maxLength, value, 0, value.length), value);
-//            printer.endBlockScalar();                        
-//            break;
-//            
-//        case FLOW_PLAIN:
-//            printFlowPlainScalar(value);
-//            break;
-//            
-//        case FLOW_SINGLE_QUOTED:
-//            printer.beginFlowScalar(FlowScalarType.SINGLE_QUOTED);
-//            printer.print(value, 0, value.length);
-//            printer.endFlowScalar();            
-//            break;
-//            
-//        case FLOW_DOUBLE_QUOTED:
-//            printer.beginFlowScalar(FlowScalarType.DOUBLE_QUOTED);
-//            printer.print(value, 0, value.length);
-//            printer.endFlowScalar();
-//            break;
-//        }        
+
     }
     
-//    private final void printFlowPlainScalar(char[] value) throws YamlPrinterException {
-//        printer.beginFlowScalar(FlowScalarType.PLAIN);
-//        printer.print(value, 0, value.length);
-//        printer.endFlowScalar();
-//    }
+    private final void writeScalar(final YamlPrinter.Context context, final YamlScalar scalar) throws YamlPrinterException {        
+        writeScalar(context, scalar.getValue());
+    }
 
-    
-//    private final void printText(Collection<TextPrintIndex> indices, char[] value) throws YamlPrinterException {
-//        
-//        for (TextPrintIndex index : indices) {
-//            
-//            if (index.getOffset() != -1 && index.getLength() != -1) {
-//                printer.print(value, index.getOffset(), index.getLength());                    
-//            }
-//            
-//            if (TextPrintIndex.Type.PRINT_LN.equals(index.getType())) {
-//                printer.println();
-//            }
-//        }        
-//    }
-    
     private final void writeScalar(YamlPrinter.Context context, int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
         
         boolean allPrintable = true;
@@ -185,7 +138,7 @@ public class DefaultYamlWriter implements YamlWriter {
                 return;
             }
         }
-        
+
         if (allPrintable && !includesControl && nlCount == 0 && length < maxLineLength) {
             writePlain(chars, offset, length);
             return;
@@ -203,9 +156,10 @@ public class DefaultYamlWriter implements YamlWriter {
 
             } else {
                 writeFolded(maxLineLength, chars, offset, length);
-            }            
+            }
+            return;
         }
-        
+
         writeDoubleQuoted(maxLineLength, chars, offset, length);
     }
     

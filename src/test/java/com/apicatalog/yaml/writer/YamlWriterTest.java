@@ -30,7 +30,7 @@ import com.apicatalog.yaml.YamlMappingBuilder;
 import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequenceBuilder;
 import com.apicatalog.yaml.printer.IndentedkPrinter;
-import com.apicatalog.yaml.printer.YamlPrinterImpl;
+import com.apicatalog.yaml.printer.DefaultYamlPrinter;
 
 class YamlWriterTest {
 
@@ -57,7 +57,7 @@ class YamlWriterTest {
             final YamlPrintStyle style = new YamlPrintStyle();
             style.setMaxLineWidth(testCase.getMaxLineLength());
             
-            final YamlPrinterImpl yamlPrinter = new YamlPrinterImpl(new IndentedkPrinter(output));
+            final DefaultYamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedkPrinter(output));
             
             try (YamlWriter yamlWriter = new DefaultYamlWriter(yamlPrinter, style)) {
 

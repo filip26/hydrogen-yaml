@@ -5,13 +5,13 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 
-public class YamlPrinterImpl implements YamlPrinter {
+public class DefaultYamlPrinter implements YamlPrinter {
 
     private final IndentedkPrinter writer;
 
     private Deque<Context> context;
     
-    public YamlPrinterImpl(final IndentedkPrinter writer) {
+    public DefaultYamlPrinter(final IndentedkPrinter writer) {
         this.writer = writer;
         this.context = new ArrayDeque<>(10);
         this.context.push(Context.DOCUMENT_BEGIN);
@@ -262,7 +262,7 @@ public class YamlPrinterImpl implements YamlPrinter {
     }
     
     @Override
-    public YamlPrinter skip() throws YamlPrinterException {
+    public YamlPrinter printNull() throws YamlPrinterException {
 
         if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
             throw new IllegalStateException();

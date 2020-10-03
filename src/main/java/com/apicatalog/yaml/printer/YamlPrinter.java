@@ -49,7 +49,7 @@ public interface YamlPrinter {
     
     YamlPrinter endBlockdMapping() throws YamlPrinterException;
     
-    YamlPrinter skip() throws YamlPrinterException;
+    YamlPrinter printNull() throws YamlPrinterException;
 
     int indentation();
 }

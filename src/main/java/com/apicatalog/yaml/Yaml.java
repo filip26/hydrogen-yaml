@@ -22,6 +22,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.Collection;
 
+import com.apicatalog.yaml.impl.DefaultYamlSequenceBuilder;
 import com.apicatalog.yaml.impl.YamlScalarImpl;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.parser.impl.YamlParserImpl;
@@ -60,8 +61,7 @@ public final class Yaml {
     }
 
     public static final YamlSequenceBuilder createSequenceBuilder() {
-        //TODO
-        return null;
+        return new DefaultYamlSequenceBuilder();
     }
     
     public static final YamlSequenceBuilder createSequenceBuilder(YamlSequence sequence) {

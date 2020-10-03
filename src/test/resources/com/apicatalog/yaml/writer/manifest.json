@@ -36,6 +36,13 @@
 			"name": "Document level text with control chars",
 			"input": "t005-in.json",
 			"expect": "t005-out.yaml"
+		},
+		{
+			"@id": "#t006",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Various block sequence scalars",
+			"input": "t006-in.json",
+			"expect": "t006-out.yaml"
 		}
 	]
 }

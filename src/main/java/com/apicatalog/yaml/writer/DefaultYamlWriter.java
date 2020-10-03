@@ -1,5 +1,6 @@
 package com.apicatalog.yaml.writer;
 
+import java.util.Arrays;
 import java.util.Map;
 
 import com.apicatalog.yaml.YamlException;
@@ -177,15 +178,19 @@ public class DefaultYamlWriter implements YamlWriter {
         printer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
         
         int begin = 0;
+        boolean empty = true;
         
         for (int i = 0; i < length; i++) {
             
             if ('\n' == chars[i + offset]) {
-                printer.print(chars, offset + begin, i - begin);
-                printer.println();
+                if (!empty) {
+                    printer.print(chars, offset + begin, i - begin);
+                    printer.println();
+                }
                 begin = i + 1;
             }
             
+            empty = empty && (' ' == chars[i + offset]);
         }
         
         if (begin < length) {
@@ -209,6 +214,7 @@ public class DefaultYamlWriter implements YamlWriter {
     
     private void writeDoubleQuoted(boolean multiline, int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
         printer.beginDoubleQuotedScalar();
+
         if (multiline) {
             writeFoldedText(maxLineLength, chars, offset, length);
         } else {
@@ -225,7 +231,7 @@ public class DefaultYamlWriter implements YamlWriter {
     }
 
     private void writeFoldedText(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
-        
+
         int lineIndex = 0;
         int lastSpaceIndex = 0;
         

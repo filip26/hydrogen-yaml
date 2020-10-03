@@ -1,6 +1,7 @@
 package com.apicatalog.yaml.printer;
 
 import java.util.ArrayDeque;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -329,13 +330,23 @@ public class DefaultYamlPrinter implements YamlPrinter {
 
     protected void  doubleEscape(char[] chars, int offset, int length) throws YamlPrinterException {
         int start = 0;
+
+        boolean startSpaces = true; 
         
-        // find next single quote
-        for (int i=0; i < length; i++) {
+        // escape non-printable characters
+        for (int i = 0; i < length; i++) {
             
-            final char[] escaped;
+            char[] escaped = null;
             
-            if (chars[offset + i] == '\\') {
+            if (startSpaces) {
+                startSpaces = chars[offset + i] == 0x20;
+            }
+            
+            if (startSpaces) { 
+
+                escaped = new char[] { '\\', ' '};
+            
+            } else if (chars[offset + i] == '\\') {
                 
                 escaped = new char[] { '\\', '\\'};
                 
@@ -409,7 +420,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 escaped[5] = hex[3];
 
             } else {
-                escaped = null;
+                continue;
             }
             
             if (escaped != null) {
@@ -421,6 +432,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 start = i + 1;
             }
         }
+        
         // flush previous chars
         if (length > start) {
             writer.print(chars, offset + start, length - start);

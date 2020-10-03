@@ -131,7 +131,7 @@ class YamlPrinterTest {
             if (next) {
                 printer.println();
             }
-            if (!line.isBlank()) {
+            if (line.length() > 0) {
                 printer.print(line.toCharArray());
             }
             next = true;

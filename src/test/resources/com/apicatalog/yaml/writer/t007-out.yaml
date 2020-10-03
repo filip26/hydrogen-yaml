@@ -3,3 +3,4 @@
 "x\0": 30
 abcdefg xyz: 40
 "?\uffff": 50
+" \n ": 60

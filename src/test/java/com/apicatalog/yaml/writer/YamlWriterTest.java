@@ -54,19 +54,21 @@ class YamlWriterTest {
 
             testParser.next();
 
-            final YamlWriterOptions options = new YamlWriterOptions();
-            options.setMaxLineWidth(10);
+            final YamlPrintStyle style = new YamlPrintStyle();
+            style.setMaxLineWidth(15);
             
-            try (YamlWriter yamlWriter = new YamlWriterImpl(new YamlPrinterImpl(new IndentedkPrinter(output)), options)) {
+            final YamlPrinterImpl yamlPrinter = new YamlPrinterImpl(new IndentedkPrinter(output));
+            
+            try (YamlWriter yamlWriter = new DefaultYamlWriter(yamlPrinter, style)) {
 
                 yamlWriter.write(toYaml(testCase, testParser.getValue()));
+
             }
             
         } catch (YamlException | IOException e) {    
             e.printStackTrace();
             fail(e);
         }
-
         if (testCase.getExpected() == null) {
             return;
         }

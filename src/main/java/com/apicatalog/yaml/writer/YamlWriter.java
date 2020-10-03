@@ -31,5 +31,6 @@ public interface YamlWriter extends Closeable {
     }
 
     @Override
-    void close();    
+    void close();
+ 
 }

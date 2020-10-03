@@ -18,12 +18,14 @@ package com.apicatalog.yaml;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
 import com.apicatalog.yaml.impl.YamlMappingBuilderImpl;
 import com.apicatalog.yaml.impl.YamlScalarImpl;
 import com.apicatalog.yaml.impl.YamlSequenceBuilderImpl;
+import com.apicatalog.yaml.impl.YamlWriterBuilderImpl;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.parser.impl.YamlParserImpl;
 import com.apicatalog.yaml.parser.impl.YamlTokenizer;
@@ -40,13 +42,11 @@ public final class Yaml {
     }
     
     public static final YamlWriterBuilder createWriter(OutputStream output) {
-        //TODO
-        return null;
+        return new YamlWriterBuilderImpl(new OutputStreamWriter(output));
     }
     
     public static final YamlWriterBuilder createWriter(Writer writer) {
-        //TODO
-        return null;
+        return new YamlWriterBuilderImpl(writer);
     }
     
     public static final YamlMappingBuilder createMappingBuilder() {

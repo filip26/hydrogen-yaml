@@ -1,11 +1,12 @@
 package com.apicatalog.yaml.printer;
 
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public final class IndentedkPrinter {
+public final class IndentedkPrinter implements Closeable {
 
     private final Writer writer;
     
@@ -130,5 +131,10 @@ public final class IndentedkPrinter {
 
     public int indentation() {
         return indentation.peek();
+    }
+    
+    @Override
+    public void close() throws IOException {
+        writer.close();
     }
 }

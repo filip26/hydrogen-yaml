@@ -1,5 +1,6 @@
 package com.apicatalog.yaml.printer;
 
+import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
@@ -475,5 +476,10 @@ public class DefaultYamlPrinter implements YamlPrinter {
     @Override
     public int indentation() {
         return writer.indentation();
+    }
+    
+    @Override
+    public void close() throws IOException {
+        writer.close();
     }
 }

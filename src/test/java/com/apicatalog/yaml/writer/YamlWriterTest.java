@@ -1,11 +1,13 @@
 package com.apicatalog.yaml.writer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -20,6 +22,7 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.stream.JsonParser;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -35,6 +38,21 @@ import com.apicatalog.yaml.printer.DefaultYamlPrinter;
 class YamlWriterTest {
 
 
+    @Test
+    void testAutocloseStream() {
+
+        final TestOutputStream output = new TestOutputStream();
+        
+        try (final YamlWriter writer = Yaml.createWriter(output).build()) {
+            assertFalse(output.isClosed());
+            
+        } catch (IOException e) {
+            fail(e);
+        }
+                
+        assertTrue(output.isClosed());
+    }
+    
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCaseMethodSource")
     void testSuite(TestDescription testCase) {
@@ -134,6 +152,20 @@ class YamlWriterTest {
             JsonArray tests = jsonParser.getObject().getJsonArray("sequence");
             
             return tests.stream().map(JsonObject.class::cast).map(TestDescription::of);
+        }
+    }
+    
+    static final class TestOutputStream extends ByteArrayOutputStream {
+        
+        private boolean closed = false;
+
+        public void close() throws IOException {
+            closed = true;
+            super.close();
+        };
+        
+        public boolean isClosed() {
+            return closed;
         }
     }
 }

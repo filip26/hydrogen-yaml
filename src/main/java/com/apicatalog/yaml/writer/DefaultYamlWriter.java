@@ -1,6 +1,6 @@
 package com.apicatalog.yaml.writer;
 
-import java.util.Arrays;
+import java.io.IOException;
 import java.util.Map;
 
 import com.apicatalog.yaml.YamlException;
@@ -66,9 +66,8 @@ public class DefaultYamlWriter implements YamlWriter {
     }
     
     @Override
-    public void close() {
-        // TODO Auto-generated method stub
-        
+    public void close() throws IOException {
+        printer.close();
     }
     
     private final void writeScalar(final YamlPrinter.Context context, String scalar) throws YamlPrinterException {

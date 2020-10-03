@@ -16,6 +16,7 @@
 package com.apicatalog.yaml.writer;
 
 import java.io.Closeable;
+import java.io.IOException;
 
 import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlNode;
@@ -31,6 +32,6 @@ public interface YamlWriter extends Closeable {
     }
 
     @Override
-    void close();
+    void close() throws IOException;
  
 }

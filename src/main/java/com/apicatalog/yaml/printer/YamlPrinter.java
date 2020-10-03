@@ -1,8 +1,10 @@
 package com.apicatalog.yaml.printer;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.util.Collection;
 
-public interface YamlPrinter {
+public interface YamlPrinter extends Closeable {
 
     enum Context { 
         DOCUMENT_BEGIN,
@@ -54,4 +56,7 @@ public interface YamlPrinter {
     YamlPrinter printNull() throws YamlPrinterException;
 
     int indentation();
+    
+    @Override
+    void close() throws IOException;
 }

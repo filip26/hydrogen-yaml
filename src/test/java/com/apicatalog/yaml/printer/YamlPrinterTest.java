@@ -46,7 +46,7 @@ class YamlPrinterTest {
             
             assertTrue(testParser.hasNext());
             
-            YamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedkPrinter(output));
+            YamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output));
             
             testParser.next();
             

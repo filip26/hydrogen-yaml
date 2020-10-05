@@ -252,7 +252,6 @@ public class DefaultYamlWriter implements YamlWriter {
                 
                 lastSpaceIndex = i + 1;                                    
             }
-            
         }
         
         if (lineIndex < length) {

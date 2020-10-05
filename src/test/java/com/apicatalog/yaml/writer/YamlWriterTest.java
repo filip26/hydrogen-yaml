@@ -32,7 +32,7 @@ import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlMappingBuilder;
 import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequenceBuilder;
-import com.apicatalog.yaml.printer.IndentedkPrinter;
+import com.apicatalog.yaml.printer.IndentedPrinter;
 import com.apicatalog.yaml.printer.DefaultYamlPrinter;
 
 class YamlWriterTest {
@@ -52,7 +52,21 @@ class YamlWriterTest {
                 
         assertTrue(output.isClosed());
     }
-    
+
+    @Test
+    void testAutocloseWriter() {
+
+        final TestWriter output = new TestWriter();
+        
+        try (final YamlWriter writer = Yaml.createWriter(output).build()) {
+            assertFalse(output.isClosed());
+            
+        } catch (IOException e) {
+            fail(e);
+        }
+                
+        assertTrue(output.isClosed());
+    }
     @ParameterizedTest(name = "{0}")
     @MethodSource("testCaseMethodSource")
     void testSuite(TestDescription testCase) {
@@ -75,7 +89,7 @@ class YamlWriterTest {
             final YamlPrintStyle style = new YamlPrintStyle();
             style.setMaxLineWidth(testCase.getMaxLineLength());
             
-            final DefaultYamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedkPrinter(output));
+            final DefaultYamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output));
             
             try (YamlWriter yamlWriter = new DefaultYamlWriter(yamlPrinter, style)) {
 
@@ -159,6 +173,7 @@ class YamlWriterTest {
         
         private boolean closed = false;
 
+        @Override
         public void close() throws IOException {
             closed = true;
             super.close();
@@ -167,5 +182,20 @@ class YamlWriterTest {
         public boolean isClosed() {
             return closed;
         }
+    }
+    
+    static final class TestWriter extends StringWriter {
+        
+        private boolean closed = false;
+
+        @Override
+        public void close() throws IOException {
+            closed = true;
+            super.close();
+        };
+        
+        public boolean isClosed() {
+            return closed;
+        }        
     }
 }

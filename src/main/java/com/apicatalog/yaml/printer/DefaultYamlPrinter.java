@@ -2,19 +2,18 @@ package com.apicatalog.yaml.printer;
 
 import java.io.IOException;
 import java.util.ArrayDeque;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 
 public class DefaultYamlPrinter implements YamlPrinter {
 
-    private final IndentedkPrinter writer;
+    private final IndentedPrinter printer;
 
     private Deque<Context> context;
     
-    public DefaultYamlPrinter(final IndentedkPrinter writer) {
-        this.writer = writer;
+    public DefaultYamlPrinter(final IndentedPrinter writer) {
+        this.printer = writer;
         this.context = new ArrayDeque<>(10);
         this.context.push(Context.DOCUMENT_BEGIN);
     }
@@ -23,11 +22,11 @@ public class DefaultYamlPrinter implements YamlPrinter {
     public YamlPrinter beginBlockScalar(BlockScalarType type, ChompingStyle chomping)  throws YamlPrinterException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.print('-');
-            writer.print(' ');
+            printer.print('-');
+            printer.print(' ');
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            writer.print(' ');
+            printer.print(' ');
             
         } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
             context.pop();
@@ -38,25 +37,25 @@ public class DefaultYamlPrinter implements YamlPrinter {
         }
         
         if (BlockScalarType.FOLDED.equals(type)) {
-            writer.print('>');
+            printer.print('>');
             
         } else if (BlockScalarType.LITERAL.equals(type)) {
-            writer.print('|');
+            printer.print('|');
         }
         
-        writer.beginBlock();
+        printer.beginBlock();
         
         switch (chomping) {
         case CLIP:
             break;
         case KEEP:
-            writer.print('+');
+            printer.print('+');
             break;
         case STRIP:
-            writer.print('-');
+            printer.print('-');
             break;
         }
-        writer.newLine();
+        printer.newLine();
         context.push(Context.BLOCK_SCALAR);
         return this;
     }
@@ -67,14 +66,14 @@ public class DefaultYamlPrinter implements YamlPrinter {
         if (Context.BLOCK_SCALAR.equals(context.peek())) {
            context.pop();
 
-           writer.endBlock();
+           printer.endBlock();
            
            if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
                context.pop();
                context.push(Context.BLOCK_MAPPING_KEY);
                
            } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
-               writer.print(':');
+               printer.print(':');
                context.pop();
                context.push(Context.BLOCK_MAPPING_VALUE);            
            }
@@ -84,17 +83,17 @@ public class DefaultYamlPrinter implements YamlPrinter {
         } else if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
 
         } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
-            writer.print('\'');
+            printer.print('\'');
                
         } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
-            writer.print('"');
+            printer.print('"');
                
        } else {
                throw new IllegalStateException();
        }
 
        context.pop();
-       writer.endFlow();
+       printer.endFlow();
        
        doEndScalar();
 
@@ -106,11 +105,11 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         if (Context.BLOCK_SCALAR.equals(context.peek())) {
 
-            writer.print(chars, offset, length);
+            printer.print(chars, offset, length);
             
         } else if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
             
-            writer.print(chars, offset, length);
+            printer.print(chars, offset, length);
             
         } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
             
@@ -133,17 +132,17 @@ public class DefaultYamlPrinter implements YamlPrinter {
         final boolean newBlock;
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.print('-');
-            writer.newLine();
+            printer.print('-');
+            printer.newLine();
             newBlock = true;
             
         } else if (Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.print('-');
-            writer.print(' ');    
+            printer.print('-');
+            printer.print(' ');    
             newBlock = true;        
 
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            writer.newLine();
+            printer.newLine();
             newBlock = true;
             
         } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
@@ -158,7 +157,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         context.push(compacted ? Context.COMPACT_BLOCK_SEQUENCE : Context.BLOCK_SEQUENCE);
         
         if (newBlock) {
-            writer.beginBlock();
+            printer.beginBlock();
         }
         return this;
     }
@@ -184,16 +183,16 @@ public class DefaultYamlPrinter implements YamlPrinter {
         final boolean newBlock;
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.print('-');
-            writer.newLine();
+            printer.print('-');
+            printer.newLine();
             newBlock = true;
         } else if (Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.print('-');
-            writer.print(' ');
+            printer.print('-');
+            printer.print(' ');
             newBlock = true;
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            writer.newLine();
+            printer.newLine();
             newBlock = true;
             
         } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
@@ -208,7 +207,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         context.push(Context.BLOCK_MAPPING_KEY);
         
         if (newBlock) {
-            writer.beginBlock();
+            printer.beginBlock();
         }
 
         return this;
@@ -233,8 +232,8 @@ public class DefaultYamlPrinter implements YamlPrinter {
     public YamlPrinter beginDoubleQuotedScalar() throws YamlPrinterException {
         
         beginScalar(false);
-        writer.print('"');
-        writer.beginFlow();
+        printer.print('"');
+        printer.beginFlow();
         context.push(Context.FLOW_DOUBLE_QUOTED_SCALAR);
 
         return this;
@@ -245,8 +244,8 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         beginScalar(false);
 
-        writer.print('\'');
-        writer.beginFlow();
+        printer.print('\'');
+        printer.beginFlow();
         context.push(Context.FLOW_SINGLE_QUOTED_SCALAR);
 
         return this;
@@ -258,7 +257,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         beginScalar(false);
 
         context.push(Context.FLOW_PLAIN_SCALAR);
-        writer.beginFlow();
+        printer.beginFlow();
 
         return this;
     }
@@ -278,13 +277,13 @@ public class DefaultYamlPrinter implements YamlPrinter {
     protected void beginScalar(boolean empty) throws YamlPrinterException {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.print('-');
+            printer.print('-');
             if (!empty) {
-                writer.print(' ');
+                printer.print(' ');
             }
             
         } else if (!empty && Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            writer.print(' ');
+            printer.print(' ');
             
         } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())
                 || Context.BLOCK_MAPPING_VALUE.equals(context.peek())
@@ -303,15 +302,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
     protected void doEndScalar() throws YamlPrinterException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.newLine();
+            printer.newLine();
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            writer.newLine();
+            printer.newLine();
             context.pop();
             context.push(Context.BLOCK_MAPPING_KEY);
             
         } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
-            writer.print(':');
+            printer.print(':');
             context.pop();
             context.push(Context.BLOCK_MAPPING_VALUE);            
         }
@@ -320,10 +319,10 @@ public class DefaultYamlPrinter implements YamlPrinter {
     protected void endCollection() {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek()) || Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-            writer.endBlock();
+            printer.endBlock();
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            writer.endBlock();
+            printer.endBlock();
             context.pop();
             context.push(Context.BLOCK_MAPPING_KEY);            
         }
@@ -340,7 +339,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
             char[] escaped = null;
             
             if (startSpaces) {
-                startSpaces = chars[offset + i] == 0x20;
+                startSpaces = printer.isNewLine() && chars[offset + i] == 0x20;
             }
             
             if (startSpaces) { 
@@ -427,16 +426,16 @@ public class DefaultYamlPrinter implements YamlPrinter {
             if (escaped != null) {
                 // flush previous chars
                 if (i >= start) {
-                    writer.print(chars, offset + start, i - start);
+                    printer.print(chars, offset + start, i - start);
                 }
-                writer.print(escaped);
+                printer.print(escaped);
                 start = i + 1;
             }
         }
         
-        // flush previous chars
+        // flush remaining chars
         if (length > start) {
-            writer.print(chars, offset + start, length - start);
+            printer.print(chars, offset + start, length - start);
         }
     }
 
@@ -450,21 +449,21 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 
                 // flush previous chars
                 if (i >= start) {
-                    writer.print(chars, offset + start, i - start + 1);
+                    printer.print(chars, offset + start, i - start + 1);
                 }
-                writer.print('\'');
+                printer.print('\'');
                 start = i + 1;
             }
         }
         // flush previous chars
         if (length > start) {
-            writer.print(chars, offset + start, length - start);
+            printer.print(chars, offset + start, length - start);
         }
     }
 
     @Override
     public YamlPrinter println() throws YamlPrinterException {
-        writer.newLine();
+        printer.newLine();
         return this;
     }
     
@@ -475,11 +474,11 @@ public class DefaultYamlPrinter implements YamlPrinter {
 
     @Override
     public int indentation() {
-        return writer.indentation();
+        return printer.indentation();
     }
     
     @Override
     public void close() throws IOException {
-        writer.close();
+        printer.close();
     }
 }

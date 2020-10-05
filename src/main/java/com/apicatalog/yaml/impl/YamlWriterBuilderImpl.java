@@ -5,7 +5,7 @@ import java.io.Writer;
 
 import com.apicatalog.yaml.YamlWriterBuilder;
 import com.apicatalog.yaml.printer.DefaultYamlPrinter;
-import com.apicatalog.yaml.printer.IndentedkPrinter;
+import com.apicatalog.yaml.printer.IndentedPrinter;
 import com.apicatalog.yaml.writer.DefaultYamlWriter;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
@@ -29,6 +29,6 @@ public class YamlWriterBuilderImpl implements YamlWriterBuilder {
 
     @Override
     public YamlWriter build() {
-        return new DefaultYamlWriter(new DefaultYamlPrinter(new IndentedkPrinter(writer)), style);
+        return new DefaultYamlWriter(new DefaultYamlPrinter(new IndentedPrinter(writer)), style);
     }
 }

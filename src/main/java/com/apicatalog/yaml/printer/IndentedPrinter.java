@@ -6,7 +6,7 @@ import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public final class IndentedkPrinter implements Closeable {
+public final class IndentedPrinter implements Closeable {
 
     private final Writer writer;
     
@@ -38,7 +38,7 @@ public final class IndentedkPrinter implements Closeable {
     
     private Deque<Integer> indentation;
     
-    public IndentedkPrinter(Writer writer) {
+    public IndentedPrinter(Writer writer) {
         this.writer = writer;
         this.indentation = new ArrayDeque<>(30);
         this.indentation.push(0);
@@ -46,28 +46,28 @@ public final class IndentedkPrinter implements Closeable {
         this.printed = 0;
     }
     
-    public IndentedkPrinter beginBlock() {
+    public IndentedPrinter beginBlock() {
         indentation.push(indentation.peek() + 2);
         return this;
     }
 
-    public IndentedkPrinter endBlock() {
+    public IndentedPrinter endBlock() {
         indentation.pop();
         newLine = true;
         return this;
     }
     
-    public IndentedkPrinter beginFlow() {
+    public IndentedPrinter beginFlow() {
         indentation.push(newLine ? indentation.peek() : printed);
         return this;
     }
     
-    public IndentedkPrinter endFlow() {
+    public IndentedPrinter endFlow() {
         indentation.pop();
         return this;        
     }
 
-    public IndentedkPrinter newLine() throws YamlPrinterException {
+    public IndentedPrinter newLine() throws YamlPrinterException {
 
         if (newLine) {
             try {
@@ -85,11 +85,11 @@ public final class IndentedkPrinter implements Closeable {
         return this;
     }
 
-    public IndentedkPrinter print(char[] chars)  throws YamlPrinterException {
+    public IndentedPrinter print(char[] chars)  throws YamlPrinterException {
         return print(chars, 0, chars.length);
     }
     
-    public IndentedkPrinter print(char[] chars, int offset, int length)  throws YamlPrinterException {
+    public IndentedPrinter print(char[] chars, int offset, int length)  throws YamlPrinterException {
         
         try {
             if (newLine) {
@@ -105,7 +105,7 @@ public final class IndentedkPrinter implements Closeable {
         return this;
     }
 
-    public IndentedkPrinter print(char ch)  throws YamlPrinterException {
+    public IndentedPrinter print(char ch)  throws YamlPrinterException {
         return print(new char[] {ch}, 0, 1);
     }
 
@@ -136,5 +136,9 @@ public final class IndentedkPrinter implements Closeable {
     @Override
     public void close() throws IOException {
         writer.close();
+    }
+
+    public boolean isNewLine() {
+        return newLine;
     }
 }

@@ -7,10 +7,7 @@
     "address": {
       "lines": {
       		"@type": "LiteralScalar",
-			"@value": [
-			"458 Walkman Dr.",
-			"Suite #292"
-      		]
+			"@value": "458 Walkman Dr.Suite #292"
       		},
       
       "city": "Royal Oak", 

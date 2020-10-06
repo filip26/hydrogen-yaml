@@ -124,21 +124,7 @@ class YamlPrinterTest {
             printer.printPlainScalar(chars, 0, chars.length);
         }
     }
-    
-//    static final void printLines(final YamlPrinter printer, final String scalar) throws YamlPrinterException {
-//        boolean next = false;
-//        
-//        for (String line : scalar.split("\\r?\\n")) {
-//            if (next) {
-//                printer.println();
-//            }
-//            if (line.length() > 0) {
-//                printer.print(line.toCharArray());
-//            }
-//            next = true;
-//        }
-//    }
-    
+        
     static final void writeObject(TestDescription test, YamlPrinter writer, JsonObject object) throws YamlPrinterException, IOException {
 
         if (object.containsKey("@type")) {
@@ -154,7 +140,7 @@ class YamlPrinterTest {
             }
 
             if ("FoldedScalar".equals(type)) {
-                writer.printLiteralScalar(chars, 0, chars.length);
+                writer.printFoldedScalar(chars, 0, chars.length);
                 return;
             }
             

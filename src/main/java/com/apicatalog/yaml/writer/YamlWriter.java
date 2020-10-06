@@ -27,10 +27,8 @@ import com.apicatalog.yaml.YamlNode;
  */
 public interface YamlWriter extends Closeable {
 
-    default void write(YamlNode node) throws YamlException {
-        throw new UnsupportedOperationException();
-    }
-
+    void write(YamlNode node) throws YamlException, IOException;
+        
     @Override
     void close() throws IOException;
  

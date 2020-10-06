@@ -2,61 +2,31 @@ package com.apicatalog.yaml.printer;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.util.Collection;
 
 public interface YamlPrinter extends Closeable {
 
-    enum Context { 
-        DOCUMENT_BEGIN,
-        DOCUMENT_END,
-        BLOCK_SCALAR,
-        FLOW_PLAIN_SCALAR,
-        FLOW_DOUBLE_QUOTED_SCALAR,
-        FLOW_SINGLE_QUOTED_SCALAR,
-        BLOCK_SEQUENCE,
-        @Deprecated
-        COMPACT_BLOCK_SEQUENCE, 
-        BLOCK_MAPPING_KEY,
-        BLOCK_MAPPING_VALUE,
-        }
+    YamlPrinter printScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException;
+    
+    YamlPrinter printFoldedScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException;
+    
+    YamlPrinter printLiteralScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException;
+    
+    YamlPrinter printPlainScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException;
+    
+    YamlPrinter printSingleQuotedScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException;
+    
+    YamlPrinter printDoubleQuotedScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException;
+    
+    YamlPrinter beginBlockSequence() throws YamlPrinterException, IOException;
 
-    Collection<Context> getContext();
-    
-    YamlPrinter beginBlockScalar(BlockScalarType type, ChompingStyle chomping) throws YamlPrinterException;
-    
-    YamlPrinter beginPlainScalar() throws YamlPrinterException;
-    
-    YamlPrinter beginSingleQuotedScalar() throws YamlPrinterException;
-    
-    YamlPrinter beginDoubleQuotedScalar() throws YamlPrinterException;
+    YamlPrinter endBlockSequence() throws YamlPrinterException, IOException;
 
-    YamlPrinter endScalar() throws YamlPrinterException;
+    YamlPrinter beginBlockMapping() throws YamlPrinterException, IOException;
     
-    default YamlPrinter print(char[] chars) throws YamlPrinterException {
-        return print(chars, 0, chars.length);
-    }
+    YamlPrinter endBlockdMapping() throws YamlPrinterException, IOException;
     
-    YamlPrinter print(char[] chars, int offset, int length) throws YamlPrinterException;
-    
-    YamlPrinter println() throws YamlPrinterException;
+    YamlPrinter printNull() throws YamlPrinterException, IOException;
 
-    default YamlPrinter beginBlockSequence() throws YamlPrinterException {
-        return beginBlockSequence(false);
-    }
-    
-    @Deprecated
-    YamlPrinter beginBlockSequence(boolean compacted) throws YamlPrinterException;
-
-    YamlPrinter endBlockSequence() throws YamlPrinterException;
-
-    YamlPrinter beginBlockMapping() throws YamlPrinterException;
-    
-    YamlPrinter endBlockdMapping() throws YamlPrinterException;
-    
-    YamlPrinter printNull() throws YamlPrinterException;
-
-    int indentation();
-    
     @Override
     void close() throws IOException;
 }

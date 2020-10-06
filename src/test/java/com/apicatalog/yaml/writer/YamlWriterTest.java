@@ -89,9 +89,9 @@ class YamlWriterTest {
             final YamlPrintStyle style = new YamlPrintStyle();
             style.setMaxLineWidth(testCase.getMaxLineLength());
             
-            final DefaultYamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output));
+            final DefaultYamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output), style);
             
-            try (YamlWriter yamlWriter = new DefaultYamlWriter(yamlPrinter, style)) {
+            try (YamlWriter yamlWriter = new DefaultYamlWriter(yamlPrinter)) {
 
                 yamlWriter.write(toYaml(testCase, testParser.getValue()));
 

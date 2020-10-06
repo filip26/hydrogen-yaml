@@ -3,12 +3,7 @@
 	null,
 	"two", {
 		"@type": "LiteralScalar",
-		"@value": [
-			"three",
-			"four",
-			"",
-			"  * five"
-		]
+		"@value": "three\nfour\n\n  * five"
 	},
 	123
 ]

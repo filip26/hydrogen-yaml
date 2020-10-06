@@ -25,6 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import com.apicatalog.yaml.TestDescription;
+import com.apicatalog.yaml.writer.YamlPrintStyle;
 
 class YamlPrinterTest {
 
@@ -46,7 +47,11 @@ class YamlPrinterTest {
             
             assertTrue(testParser.hasNext());
             
-            YamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output));
+            final YamlPrintStyle style = new YamlPrintStyle();
+            
+            style.setCompactArrays(testCase.isCompactArrays());
+            
+            YamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output), style);
             
             testParser.next();
             
@@ -75,7 +80,7 @@ class YamlPrinterTest {
         
     }
     
-    static final void write(TestDescription test, YamlPrinter printer, JsonValue value) throws YamlPrinterException { 
+    static final void write(TestDescription test, YamlPrinter printer, JsonValue value) throws YamlPrinterException, IOException { 
         
         switch (value.getValueType()) {
         case OBJECT:
@@ -105,72 +110,51 @@ class YamlPrinterTest {
         }        
     }
     
-    static final void writeScalar(final YamlPrinter printer, final String scalar) throws YamlPrinterException {
+    static final void writeScalar(final YamlPrinter printer, final String scalar) throws YamlPrinterException, IOException {
+        
+        final char[] chars = scalar.toCharArray();
         
         if (scalar.startsWith("\"")) {
-            printer.beginDoubleQuotedScalar();
-            printLines(printer, scalar.substring(1));
-            printer.endScalar();
+            printer.printDoubleQuotedScalar(chars, 1, chars.length);
             
         } else if (scalar.startsWith("\'")) {
-            printer.beginSingleQuotedScalar();
-            printLines(printer, scalar.substring(1));
-            printer.endScalar();
+            printer.printSingleQuotedScalar(chars, 1, chars.length);
             
         } else {
-            printer.beginPlainScalar();
-            printLines(printer, scalar);
-            printer.endScalar();
+            printer.printPlainScalar(chars, 0, chars.length);
         }
     }
     
-    static final void printLines(final YamlPrinter printer, final String scalar) throws YamlPrinterException {
-        boolean next = false;
-        
-        for (String line : scalar.split("\\r?\\n")) {
-            if (next) {
-                printer.println();
-            }
-            if (line.length() > 0) {
-                printer.print(line.toCharArray());
-            }
-            next = true;
-        }
-    }
+//    static final void printLines(final YamlPrinter printer, final String scalar) throws YamlPrinterException {
+//        boolean next = false;
+//        
+//        for (String line : scalar.split("\\r?\\n")) {
+//            if (next) {
+//                printer.println();
+//            }
+//            if (line.length() > 0) {
+//                printer.print(line.toCharArray());
+//            }
+//            next = true;
+//        }
+//    }
     
-    static final void writeObject(TestDescription test, YamlPrinter writer, JsonObject object) throws YamlPrinterException {
+    static final void writeObject(TestDescription test, YamlPrinter writer, JsonObject object) throws YamlPrinterException, IOException {
 
         if (object.containsKey("@type")) {
 
             final String type = object.getString("@type");
-            
-            if ("LiteralScalar".equals(type)) {
-                writer.beginBlockScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
-                for (JsonValue item : object.getJsonArray("@value")) {
-                    
-                    final String value = ((JsonString)item).getString(); 
-                    
-                    if (!value.isBlank()) {
-                        writer.print(value.toCharArray());   
-                    }
-                    writer.println();
-                }
-                writer.endScalar();
+
+            final String scalar = object.getJsonString("@value").getString();
+            final char[] chars = scalar.toCharArray();
+
+            if ("LiteralScalar".equals(type)) {           
+                writer.printLiteralScalar(chars, 0, chars.length);
                 return;
             }
 
             if ("FoldedScalar".equals(type)) {
-                writer.beginBlockScalar(BlockScalarType.FOLDED, ChompingStyle.CLIP);
-                for (JsonValue item : object.getJsonArray("@value")) {
-                    final String value = ((JsonString)item).getString(); 
-                    
-                    if (!value.isBlank()) {
-                        writer.print(value.toCharArray());   
-                    }
-                    writer.println();
-
-                }
-                writer.endScalar();
+                writer.printLiteralScalar(chars, 0, chars.length);
                 return;
             }
             
@@ -188,9 +172,9 @@ class YamlPrinterTest {
         writer.endBlockdMapping();
     }
     
-    static final void writeArray(TestDescription test, YamlPrinter printer, JsonArray array) throws YamlPrinterException {
+    static final void writeArray(TestDescription test, YamlPrinter printer, JsonArray array) throws YamlPrinterException, IOException {
         
-        printer.beginBlockSequence(test.isCompactArrays());        
+        printer.beginBlockSequence();        
         for (JsonValue value : array) {
 
             write(test, printer, value);

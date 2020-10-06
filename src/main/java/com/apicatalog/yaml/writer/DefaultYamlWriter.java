@@ -73,34 +73,7 @@ public class DefaultYamlWriter implements YamlWriter {
 //        
 //        
 //        final int maxLength = style.getMaxLineLength() - printer.indentation();
-//        
-//        writeScalar(context, maxLength, value, 0, value.length);
-//    private void writeLiteral(int maxLineLength, char[] chars, int offset, int length) throws YamlPrinterException {
-//
-//        printer.printLiteralScalar(BlockScalarType.LITERAL, ChompingStyle.CLIP);
-//        
-//        int begin = 0;
-//        boolean empty = true;
-//        
-//        for (int i = 0; i < length; i++) {
-//            
-//            if ('\n' == chars[i + offset]) {
-//                if (!empty) {
-//                    printer.print(chars, offset + begin, i - begin);
-//                    printer.println();
-//                }
-//                begin = i + 1;
-//            }
-//            
-//            empty = empty && (' ' == chars[i + offset]);
-//        }
-//        
-//        if (begin < length) {
-//            printer.print(chars, offset + begin, length - begin);
-//        }        
-//        
-//        printer.endScalar();
-//    }
+
 //
 //    private void writePlain(char[] chars, int offset, int length) throws YamlPrinterException {
 //        printer.printPlainScalar();

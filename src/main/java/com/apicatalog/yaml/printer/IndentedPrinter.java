@@ -53,7 +53,7 @@ public final class IndentedPrinter implements Closeable {
         return this;        
     }
 
-    public IndentedPrinter newLine() throws IOException {
+    public IndentedPrinter println() throws IOException {
 
         if (newLine) {
 

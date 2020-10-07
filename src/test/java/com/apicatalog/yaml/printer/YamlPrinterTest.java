@@ -116,10 +116,10 @@ class YamlPrinterTest {
         final char[] chars = scalar.toCharArray();
         
         if (scalar.startsWith("\"")) {
-            printer.printDoubleQuotedScalar(chars, 1, chars.length);
+            printer.printDoubleQuotedScalar(chars, 1, chars.length - 1);
             
         } else if (scalar.startsWith("\'")) {
-            printer.printSingleQuotedScalar(chars, 1, chars.length);
+            printer.printSingleQuotedScalar(chars, 1, chars.length - 1);
             
         } else {
             printer.printPlainScalar(chars, 0, chars.length);

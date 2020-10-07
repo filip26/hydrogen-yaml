@@ -84,7 +84,7 @@
 			"@id": "#t012",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Compacted Sequence with Plain Scalars",
-			"options": { "compactArrays": true },
+			"options": { "compactArrays": true, "maxLineLength": 20 },
 			"input": "t012-in.json",
 			"expect": "t012-out.yaml"
 		},
@@ -100,7 +100,7 @@
 			"@id": "#t014",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Invoice Example",
-			"options": { "compactArrays": true },
+			"options": { "compactArrays": true, "maxLineLength": 35 },
 			"input": "t014-in.json",
 			"expect": "t014-out.yaml"
 		},

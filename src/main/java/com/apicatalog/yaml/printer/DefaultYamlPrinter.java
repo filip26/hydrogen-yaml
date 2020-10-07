@@ -100,16 +100,18 @@ public class DefaultYamlPrinter implements YamlPrinter {
             if ('\n' == chars[i + offset]) {
                 if (!empty) {
                     printer.print(chars, offset + begin, i - begin);
-                    printer.println();
                 }
+                printer.println();
                 begin = i + 1;
+                empty = true;
+                
+            } else {
+                empty = empty && (' ' == chars[i + offset]);
             }
-            
-            empty = empty && (' ' == chars[i + offset]);
         }
-      
+
         // print remaining
-        if (begin < length) {
+        if (begin < length && !empty) {
             printer.print(chars, offset + begin, length - begin);
         }
         
@@ -244,17 +246,18 @@ public class DefaultYamlPrinter implements YamlPrinter {
     public YamlPrinter beginBlockSequence() throws YamlPrinterException, IOException {
         
         final boolean newBlock;
-        
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             printer.print('-');
-            printer.println();
+            
+            if (style.isCompactArrays()) {
+                printer.print(' ');
+                
+            } else {
+                printer.println();  
+            }
+
             newBlock = true;
             
-//        } else if (Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-//            printer.print('-');
-//            printer.print(' ');    
-//            newBlock = true;        
-
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             printer.println();
             newBlock = true;
@@ -298,12 +301,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             printer.print('-');
-            printer.println();
+
+            if (style.isCompactArrays()) {
+                printer.print(' ');
+                
+            } else {
+                printer.println();  
+            }
+
             newBlock = true;
-//        } else if (Context.COMPACT_BLOCK_SEQUENCE.equals(context.peek())) {
-//            printer.print('-');
-//            printer.print(' ');
-//            newBlock = true;
             
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             printer.println();
@@ -350,9 +356,43 @@ public class DefaultYamlPrinter implements YamlPrinter {
         beginFlowScalar(false);
         printer.print('"');
         printer.beginFlow();
-//        context.push(Context.FLOW_DOUBLE_QUOTED_SCALAR);
+
+        final int maxLineLength = style.getMaxLineLength() - printer.indentation();
+        
+        int lineIndex = 0;
+        int lastSpaceIndex = 0;
+      
+        for (int i = 0; i < length; i++) {
+          
+            if ('\n' == chars[i + offset]) {
+                
+                if (i - lineIndex > 0) {
+                    doubleEscape(chars, offset + lineIndex, i - lineIndex);
+                }
+
+                printer.println();
+                
+                lineIndex = i + 1;
+                lastSpaceIndex = i + 1;
+      
+            } else if (i - lineIndex >=  maxLineLength) {   
+                
+                doubleEscape(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
+                printer.println();
+                lineIndex = lastSpaceIndex;                
+      
+            } else if (' ' == chars[i + offset]) {
+          
+                lastSpaceIndex = i + 1;                                    
+            }
+        }
+  
+        if (lineIndex < length) {
+            doubleEscape(chars, offset + lineIndex, length - lineIndex);
+        }
 
         printer.endFlow();
+        printer.print('"');
         
         return endFlowScalar();
     }
@@ -363,17 +403,6 @@ public class DefaultYamlPrinter implements YamlPrinter {
         beginFlowScalar(false);
 
         printer.print('\'');
-        printer.beginFlow();
-  //      context.push(Context.FLOW_SINGLE_QUOTED_SCALAR);
-        printer.endFlow();
-        return endFlowScalar();
-    }
-
-    @Override
-    public YamlPrinter printPlainScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
-        
-        beginFlowScalar(false);
-
         printer.beginFlow();
         
         final int maxLineLength = style.getMaxLineLength() - printer.indentation();
@@ -386,6 +415,54 @@ public class DefaultYamlPrinter implements YamlPrinter {
             if ('\n' == chars[i + offset]) {
                 
                 if (i - lineIndex > 0) {
+                    singleEscape(chars, offset + lineIndex, i - lineIndex);
+                }
+
+                printer.println();
+                printer.println();
+                
+                lineIndex = i + 1;
+                lastSpaceIndex = i + 1;
+      
+            } else if (i - lineIndex >=  maxLineLength) {   
+                
+                singleEscape(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
+                printer.println();
+                lineIndex = lastSpaceIndex;                
+      
+            } else if (' ' == chars[i + offset]) {
+          
+                lastSpaceIndex = i + 1;                                    
+            }
+        }
+  
+        if (lineIndex < length) {
+            singleEscape(chars, offset + lineIndex, length - lineIndex);
+        }
+        
+        printer.endFlow();
+        printer.print('\'');
+        
+        return endFlowScalar();
+    }
+
+    @Override
+    public YamlPrinter printPlainScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
+        
+        beginFlowScalar(false);
+
+        printer.beginFlow();
+  
+        final int maxLineLength = Math.max(0, style.getMaxLineLength() - printer.indentation());
+        
+        int lineIndex = 0;
+        int lastSpaceIndex = 0;
+
+        for (int i = 0; i < length; i++) {
+          
+            if ('\n' == chars[i + offset]) {
+                
+                if (i > lineIndex) {
                     printer.print(chars, offset + lineIndex, i - lineIndex);
                 }
 
@@ -395,13 +472,12 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 lineIndex = i + 1;
                 lastSpaceIndex = i + 1;
       
-            } else if (i - lineIndex >=  maxLineLength) {       
+            } else if (i - lineIndex >=  maxLineLength && lastSpaceIndex - lineIndex > 0) {
                 printer.print(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
                 printer.println();
-                lineIndex = lastSpaceIndex;                
-      
-            } else if (' ' == chars[i + offset]) {
-          
+                lineIndex = lastSpaceIndex;
+
+            } else if (' ' == chars[i + offset]) {          
                 lastSpaceIndex = i + 1;                                    
             }
         }
@@ -414,7 +490,6 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         return endFlowScalar();
     }
-    
 
     @Override
     public YamlPrinter printNull() throws YamlPrinterException, IOException {

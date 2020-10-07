@@ -12,13 +12,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     enum Context { 
         DOCUMENT_BEGIN,
         DOCUMENT_END,
-//        BLOCK_SCALAR,
-//        FLOW_PLAIN_SCALAR,
-//        FLOW_DOUBLE_QUOTED_SCALAR,
-//        FLOW_SINGLE_QUOTED_SCALAR,
         BLOCK_SEQUENCE,
-//        @Deprecated
-//        COMPACT_BLOCK_SEQUENCE, 
         BLOCK_MAPPING_KEY,
         BLOCK_MAPPING_VALUE,
         }
@@ -26,7 +20,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     protected final IndentedPrinter printer;
     protected final YamlPrintStyle style;
 
-    private Deque<Context> context;
+    private final Deque<Context> context;
     
     public DefaultYamlPrinter(final IndentedPrinter writer, final YamlPrintStyle style) {
         this.printer = writer;
@@ -36,8 +30,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         this.context.push(Context.DOCUMENT_BEGIN);
     }
 
-    @Override
-    public YamlPrinter printLiteralScalar(char[] chars, int offset, int length)  throws YamlPrinterException, IOException {
+    protected YamlPrinter beginBlockScalar() throws IOException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             printer.print('-');
@@ -53,9 +46,27 @@ public class DefaultYamlPrinter implements YamlPrinter {
         } else {
             throw new IllegalStateException();
         }
-            
-        printer.print('|');
         
+        return this;
+    }
+    
+    protected YamlPrinter endBlockScalar() throws IOException {
+        
+        if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_KEY);
+      
+        } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
+            printer.print(':');
+            context.pop();
+            context.push(Context.BLOCK_MAPPING_VALUE);            
+        }
+        
+        return this;
+    }
+    
+    protected void printChomping(char[] chars, int offset, int length)  throws IOException {
+//TODO        
 //      switch (chomping) {
 //      case CLIP:
 //          break;
@@ -65,7 +76,17 @@ public class DefaultYamlPrinter implements YamlPrinter {
 //      case STRIP:
 //          printer.print('-');
 //          break;
-//      }        
+//      }
+    }
+    
+    @Override
+    public YamlPrinter printLiteralScalar(char[] chars, int offset, int length)  throws IOException {
+                  
+        beginBlockScalar();
+        
+        printer.print('|');
+
+        printChomping(chars, offset, length);
 
         printer.println();
         
@@ -94,42 +115,22 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         printer.endBlock();
 
-        return this;
+        return endBlockScalar();
     }
 
     @Override
     public YamlPrinter printFoldedScalar(char[] chars, int offset, int length)  throws YamlPrinterException, IOException {
-        
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            printer.print('-');
-            printer.print(' ');
-            
-        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            printer.print(' ');
-            
-        } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
-            context.pop();
-            context.push(Context.DOCUMENT_END);
-            
-        } else {
-            throw new IllegalStateException();
-        }
+
+        beginBlockScalar();
         
         printer.print('>');
+        
+        printChomping(chars, offset, length);
+
         printer.println();
         
         printer.beginBlock();
-        
-//        switch (chomping) {
-//        case CLIP:
-//            break;
-//        case KEEP:
-//            printer.print('+');
-//            break;
-//        case STRIP:
-//            printer.print('-');
-//            break;
-//        }
+
         final int maxLineLength = style.getMaxLineLength() - printer.indentation();
         
         int lineIndex = 0;
@@ -163,56 +164,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
         }
 
         printer.endBlock();
-        return this;
+        
+        return endBlockScalar();
     }
-
-//    
-//    @Override
-//    public YamlPrinter endScalar() throws YamlPrinterException {
-//
-//        if (Context.BLOCK_SCALAR.equals(context.peek())) {
-//           context.pop();
-//
-//           printer.endBlock();
-//           
-//           if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-//               context.pop();
-//               context.push(Context.BLOCK_MAPPING_KEY);
-//               
-//           } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
-//               printer.print(':');
-//               context.pop();
-//               context.push(Context.BLOCK_MAPPING_VALUE);            
-//           }
-//           
-//           return this;
-//
-//        } else if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
-//
-//        } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
-//            printer.print('\'');
-//               
-//        } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
-//            printer.print('"');
-//               
-//       } else {
-//               throw new IllegalStateException();
-//       }
-//
-//       context.pop();
-//       printer.endFlow();
-//       
-//       doEndScalar();
-//
-//       return this;
-//    }
     
     @Override
     public final YamlPrinter printScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
         
         final int maxLineLength = style.getMaxLineLength() - printer.indentation();
         
-        boolean allPrintable = true;
         boolean includesControl = false;
         
         int nlCount = 0;
@@ -224,8 +184,8 @@ public class DefaultYamlPrinter implements YamlPrinter {
             
             char ch = chars[i + offset];
             
-            if (allPrintable) {
-                allPrintable = YamlCharacters.IS_PRINTABLE.test(ch); 
+            if (YamlCharacters.IS_PRINTABLE.negate().test(ch)) {
+                return printDoubleQuotedScalar(chars, offset, length);
             }
             
             if (!includesControl) {
@@ -242,36 +202,33 @@ public class DefaultYamlPrinter implements YamlPrinter {
 
         if (isDocumentContext()) {
             
-            if (allPrintable) {
-           
-                if (nlCount == 0 && !includesControl && length < maxLineLength) {
+            if (nlCount == 0 && !includesControl && length < maxLineLength) {
+                return printPlainScalar(chars, offset, length);
+            }
+            
+            if (nlCount == 0 && includesControl && length < maxLineLength) {
+                return printSingleQuotedScalar(chars, offset, length);
+            }
+                            
+            if (nlMaxDistance <= maxLineLength) {
+                if (!includesControl) {
                     return printPlainScalar(chars, offset, length);
                 }
-                
-                if (nlCount == 0 && includesControl && length < maxLineLength) {
-                    return printSingleQuotedScalar(chars, offset, length);
-                }
-                                
-                if (nlMaxDistance <= maxLineLength) {
-                    if (!includesControl) {
-                        return printPlainScalar(chars, offset, length);
-                    }
-                    return printLiteralScalar(chars, offset, length);
+                return printLiteralScalar(chars, offset, length);
 
-                }
-                return printFoldedScalar(chars, offset, length);
             }
+            return printFoldedScalar(chars, offset, length);
         }
 
-        if (allPrintable && !includesControl && nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context))) {
+        if (!includesControl && nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context))) {
             return printPlainScalar(chars, offset, length);
         }
         
-        if (allPrintable && includesControl && nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context))) {
+        if (includesControl && nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context))) {
             return printSingleQuotedScalar(chars, offset, length);
         }
         
-        if (allPrintable && !Context.BLOCK_MAPPING_KEY.equals(context)) {
+        if (!Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
 
             if (nlMaxDistance <= maxLineLength) {
                 return printLiteralScalar(chars, offset, length);
@@ -390,41 +347,74 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         //!YamlPrinter.Context.BLOCK_MAPPING_KEY.equals(context)
         
-        beginScalar(false);
+        beginFlowScalar(false);
         printer.print('"');
         printer.beginFlow();
 //        context.push(Context.FLOW_DOUBLE_QUOTED_SCALAR);
 
         printer.endFlow();
-        doEndScalar();
-        return this;
+        
+        return endFlowScalar();
     }
 
     @Override
     public YamlPrinter printSingleQuotedScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
         
-        beginScalar(false);
+        beginFlowScalar(false);
 
         printer.print('\'');
         printer.beginFlow();
   //      context.push(Context.FLOW_SINGLE_QUOTED_SCALAR);
         printer.endFlow();
-        doEndScalar();
-        return this;
+        return endFlowScalar();
     }
 
     @Override
     public YamlPrinter printPlainScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
         
-        beginScalar(false);
+        beginFlowScalar(false);
 
-//        context.push(Context.FLOW_PLAIN_SCALAR);
         printer.beginFlow();
+        
+        final int maxLineLength = style.getMaxLineLength() - printer.indentation();
+        
+        int lineIndex = 0;
+        int lastSpaceIndex = 0;
+      
+        for (int i = 0; i < length; i++) {
+          
+            if ('\n' == chars[i + offset]) {
+                
+                if (i - lineIndex > 0) {
+                    printer.print(chars, offset + lineIndex, i - lineIndex);
+                }
+
+                printer.println();
+                printer.println();
+                
+                lineIndex = i + 1;
+                lastSpaceIndex = i + 1;
+      
+            } else if (i - lineIndex >=  maxLineLength) {       
+                printer.print(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
+                printer.println();
+                lineIndex = lastSpaceIndex;                
+      
+            } else if (' ' == chars[i + offset]) {
+          
+                lastSpaceIndex = i + 1;                                    
+            }
+        }
+  
+        if (lineIndex < length) {
+            printer.print(chars, offset + lineIndex, length - lineIndex);
+        }        
+        
         printer.endFlow();
         
-        doEndScalar();
-        return this;
+        return endFlowScalar();
     }
+    
 
     @Override
     public YamlPrinter printNull() throws YamlPrinterException, IOException {
@@ -433,12 +423,12 @@ public class DefaultYamlPrinter implements YamlPrinter {
             throw new IllegalStateException();
         }
 
-        beginScalar(true);
-        doEndScalar();
+        beginFlowScalar(true);
+        endFlowScalar();
         return this;
     }
     
-    protected void beginScalar(boolean empty) throws YamlPrinterException, IOException {
+    protected void beginFlowScalar(boolean empty) throws YamlPrinterException, IOException {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             printer.print('-');
@@ -463,7 +453,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
             
     }
 
-    protected void doEndScalar() throws YamlPrinterException, IOException {
+    protected YamlPrinter endFlowScalar() throws IOException {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             printer.println();
@@ -478,6 +468,8 @@ public class DefaultYamlPrinter implements YamlPrinter {
             context.pop();
             context.push(Context.BLOCK_MAPPING_VALUE);            
         }
+        
+        return this;
     }
 
     protected void endCollection() {
@@ -492,7 +484,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         }
     }
 
-    protected void  doubleEscape(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
+    protected void  doubleEscape(char[] chars, int offset, int length) throws IOException {
         int start = 0;
 
         boolean startSpaces = true; 
@@ -625,12 +617,6 @@ public class DefaultYamlPrinter implements YamlPrinter {
         }
     }
 
-//    @Override
-//    public YamlPrinter println() throws YamlPrinterException {
-//        printer.newLine();
-//        return this;
-//    }
-    
     @Override
     public void close() throws IOException {
         printer.close();
@@ -640,34 +626,5 @@ public class DefaultYamlPrinter implements YamlPrinter {
         return Context.DOCUMENT_BEGIN.equals(context.peek())
                 || Context.DOCUMENT_END.equals(context.peek());
     }
-    
-    /*
-     *     @Override
-    public YamlPrinter print(char[] chars, int offset, int length) throws YamlPrinterException {
-        
-        if (Context.BLOCK_SCALAR.equals(context.peek())) {
 
-            printer.print(chars, offset, length);
-            
-        } else if (Context.FLOW_PLAIN_SCALAR.equals(context.peek())) {
-            
-            printer.print(chars, offset, length);
-            
-        } else if (Context.FLOW_SINGLE_QUOTED_SCALAR.equals(context.peek())) {
-            
-            singleEscape(chars, offset, length);
-            
-        } else if (Context.FLOW_DOUBLE_QUOTED_SCALAR.equals(context.peek())) {
-            
-            doubleEscape(chars, offset, length);
-
-        } else {
-            throw new IllegalStateException();
-        }
-        
-        return this;
-    }
-    
-
-     */
 }

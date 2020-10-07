@@ -5,6 +5,7 @@
 			"@id": "#t001",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Plain Scalar",
+			"options": { "maxLineLength": 15},
 			"input": "t001-in.json",
 			"expect": "t001-out.yaml"
 		},

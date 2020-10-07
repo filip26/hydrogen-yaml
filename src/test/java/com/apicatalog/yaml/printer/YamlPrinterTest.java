@@ -50,6 +50,7 @@ class YamlPrinterTest {
             final YamlPrintStyle style = new YamlPrintStyle();
             
             style.setCompactArrays(testCase.isCompactArrays());
+            style.setMaxLineWidth(testCase.getMaxLineLength());
             
             YamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output), style);
             

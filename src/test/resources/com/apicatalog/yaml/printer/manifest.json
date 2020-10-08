@@ -125,6 +125,14 @@
 			"name": "Folded Scalar Example #1",
 			"input": "t017-in.json",
 			"expect": "t017-out.yaml"
-		}		
+		},
+		{
+			"@id": "#t018",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Folded Scalar Example #2",
+			"options": { "maxLineLength": 10 },			
+			"input": "t018-in.json",
+			"expect": "t018-out.yaml"
+		}				
 	]
 }

@@ -1,0 +1,4 @@
+{
+	"@type": "FoldedScalar",
+	"@value": "\nfolded line\nnext line\n  * bullet\n\n  * list\n  * line\n\nlast line"
+}

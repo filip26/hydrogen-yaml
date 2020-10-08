@@ -20,6 +20,7 @@
 			"@id": "#t003",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Folded Scalar",
+			"options": { "maxLineLength": 35 },			
 			"input": "t003-in.json",
 			"expect": "t003-out.yaml"			
 		},
@@ -117,6 +118,13 @@
 			"name": "Escaped Double Quoted",
 			"input": "t016-in.json",
 			"expect": "t016-out.yaml"
-		}
+		},
+		{
+			"@id": "#t017",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Folded Scalar Example #1",
+			"input": "t017-in.json",
+			"expect": "t017-out.yaml"
+		}		
 	]
 }

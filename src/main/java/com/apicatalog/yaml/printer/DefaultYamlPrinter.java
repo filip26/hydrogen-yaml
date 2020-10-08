@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
+import com.apicatalog.yaml.printer.scalar.FoldedPrinter;
 import com.apicatalog.yaml.writer.YamlCharacters;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 
@@ -133,37 +134,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         printer.beginBlock();
 
-        final int maxLineLength = style.getMaxLineLength() - printer.indentation();
-        
-        int lineIndex = 0;
-        int lastSpaceIndex = 0;
-      
-        for (int i = 0; i < length; i++) {
-          
-            if ('\n' == chars[i + offset]) {
-                
-                if (i - lineIndex > 0) {
-                    printer.print(chars, offset + lineIndex, i - lineIndex);
-                }
-
-                printer.println();
-                lineIndex = i + 1;
-                lastSpaceIndex = i + 1;
-      
-            } else if (i - lineIndex >=  maxLineLength) {       
-                printer.print(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
-                printer.println();
-                lineIndex = lastSpaceIndex;                
-      
-            } else if (' ' == chars[i + offset]) {
-          
-                lastSpaceIndex = i + 1;                                    
-            }
-        }
-  
-        if (lineIndex < length) {
-            printer.print(chars, offset + lineIndex, length - lineIndex);
-        }
+        (new FoldedPrinter(printer)).print(style.getMaxLineLength() - printer.indentation(), chars, offset, length);
 
         printer.endBlock();
         
@@ -374,16 +345,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 
                 lineIndex = i + 1;
                 lastSpaceIndex = i + 1;
+                
+            } else if (' ' == chars[i + offset]) {                
+                lastSpaceIndex = i + 1;                                    
       
             } else if (i - lineIndex >=  maxLineLength) {   
                 
                 doubleEscape(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
                 printer.println();
-                lineIndex = lastSpaceIndex;                
-      
-            } else if (' ' == chars[i + offset]) {
-          
-                lastSpaceIndex = i + 1;                                    
+                lineIndex = lastSpaceIndex;
             }
         }
   
@@ -423,16 +393,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 
                 lineIndex = i + 1;
                 lastSpaceIndex = i + 1;
-      
+                
+            } else if (' ' == chars[i + offset]) {          
+                lastSpaceIndex = i + 1;                                    
+
             } else if (i - lineIndex >=  maxLineLength) {   
                 
                 singleEscape(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
                 printer.println();
-                lineIndex = lastSpaceIndex;                
-      
-            } else if (' ' == chars[i + offset]) {
-          
-                lastSpaceIndex = i + 1;                                    
+                lineIndex = lastSpaceIndex;                      
             }
         }
   
@@ -471,14 +440,14 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 
                 lineIndex = i + 1;
                 lastSpaceIndex = i + 1;
+                
+            } else if (' ' == chars[i + offset]) {          
+                lastSpaceIndex = i + 1;                                    
       
-            } else if (i - lineIndex >=  maxLineLength && lastSpaceIndex - lineIndex > 0) {
+            } else if (i - lineIndex >=  maxLineLength && lastSpaceIndex - lineIndex > 1) {
                 printer.print(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
                 printer.println();
                 lineIndex = lastSpaceIndex;
-
-            } else if (' ' == chars[i + offset]) {          
-                lastSpaceIndex = i + 1;                                    
             }
         }
   

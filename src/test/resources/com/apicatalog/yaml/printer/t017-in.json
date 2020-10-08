@@ -1,0 +1,5 @@
+{
+	"@type": "FoldedScalar",
+	"@value": "foo \n\n  bar\n\nbaz"
+}
+

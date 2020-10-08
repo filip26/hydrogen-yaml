@@ -26,7 +26,7 @@
 			"@id": "#t004",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Folded Block",
-			"options": { "maxLineLength": 15},
+			"options": { "maxLineLength": 20},
 			"input": "t004-in.json",
 			"expect": "t004-out.yaml"
 		},

@@ -123,7 +123,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter printFoldedScalar(char[] chars, int offset, int length)  throws YamlPrinterException, IOException {
+    public YamlPrinter printFoldedScalar(char[] chars, int offset, int length)  throws IOException {
 
         beginBlockScalar();
         
@@ -143,7 +143,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
     
     @Override
-    public final YamlPrinter printScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
+    public final YamlPrinter printScalar(char[] chars, int offset, int length) throws IOException {
         
         final int maxLineLength = style.getMaxLineLength() - printer.indentation();
         
@@ -197,9 +197,10 @@ public class DefaultYamlPrinter implements YamlPrinter {
             }
                                         
             if (nlMaxDistance <= maxLineLength) {
-                return includesControl
-                            ? (nlCount > 1 ? printLiteralScalar(chars, offset, length) : printSingleQuotedScalar(chars, offset, length))  
-                            : printPlainScalar(chars, offset, length);
+                if (includesControl) {
+                    return nlCount > 1 ? printLiteralScalar(chars, offset, length) : printSingleQuotedScalar(chars, offset, length);
+                }  
+                return printPlainScalar(chars, offset, length);
             }
             return printFoldedScalar(chars, offset, length);
         }
@@ -223,7 +224,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter beginBlockSequence() throws YamlPrinterException, IOException {
+    public YamlPrinter beginBlockSequence() throws IOException {
         
         final boolean newBlock;
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
@@ -260,7 +261,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter endBlockSequence() throws YamlPrinterException {
+    public YamlPrinter endBlockSequence() {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             context.pop();
@@ -275,7 +276,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter beginBlockMapping() throws YamlPrinterException, IOException {
+    public YamlPrinter beginBlockMapping() throws IOException {
         
         final boolean newBlock;
 
@@ -314,7 +315,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter endBlockdMapping() throws YamlPrinterException {
+    public YamlPrinter endBlockdMapping() {
         
         if (Context.BLOCK_MAPPING_KEY.equals(context.peek()) || Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             context.pop();
@@ -329,7 +330,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter printDoubleQuotedScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
+    public YamlPrinter printDoubleQuotedScalar(char[] chars, int offset, int length) throws IOException {
 
         beginFlowScalar(false);
 
@@ -351,7 +352,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter printSingleQuotedScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
+    public YamlPrinter printSingleQuotedScalar(char[] chars, int offset, int length) throws IOException {
         
         beginFlowScalar(false);
 
@@ -399,7 +400,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter printPlainScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
+    public YamlPrinter printPlainScalar(char[] chars, int offset, int length) throws IOException {
         
         beginFlowScalar(false);
 
@@ -444,7 +445,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter printNull() throws YamlPrinterException, IOException {
+    public YamlPrinter printNull() throws IOException {
 
         if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
             throw new IllegalStateException();
@@ -455,7 +456,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         return this;
     }
     
-    protected void beginFlowScalar(boolean empty) throws YamlPrinterException, IOException {
+    protected void beginFlowScalar(boolean empty) throws IOException {
 
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             printer.print('-');
@@ -465,16 +466,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
             
         } else if (!empty && Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             printer.print(' ');
-            
-        } else if (Context.BLOCK_MAPPING_KEY.equals(context.peek())
-                || Context.BLOCK_MAPPING_VALUE.equals(context.peek())
-                ) {
-            
+
         } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
             context.pop();
             context.push(Context.DOCUMENT_END);
             
-        } else {
+        } else if (!Context.BLOCK_MAPPING_KEY.equals(context.peek())
+                && !Context.BLOCK_MAPPING_VALUE.equals(context.peek())
+                ) {
+            
             throw new IllegalStateException();
         }
             
@@ -511,7 +511,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         }
     }
 
-    protected void singleEscape(final char[] chars, final int offset, final int length) throws YamlPrinterException, IOException {
+    protected void singleEscape(final char[] chars, final int offset, final int length) throws IOException {
         
         int start = 0;
         

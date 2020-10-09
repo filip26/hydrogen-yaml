@@ -58,7 +58,7 @@ class YamlPrinterTest {
             
             write(testCase, yamlPrinter, testParser.getValue());
             
-        } catch (YamlPrinterException | IOException e) {    
+        } catch (IOException e) {    
             e.printStackTrace();
             fail(e);
         }
@@ -81,7 +81,7 @@ class YamlPrinterTest {
         
     }
     
-    static final void write(TestDescription test, YamlPrinter printer, JsonValue value) throws YamlPrinterException, IOException { 
+    static final void write(TestDescription test, YamlPrinter printer, JsonValue value) throws IOException { 
         
         switch (value.getValueType()) {
         case OBJECT:
@@ -111,7 +111,7 @@ class YamlPrinterTest {
         }        
     }
     
-    static final void writeScalar(final YamlPrinter printer, final String scalar) throws YamlPrinterException, IOException {
+    static final void writeScalar(final YamlPrinter printer, final String scalar) throws IOException {
         
         final char[] chars = scalar.toCharArray();
         
@@ -126,7 +126,7 @@ class YamlPrinterTest {
         }
     }
         
-    static final void writeObject(TestDescription test, YamlPrinter writer, JsonObject object) throws YamlPrinterException, IOException {
+    static final void writeObject(TestDescription test, YamlPrinter writer, JsonObject object) throws IOException {
 
         if (object.containsKey("@type")) {
 
@@ -159,7 +159,7 @@ class YamlPrinterTest {
         writer.endBlockdMapping();
     }
     
-    static final void writeArray(TestDescription test, YamlPrinter printer, JsonArray array) throws YamlPrinterException, IOException {
+    static final void writeArray(TestDescription test, YamlPrinter printer, JsonArray array) throws IOException {
         
         printer.beginBlockSequence();        
         for (JsonValue value : array) {

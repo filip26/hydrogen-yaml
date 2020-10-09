@@ -4,7 +4,7 @@ import com.apicatalog.yaml.writer.YamlWriter;
 
 public interface YamlWriterBuilder {
     
-    YamlWriterBuilder maxiumWidth(int maximumWidth);
+    YamlWriterBuilder maxLineWidth(int maximumWidth);
     
     YamlWriter build();
 }

@@ -32,8 +32,6 @@ import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlMappingBuilder;
 import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequenceBuilder;
-import com.apicatalog.yaml.printer.IndentedPrinter;
-import com.apicatalog.yaml.printer.DefaultYamlPrinter;
 
 class YamlWriterTest {
 
@@ -88,10 +86,8 @@ class YamlWriterTest {
 
             final YamlPrintStyle style = new YamlPrintStyle();
             style.setMaxLineWidth(testCase.getMaxLineLength());
-            
-            final DefaultYamlPrinter yamlPrinter = new DefaultYamlPrinter(new IndentedPrinter(output), style);
-            
-            try (YamlWriter yamlWriter = new DefaultYamlWriter(yamlPrinter)) {
+
+            try (YamlWriter yamlWriter = Yaml.createWriter(output, style)) {
 
                 yamlWriter.write(toYaml(testCase, testParser.getValue()));
 

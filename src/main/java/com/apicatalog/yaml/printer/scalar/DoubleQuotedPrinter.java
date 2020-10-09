@@ -90,7 +90,7 @@ public class DoubleQuotedPrinter {
         return 1;
     }
 
-    protected static final boolean hasTrailingSpace(char[] chars, int offset, int length) throws IOException {
+    protected static final boolean hasTrailingSpace(char[] chars, int offset, int length) {
         return (chars[offset + length - 1] == ' '); 
     }
     

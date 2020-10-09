@@ -21,13 +21,17 @@ public class YamlWriterBuilderImpl implements YamlWriterBuilder {
     }
     
     @Override
-    public YamlWriterBuilder maxiumWidth(int maximumWidth) {
-        // TODO Auto-generated method stub
-        return null;
+    public YamlWriterBuilder maxLineWidth(int maxLineWidth) {
+        style.setMaxLineWidth(maxLineWidth);
+        return this;
     }
 
     @Override
     public YamlWriter build() {
+        return build(writer, style);
+    }
+    
+    public static final YamlWriter build(final Writer writer, final YamlPrintStyle style) {
         return new DefaultYamlWriter(new DefaultYamlPrinter(new IndentedPrinter(writer), style));
     }
 }

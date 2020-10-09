@@ -29,10 +29,11 @@ import com.apicatalog.yaml.impl.YamlWriterBuilderImpl;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.parser.impl.YamlParserImpl;
 import com.apicatalog.yaml.parser.impl.YamlTokenizer;
+import com.apicatalog.yaml.writer.YamlPrintStyle;
+import com.apicatalog.yaml.writer.YamlWriter;
 
 public final class Yaml {
 
-    
     public static final YamlParser createParser(InputStream input) {
         return new YamlParserImpl(new YamlTokenizer(new InputStreamReader(input))); //TODO BOM
     }
@@ -49,13 +50,20 @@ public final class Yaml {
         return new YamlWriterBuilderImpl(writer);
     }
     
+    public static YamlWriter createWriter(Writer writer, YamlPrintStyle style) {
+        return YamlWriterBuilderImpl.build(writer, style);
+    }
+
+    public static YamlWriter createWriter(OutputStream output, YamlPrintStyle style) {
+        return YamlWriterBuilderImpl.build(new OutputStreamWriter(output), style);
+    }
+
     public static final YamlMappingBuilder createMappingBuilder() {
         return new YamlMappingBuilderImpl();
     }
 
     public static final YamlMappingBuilder createMappingBuilder(YamlMapping mapping) {
-        //TODO
-        return null;        
+        return YamlMappingBuilderImpl.of(mapping);
     }
 
     public static final YamlSequenceBuilder createSequenceBuilder() {

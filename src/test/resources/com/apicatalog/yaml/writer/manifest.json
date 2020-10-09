@@ -55,6 +55,7 @@
 			"@id": "#t008",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Document level multi-line double-quoted scalar",
+			"options": { "maxLineLength": 5},
 			"input": "t008-in.json",
 			"expect": "t008-out.yaml"
 		}

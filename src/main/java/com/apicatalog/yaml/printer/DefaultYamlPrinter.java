@@ -174,34 +174,34 @@ public class DefaultYamlPrinter implements YamlPrinter {
             }
         }
 
+        if (' ' == chars[offset]) {
+            return Context.BLOCK_MAPPING_KEY.equals(context.peek()) || nlCount > 0
+                    ? printDoubleQuotedScalar(chars, offset, length)
+                    : printSingleQuotedScalar(chars, offset, length);
+        }
+        
         if (isDocumentContext()) {
             
-            if (nlCount == 0 && !includesControl && length < maxLineLength) {
-                return printPlainScalar(chars, offset, length);
+            if (nlCount == 0 && length < maxLineLength) {
+                return includesControl
+                            ? printSingleQuotedScalar(chars, offset, length)
+                            : printPlainScalar(chars, offset, length);
             }
-            
-            if (nlCount == 0 && includesControl && length < maxLineLength) {
-                return printSingleQuotedScalar(chars, offset, length);
-            }
-                            
+                                        
             if (nlMaxDistance <= maxLineLength) {
-                if (!includesControl) {
-                    return printPlainScalar(chars, offset, length);
-                }
-                return printLiteralScalar(chars, offset, length);
-
+                return includesControl
+                            ? printLiteralScalar(chars, offset, length)
+                            : printPlainScalar(chars, offset, length);
             }
             return printFoldedScalar(chars, offset, length);
         }
 
-        if (!includesControl && nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context))) {
-            return printPlainScalar(chars, offset, length);
+        if (nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context.peek()))) {
+            return includesControl
+                        ? printSingleQuotedScalar(chars, offset, length)
+                        : printPlainScalar(chars, offset, length);
         }
-        
-        if (includesControl && nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context))) {
-            return printSingleQuotedScalar(chars, offset, length);
-        }
-        
+                
         if (!Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
 
             if (nlMaxDistance <= maxLineLength) {
@@ -322,14 +322,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
 
     @Override
     public YamlPrinter printDoubleQuotedScalar(char[] chars, int offset, int length) throws YamlPrinterException, IOException {
-        
+
         beginFlowScalar(false);
+
         printer.print('"');
         printer.beginFlow();
-        
+
         if (Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
             (new DoubleQuotedPrinter(printer)).printInline(chars, offset, length);
-            
+
         } else {
             (new DoubleQuotedPrinter(printer)).printFolded(style.getMaxLineLength() - printer.indentation(), chars, offset, length);
         }

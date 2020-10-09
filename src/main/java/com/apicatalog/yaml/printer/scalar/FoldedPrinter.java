@@ -33,7 +33,6 @@ public class FoldedPrinter {
                         printer.print(chars, offset + lineIndex, i - lineIndex);
                         printer.println();
                     }
-                     
                     
                     if (i + 1 < length && chars[i + offset + 1] == ' ') {
                         context = Context.INDENTED;

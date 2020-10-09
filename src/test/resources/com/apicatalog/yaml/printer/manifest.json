@@ -116,6 +116,7 @@
 			"@id": "#t016",
 			"@type": ["PositiveEvaluationTest"],
 			"name": "Escaped Double Quoted",
+			"options": { "maxLineLength": 10 },
 			"input": "t016-in.json",
 			"expect": "t016-out.yaml"
 		},

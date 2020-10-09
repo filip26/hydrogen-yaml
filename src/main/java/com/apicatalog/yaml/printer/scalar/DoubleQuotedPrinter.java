@@ -35,7 +35,9 @@ public class DoubleQuotedPrinter {
                     }
                 }
 
-                printer.println();
+                if (!printer.isNewLine()) {
+                    printer.println();
+                }
                 printer.println();
                 
                 lineIndex = i + 1;

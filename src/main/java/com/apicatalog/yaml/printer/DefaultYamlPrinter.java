@@ -149,6 +149,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         boolean includesControl = false;
         
+        int wsCount = 0;
         int nlCount = 0;
         
         int nlLastIndex = 0;
@@ -171,13 +172,20 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 
                 nlMaxDistance = Math.max(nlMaxDistance, i - nlLastIndex);
                 nlLastIndex = i;
+                
+            } else if (' ' == ch) {
+                wsCount++;
             }
         }
 
-        if (' ' == chars[offset]) {
+        if (' ' == chars[offset] || ' ' == chars[offset + length - 1]) {
             return Context.BLOCK_MAPPING_KEY.equals(context.peek()) || nlCount > 0
                     ? printDoubleQuotedScalar(chars, offset, length)
                     : printSingleQuotedScalar(chars, offset, length);
+        }
+        
+        if (wsCount + nlCount > length / 2) {
+            return printDoubleQuotedScalar(chars, offset, length);
         }
         
         if (isDocumentContext()) {
@@ -190,7 +198,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
                                         
             if (nlMaxDistance <= maxLineLength) {
                 return includesControl
-                            ? printLiteralScalar(chars, offset, length)
+                            ? (nlCount > 1 ? printLiteralScalar(chars, offset, length) : printSingleQuotedScalar(chars, offset, length))  
                             : printPlainScalar(chars, offset, length);
             }
             return printFoldedScalar(chars, offset, length);
@@ -205,7 +213,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         if (!Context.BLOCK_MAPPING_KEY.equals(context.peek())) {
 
             if (nlMaxDistance <= maxLineLength) {
-                return printLiteralScalar(chars, offset, length);
+                return nlCount > 1 ? printLiteralScalar(chars, offset, length) : printSingleQuotedScalar(chars, offset, length);
 
             }
             return printFoldedScalar(chars, offset, length);
@@ -335,8 +343,9 @@ public class DefaultYamlPrinter implements YamlPrinter {
             (new DoubleQuotedPrinter(printer)).printFolded(style.getMaxLineLength() - printer.indentation(), chars, offset, length);
         }
 
-        printer.endFlow();
         printer.print('"');
+        printer.endFlow();
+
         
         return endFlowScalar();
     }
@@ -383,8 +392,8 @@ public class DefaultYamlPrinter implements YamlPrinter {
             singleEscape(chars, offset + lineIndex, length - lineIndex);
         }
         
-        printer.endFlow();
         printer.print('\'');
+        printer.endFlow();
         
         return endFlowScalar();
     }

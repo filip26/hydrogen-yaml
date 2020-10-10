@@ -1,3 +1,5 @@
 [
-	"http://apicatalog.com/?query=10#hash"
+	"http://apicatalog.com/?query=10#hash",
+	"#b",
+	"?a#b"
 ]

@@ -556,10 +556,15 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
     
     protected static final boolean isURI(char[] chars, int offset, int length) {
+
+        // just fragment?
+        if (chars[offset] == '#') {
+            return false;
+        }
         
         try {
-            URI.create(String.valueOf(chars, offset, length));
-            return true;
+            
+            return URI.create(String.valueOf(chars, offset, length)) != null;
             
         } catch (IllegalArgumentException e) {    
         }

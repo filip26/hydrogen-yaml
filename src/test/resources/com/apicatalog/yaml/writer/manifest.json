@@ -72,6 +72,13 @@
 			"name": "Mappings with URLs",
 			"input": "t010-in.json",
 			"expect": "t010-out.yaml"
+		},
+		{
+			"@id": "#t011",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Sequence with URLs",
+			"input": "t011-in.json",
+			"expect": "t011-out.yaml"
 		}
 	]
 }

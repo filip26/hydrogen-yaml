@@ -1,6 +1,7 @@
 package com.apicatalog.yaml.printer;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
@@ -187,7 +188,18 @@ public class DefaultYamlPrinter implements YamlPrinter {
         if (wsCount + nlCount > length / 2) {
             return printDoubleQuotedScalar(chars, offset, length);
         }
-        
+
+        if (nlCount == 0 && includesControl && length < maxLineLength 
+                    && (Context.BLOCK_MAPPING_VALUE.equals(context.peek())
+                            || Context.BLOCK_SEQUENCE.equals(context.peek())
+                            || Context.DOCUMENT_END.equals(context.peek())
+                            )) {
+
+            return isURI(chars, offset, length)
+                    ?printPlainScalar(chars, offset, length)
+                    : printSingleQuotedScalar(chars, offset, length);                
+        }
+
         if (isDocumentContext()) {
             
             if (nlCount == 0 && length < maxLineLength) {
@@ -204,7 +216,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
             }
             return printFoldedScalar(chars, offset, length);
         }
-
+        
         if (nlCount == 0 && (length < maxLineLength || Context.BLOCK_MAPPING_KEY.equals(context.peek()))) {
             return includesControl
                         ? printSingleQuotedScalar(chars, offset, length)
@@ -541,6 +553,18 @@ public class DefaultYamlPrinter implements YamlPrinter {
     private final boolean isDocumentContext() {
         return Context.DOCUMENT_BEGIN.equals(context.peek())
                 || Context.DOCUMENT_END.equals(context.peek());
+    }
+    
+    protected static final boolean isURI(char[] chars, int offset, int length) {
+        
+        try {
+            URI.create(String.valueOf(chars, offset, length));
+            return true;
+            
+        } catch (IllegalArgumentException e) {    
+        }
+        
+        return false;
     }
 
 }

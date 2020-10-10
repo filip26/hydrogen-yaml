@@ -1,5 +1,8 @@
 # Java API for YAML Processing
 
+![Java CI with Maven](https://github.com/filip26/hydrogen-yaml/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+
 An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). 
 
 Hydrogen YAML is the simplest human-readable data-serialization language. Some YAML features are not intentionally supported.

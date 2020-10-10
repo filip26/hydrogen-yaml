@@ -11,7 +11,7 @@ import com.apicatalog.yaml.parser.YamlLocation;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.parser.YamlParsingException;
 
-public class YamlParserImpl implements YamlParser {
+class YamlParserImpl implements YamlParser {
 
     private final YamlTokenizer tokenizer;
     
@@ -23,8 +23,7 @@ public class YamlParserImpl implements YamlParser {
 
     @Override
     public boolean hasNext() throws YamlParsingException {
-        // TODO Auto-generated method stub
-        return false;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -34,8 +33,7 @@ public class YamlParserImpl implements YamlParser {
             throw new NoSuchElementException();
         }
         
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -45,8 +43,7 @@ public class YamlParserImpl implements YamlParser {
 
     @Override
     public YamlScalar getScalar() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -64,19 +61,18 @@ public class YamlParserImpl implements YamlParser {
             
         default:
         }
-        throw new IllegalStateException(/*TODO message*/);
+        
+        throw new IllegalStateException();
     }
 
     @Override
     public YamlMapping getMapping() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override
     public YamlSequence getSequence() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 
     @Override

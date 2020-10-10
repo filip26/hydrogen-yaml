@@ -4,6 +4,8 @@ import java.util.ResourceBundle;
 
 public final class YamlMessages {
 
+    private YamlMessages() {}
+    
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("com.apicatalog.yaml.impl.messages");
     
 }

@@ -16,7 +16,6 @@
 package com.apicatalog.yaml;
 
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Reader;
@@ -27,34 +26,60 @@ import com.apicatalog.yaml.impl.YamlScalarImpl;
 import com.apicatalog.yaml.impl.YamlSequenceBuilderImpl;
 import com.apicatalog.yaml.impl.YamlWriterBuilderImpl;
 import com.apicatalog.yaml.parser.YamlParser;
-import com.apicatalog.yaml.parser.impl.YamlParserImpl;
-import com.apicatalog.yaml.parser.impl.YamlTokenizer;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
 
 public final class Yaml {
 
+    private Yaml() {}
+    
     public static final YamlParser createParser(InputStream input) {
-        return new YamlParserImpl(new YamlTokenizer(new InputStreamReader(input))); //TODO BOM
+        throw new UnsupportedOperationException();
     }
 
     public static final YamlParser createParser(Reader reader) {
-        return new YamlParserImpl(new YamlTokenizer(reader));
+        if (reader == null) {
+            throw new IllegalArgumentException();
+        }
+
+        throw new UnsupportedOperationException();
     }
     
     public static final YamlWriterBuilder createWriter(OutputStream output) {
+        if (output == null) {
+            throw new IllegalArgumentException();
+        }
+
         return new YamlWriterBuilderImpl(new OutputStreamWriter(output));
     }
     
     public static final YamlWriterBuilder createWriter(Writer writer) {
+        if (writer == null) {
+            throw new IllegalArgumentException();
+        }
+        
         return new YamlWriterBuilderImpl(writer);
     }
     
     public static YamlWriter createWriter(Writer writer, YamlPrintStyle style) {
+        if (writer == null) {
+            throw new IllegalArgumentException();
+        }
+        if (style == null) {
+            throw new IllegalArgumentException();
+        }
+
         return YamlWriterBuilderImpl.build(writer, style);
     }
 
     public static YamlWriter createWriter(OutputStream output, YamlPrintStyle style) {
+        if (output == null) {
+            throw new IllegalArgumentException();
+        }
+        if (style == null) {
+            throw new IllegalArgumentException();
+        }
+
         return YamlWriterBuilderImpl.build(new OutputStreamWriter(output), style);
     }
 
@@ -63,6 +88,10 @@ public final class Yaml {
     }
 
     public static final YamlMappingBuilder createMappingBuilder(YamlMapping mapping) {
+        if (mapping == null) {
+            throw new IllegalArgumentException();
+        }
+
         return YamlMappingBuilderImpl.of(mapping);
     }
 
@@ -71,11 +100,14 @@ public final class Yaml {
     }
     
     public static final YamlSequenceBuilder createSequenceBuilder(YamlSequence sequence) {
+        if (sequence == null) {
+            throw new IllegalArgumentException();
+        }
+
         return YamlSequenceBuilderImpl.of(sequence);
     }
     
-    public static final YamlScalar createScalar(String value) {
-        
+    public static final YamlScalar createScalar(String value) {        
         if (value == null) {
             throw new IllegalArgumentException();
         }

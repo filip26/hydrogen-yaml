@@ -23,10 +23,8 @@ public interface YamlNode {
         SCALAR,
         NULL
     }
-
-    public static final YamlNode NULL = () -> {
-            return NodeType.NULL;        
-    };
+    
+    static final YamlNode NULL = () -> NodeType.NULL;
     
     NodeType getNodeType();
     
@@ -41,5 +39,4 @@ public interface YamlNode {
     default YamlSequence asSequence() {
         return YamlSequence.class.cast(this);
     }
-    
 }

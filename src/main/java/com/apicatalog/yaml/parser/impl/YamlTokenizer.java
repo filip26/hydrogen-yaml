@@ -6,7 +6,7 @@ import java.io.Reader;
 
 import com.apicatalog.yaml.parser.YamlLocation;
 
-public final class YamlTokenizer implements Closeable {
+final class YamlTokenizer implements Closeable {
 
     private final Reader reader;
     
@@ -16,12 +16,10 @@ public final class YamlTokenizer implements Closeable {
     
     @Override
     public void close() throws IOException {
-        // TODO Auto-generated method stub
-        
+        reader.close();
     }
 
     public YamlLocation getLocation() {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException();
     }
 }

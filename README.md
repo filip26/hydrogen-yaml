@@ -34,5 +34,5 @@ YamlNode node = Yaml.createMappingBuilder()
                                          .add("item")
                     ).build();
      
-Yaml.createWriter(InputStream).write(YamlNode);
+Yaml.createWriter(OutputStream|Writer).write(YamlNode);
 ```

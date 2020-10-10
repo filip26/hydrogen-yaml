@@ -39,14 +39,14 @@ public class YamlSequenceBuilderImpl implements YamlSequenceBuilder {
 
     @Override
     public YamlSequenceBuilder add(YamlMappingBuilder builder) {
-        // TODO Auto-generated method stub
+        items.add(builder.build());
         return this;
     }
 
     @Override
     public YamlSequenceBuilder add(YamlSequenceBuilder builder) {
-        items.addAll(builder.build());
-        return null;
+        items.add(builder.build());
+        return this;
     }
 
     @Override

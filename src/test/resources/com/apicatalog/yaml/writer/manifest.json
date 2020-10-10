@@ -58,7 +58,13 @@
 			"options": { "maxLineLength": 5},
 			"input": "t008-in.json",
 			"expect": "t008-out.yaml"
+		},
+		{
+			"@id": "#t009",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Embedded Mappings",
+			"input": "t009-in.json",
+			"expect": "t009-out.yaml"
 		}
-
 	]
 }

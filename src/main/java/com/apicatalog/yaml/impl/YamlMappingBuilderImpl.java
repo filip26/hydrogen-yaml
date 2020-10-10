@@ -32,12 +32,6 @@ public class YamlMappingBuilderImpl implements YamlMappingBuilder {
     }
 
     @Override
-    public YamlMappingBuilder addNull(String key) {
-        mapping.put(key, YamlNode.NULL);
-        return this;
-    }
-
-    @Override
     public YamlMappingBuilder add(String key, YamlMappingBuilder value) {
         mapping.put(key, value.build());
         return this;
@@ -54,9 +48,6 @@ public class YamlMappingBuilderImpl implements YamlMappingBuilder {
         if (mapping == null || mapping.isEmpty()) {
             return new YamlMappingImpl(Collections.<String, YamlNode>emptyMap());
         }
-        
         return new YamlMappingImpl(Collections.unmodifiableMap(mapping));
     }
-
-    
 }

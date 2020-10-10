@@ -17,17 +17,17 @@ package com.apicatalog.yaml;
 
 public interface YamlMappingBuilder {
 
-    
     YamlMappingBuilder add(String key, YamlNode value);
     
-    YamlMappingBuilder addNull(String key);
+    default YamlMappingBuilder addNull(String key) {
+        add(key, YamlNode.NULL);
+        return this;
+    }
     
     YamlMappingBuilder add(String key, YamlMappingBuilder value);
     
     YamlMappingBuilder add(String key, YamlSequenceBuilder value);
 
-    //TODO builder as a key
-    
     default YamlMappingBuilder remove(YamlNode key) {
         throw new UnsupportedOperationException();
     }

@@ -75,6 +75,11 @@ public final class Yaml {
     }
     
     public static final YamlScalar createScalar(String value) {
+        
+        if (value == null) {
+            throw new IllegalArgumentException();
+        }
+        
         return new YamlScalarImpl(value);        
     }
 }

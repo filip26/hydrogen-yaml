@@ -65,6 +65,13 @@
 			"name": "Embedded Mappings",
 			"input": "t009-in.json",
 			"expect": "t009-out.yaml"
+		},
+		{
+			"@id": "#t010",
+			"@type": ["PositiveEvaluationTest"],
+			"name": "Mappings with URLs",
+			"input": "t010-in.json",
+			"expect": "t010-out.yaml"
 		}
 	]
 }

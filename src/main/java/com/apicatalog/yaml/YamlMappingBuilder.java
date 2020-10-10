@@ -17,11 +17,15 @@ package com.apicatalog.yaml;
 
 public interface YamlMappingBuilder {
 
+    
+    default YamlMappingBuilder add(String key, String scalar) {
+        return add(key, Yaml.createScalar(scalar));
+    }
+    
     YamlMappingBuilder add(String key, YamlNode value);
     
     default YamlMappingBuilder addNull(String key) {
-        add(key, YamlNode.NULL);
-        return this;
+        return add(key, YamlNode.NULL);
     }
     
     YamlMappingBuilder add(String key, YamlMappingBuilder value);

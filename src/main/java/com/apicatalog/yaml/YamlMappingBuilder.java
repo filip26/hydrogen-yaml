@@ -16,7 +16,6 @@
 package com.apicatalog.yaml;
 
 public interface YamlMappingBuilder {
-
     
     default YamlMappingBuilder add(String key, String scalar) {
         return add(key, Yaml.createScalar(scalar));
@@ -32,7 +31,7 @@ public interface YamlMappingBuilder {
     
     YamlMappingBuilder add(String key, YamlSequenceBuilder value);
 
-    default YamlMappingBuilder remove(YamlNode key) {
+    default YamlMappingBuilder remove(String key) {
         throw new UnsupportedOperationException();
     }
 

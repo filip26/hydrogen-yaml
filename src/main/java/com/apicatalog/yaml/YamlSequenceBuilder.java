@@ -18,6 +18,10 @@ package com.apicatalog.yaml;
 public interface YamlSequenceBuilder {
 
     YamlSequenceBuilder add(YamlNode node);
+
+    default YamlSequenceBuilder add(String scalar) {
+        return add(Yaml.createScalar(scalar));
+    }
     
     YamlSequenceBuilder addNull();
     

@@ -24,6 +24,6 @@ public interface YamlMapping extends YamlCollection, Map<String, YamlNode> {
     YamlMapping getMapping(String key);
     
     YamlScalar getScalar(String key);
-    
+
     boolean isNull(String key);
 }

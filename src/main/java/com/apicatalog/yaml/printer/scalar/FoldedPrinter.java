@@ -19,7 +19,7 @@ import java.io.IOException;
 
 import com.apicatalog.yaml.printer.IndentedPrinter;
 
-public class FoldedPrinter {
+public final class FoldedPrinter {
     
     enum Context { LINE, INDENTED }
 

@@ -19,9 +19,9 @@ import java.io.IOException;
 
 import com.apicatalog.yaml.printer.IndentedPrinter;
 
-public class DoubleQuotedPrinter {
+public final class DoubleQuotedPrinter {
     
-    final IndentedPrinter printer;
+    private final IndentedPrinter printer;
     
     public DoubleQuotedPrinter(final IndentedPrinter printer) {
         this.printer = printer;
@@ -95,7 +95,7 @@ public class DoubleQuotedPrinter {
         }
     }
 
-    protected int printLeadingSpace(char[] chars, int offset) throws IOException {
+    private int printLeadingSpace(char[] chars, int offset) throws IOException {
 
         if (!printer.isNewLine() || ' ' != chars[offset]) {
             return 0;
@@ -105,11 +105,11 @@ public class DoubleQuotedPrinter {
         return 1;
     }
 
-    protected static final boolean hasTrailingSpace(char[] chars, int offset, int length) {
+    private static final boolean hasTrailingSpace(char[] chars, int offset, int length) {
         return (chars[offset + length - 1] == ' '); 
     }
     
-    protected void  doubleEscape(char[] chars, int offset, int length) throws IOException {
+    private void doubleEscape(char[] chars, int offset, int length) throws IOException {
         
         int start = 0;
 

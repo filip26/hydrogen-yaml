@@ -22,6 +22,7 @@ import java.util.Deque;
 
 import com.apicatalog.yaml.printer.scalar.DoubleQuotedPrinter;
 import com.apicatalog.yaml.printer.scalar.FoldedPrinter;
+import com.apicatalog.yaml.printer.scalar.SingleQuotedPrinter;
 import com.apicatalog.yaml.writer.YamlCharacters;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 
@@ -84,17 +85,23 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
     
     protected void printChomping(char[] chars, int offset, int length)  throws IOException {
-//TODO        
-//      switch (chomping) {
-//      case CLIP:
-//          break;
-//      case KEEP:
-//          printer.print('+');
-//          break;
-//      case STRIP:
-//          printer.print('-');
-//          break;
-//      }
+        
+        int trailingNl = 0;
+        
+        for (int i = length - 1; i >= 0; i--) {
+            if ('\n' != chars[offset + i]) {
+                break;
+            }
+            trailingNl++;
+        }
+        
+        if (trailingNl == 0) {
+            // strip
+
+        } else if (trailingNl > 1) {
+            printer.print('+'); // keep
+        }
+        //clip
     }
     
     @Override
@@ -386,39 +393,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
         printer.print('\'');
         printer.beginFlow();
         
-        final int maxLineLength = style.getMaxLineLength() - printer.indentation();
-        
-        int lineIndex = 0;
-        int lastSpaceIndex = 0;
-      
-        for (int i = 0; i < length; i++) {
-          
-            if ('\n' == chars[i + offset]) {
-                
-                if (i - lineIndex > 0) {
-                    singleEscape(chars, offset + lineIndex, i - lineIndex);
-                }
-
-                printer.println();
-                printer.println();
-                
-                lineIndex = i + 1;
-                lastSpaceIndex = i + 1;
-                
-            } else if (' ' == chars[i + offset]) {          
-                lastSpaceIndex = i + 1;                                    
-
-            } else if (i - lineIndex >=  maxLineLength) {   
-                
-                singleEscape(chars, offset + lineIndex, lastSpaceIndex - lineIndex - 1);
-                printer.println();
-                lineIndex = lastSpaceIndex;                      
-            }
-        }
-  
-        if (lineIndex < length) {
-            singleEscape(chars, offset + lineIndex, length - lineIndex);
-        }
+        (new SingleQuotedPrinter(printer)).print(style.getMaxLineLength() - printer.indentation(), chars, offset, length);
         
         printer.print('\'');
         printer.endFlow();
@@ -538,28 +513,6 @@ public class DefaultYamlPrinter implements YamlPrinter {
         }
     }
 
-    protected void singleEscape(final char[] chars, final int offset, final int length) throws IOException {
-        
-        int start = 0;
-        
-        // find next single quote
-        for (int i=0; i < length; i++) {
-            if (chars[offset + i] == '\'') {
-                
-                // flush previous chars
-                if (i >= start) {
-                    printer.print(chars, offset + start, i - start + 1);
-                }
-                printer.print('\'');
-                start = i + 1;
-            }
-        }
-        // flush previous chars
-        if (length > start) {
-            printer.print(chars, offset + start, length - start);
-        }
-    }
-
     @Override
     public void close() throws IOException {
         printer.close();
@@ -570,7 +523,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 || Context.DOCUMENT_END.equals(context.peek());
     }
     
-    protected static final boolean isURI(char[] chars, int offset, int length) {
+    private static final boolean isURI(char[] chars, int offset, int length) {
 
         // just fragment?
         if (chars[offset] == '#') {
@@ -581,9 +534,9 @@ public class DefaultYamlPrinter implements YamlPrinter {
             
             return URI.create(String.valueOf(chars, offset, length)) != null;
             
-        } catch (IllegalArgumentException e) {    
+        } catch (IllegalArgumentException e) {
+            // ignored
         }
-        
         return false;
     }
 

@@ -19,4 +19,8 @@ public interface YamlScalar extends YamlNode {
 
     String getValue();
     
+    @Override
+    default NodeType getNodeType() {
+        return NodeType.SCALAR;
+    }
 }

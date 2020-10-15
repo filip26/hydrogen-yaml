@@ -32,11 +32,6 @@ public class YamlSequenceImpl extends AbstractList<YamlNode> implements YamlSequ
     }
 
     @Override
-    public NodeType getNodeType() {
-        return NodeType.SEQUENCE;
-    }
-
-    @Override
     public YamlMapping getMapping(int index) {
         return items.get(index).asMapping();
     }

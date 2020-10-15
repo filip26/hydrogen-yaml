@@ -33,11 +33,6 @@ public class YamlMappingImpl extends AbstractMap<String, YamlNode> implements Ya
     }
 
     @Override
-    public NodeType getNodeType() {
-        return NodeType.MAPPING;
-    }
-
-    @Override
     public YamlSequence getSequence(String key) {
         return mapping.get(key).asSequence();
     }

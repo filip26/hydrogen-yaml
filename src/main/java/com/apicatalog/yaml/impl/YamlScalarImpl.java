@@ -30,11 +30,6 @@ public class YamlScalarImpl implements YamlScalar {
     }
     
     @Override
-    public NodeType getNodeType() {
-        return NodeType.SCALAR;
-    }
-
-    @Override
     public String toString() {
         return "YamlScalarImpl [value=" + value + "]";
     }

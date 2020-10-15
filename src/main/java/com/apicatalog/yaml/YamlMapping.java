@@ -26,4 +26,9 @@ public interface YamlMapping extends YamlCollection, Map<String, YamlNode> {
     YamlScalar getScalar(String key);
 
     boolean isNull(String key);
+
+    @Override
+    default NodeType getNodeType() {
+        return NodeType.MAPPING;
+    }
 }

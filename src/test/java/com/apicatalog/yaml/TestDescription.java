@@ -18,8 +18,8 @@ package com.apicatalog.yaml;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.json.JsonObject;
-import javax.json.JsonString;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonString;
 
 public final class TestDescription {
 

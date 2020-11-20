@@ -4,9 +4,12 @@
 ![CodeQL](https://github.com/filip26/hydrogen-yaml/workflows/CodeQL/badge.svg)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). 
+Hydrogen YAML is the simplest human-readable data-serialization language inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). Some YAML features are not intentionally supported.
 
-Hydrogen YAML is the simplest human-readable data-serialization language. Some YAML features are not intentionally supported.
+## Features
+- Implicit serialization style
+  * autodetection
+  * decoupled data model
 
 ## Unsupported Features
 - Implicit typing

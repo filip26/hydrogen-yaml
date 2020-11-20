@@ -26,4 +26,9 @@ public interface YamlSequence extends YamlCollection, List<YamlNode> {
     YamlScalar getScalar(int index);
     
     boolean isNull(int index);
+    
+    @Override
+    default NodeType getNodeType() {
+        return NodeType.SEQUENCE;
+    }
 }

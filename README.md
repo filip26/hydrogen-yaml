@@ -10,6 +10,7 @@ Hydrogen YAML is the simplest human-readable data-serialization language inspire
 - Implicit serialization style
   * autodetection
   * decoupled data model
+- Explicit typing
 
 ## Unsupported Features
 - Implicit typing

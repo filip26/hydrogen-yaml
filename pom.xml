@@ -55,8 +55,10 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         
+        <argLine>-Dfile.encoding=UTF-8</argLine>
+        
         <!--  test resources -->
-        <jakarta.json-p.version>1.1.6</jakarta.json-p.version> 
+        <jakarta.json-p.version>2.0.0</jakarta.json-p.version> 
         <junit.jupiter.version>5.7.0</junit.jupiter.version>               
     </properties>
 
@@ -161,6 +163,7 @@
         	</plugin>                         
         </plugins>
     </build>
+
 
     <distributionManagement>
         <snapshotRepository>

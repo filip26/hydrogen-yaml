@@ -1,10 +1,18 @@
 # Java API for YAML Processing
 
-An implementation inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). 
+![Java CI with Maven](https://github.com/filip26/hydrogen-yaml/workflows/Java%20CI%20with%20Maven/badge.svg)
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/filip26/hydrogen-yaml.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/filip26/hydrogen-yaml/context:java)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-Hydrogen YAML is the simplest human-readable data-serialization language. Some YAML features are not intentionally supported.
+Hydrogen YAML is the simplest human-readable data-serialization language inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). Some YAML features are not intentionally supported.
 
-## Unsupported Features
+## Hydrogen Features
+- Implicit serialization style
+  * autodetection
+  * decoupled data model
+- Explicit typing
+
+## Unsupported YAML Features
 - Implicit typing
 - Duplicate keys
 - Explicit tags
@@ -34,5 +42,5 @@ YamlNode node = Yaml.createMappingBuilder()
                                          .add("item")
                     ).build();
      
-Yaml.createWriter(InputStream).write(YamlNode);
+Yaml.createWriter(OutputStream|Writer).write(YamlNode);
 ```

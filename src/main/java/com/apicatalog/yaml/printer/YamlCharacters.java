@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.writer;
+package com.apicatalog.yaml.printer;
 
 import java.util.function.Predicate;
 
-public final class YamlCharacters {
+final class YamlCharacters {
 
     public static final Predicate<Character> IS_PRINTABLE = ch ->
                                                                 ch == 0x9 || ch == 0xA || ch == 0xD

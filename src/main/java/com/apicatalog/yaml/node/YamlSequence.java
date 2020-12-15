@@ -13,22 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.node;
 
-import java.util.Map;
+import java.util.List;
 
-public interface YamlMapping extends YamlCollection, Map<String, YamlNode> {
+public interface YamlSequence extends YamlCollection, List<YamlNode> {
 
-    YamlSequence getSequence(String key);
+    YamlMapping getMapping(int index);
     
-    YamlMapping getMapping(String key);
+    YamlSequence getSequence(int index);
     
-    YamlScalar getScalar(String key);
-
-    boolean isNull(String key);
-
+    YamlScalar getScalar(int index);
+    
+    boolean isNull(int index);
+    
     @Override
     default NodeType getNodeType() {
-        return NodeType.MAPPING;
+        return NodeType.SEQUENCE;
     }
 }

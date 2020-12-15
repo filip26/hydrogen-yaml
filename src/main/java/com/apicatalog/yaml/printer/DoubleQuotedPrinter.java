@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.printer.scalar;
+package com.apicatalog.yaml.printer;
 
 import java.io.IOException;
 
-import com.apicatalog.yaml.printer.IndentedPrinter;
-
-public final class DoubleQuotedPrinter {
+final class DoubleQuotedPrinter {
     
     private final IndentedPrinter printer;
     

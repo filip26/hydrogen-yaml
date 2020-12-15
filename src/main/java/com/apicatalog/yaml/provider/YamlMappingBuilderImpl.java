@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.provider;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.apicatalog.yaml.YamlMapping;
-import com.apicatalog.yaml.YamlMappingBuilder;
-import com.apicatalog.yaml.YamlNode;
-import com.apicatalog.yaml.YamlSequenceBuilder;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.builder.YamlMappingBuilder;
+import com.apicatalog.yaml.node.builder.YamlSequenceBuilder;
 
-public class YamlMappingBuilderImpl implements YamlMappingBuilder {
+final class YamlMappingBuilderImpl implements YamlMappingBuilder {
 
     private final Map<String, YamlNode> mapping;
     

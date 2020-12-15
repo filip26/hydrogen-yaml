@@ -13,14 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.node.builder;
 
-import java.util.ResourceBundle;
+import com.apicatalog.yaml.Yaml;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.YamlSequence;
 
-public final class YamlMessages {
+public interface YamlSequenceBuilder {
 
-    private YamlMessages() {}
+    YamlSequenceBuilder add(YamlNode node);
+
+    default YamlSequenceBuilder add(String scalar) {
+        return add(Yaml.createScalar(scalar));
+    }
     
-    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("com.apicatalog.yaml.impl.messages");
+    YamlSequenceBuilder addNull();
     
+    YamlSequenceBuilder add(YamlMappingBuilder builder);
+    
+    YamlSequenceBuilder add(YamlSequenceBuilder builder);
+    
+    YamlSequence build();
 }

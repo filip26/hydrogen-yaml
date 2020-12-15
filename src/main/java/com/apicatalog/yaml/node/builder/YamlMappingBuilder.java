@@ -13,28 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.parser.impl;
+package com.apicatalog.yaml.node.builder;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.Reader;
+import com.apicatalog.yaml.Yaml;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
 
-import com.apicatalog.yaml.parser.YamlLocation;
-
-final class YamlTokenizer implements Closeable {
-
-    private final Reader reader;
+public interface YamlMappingBuilder {
     
-    public YamlTokenizer(final Reader reader) {
-        this.reader = reader;
+    default YamlMappingBuilder add(String key, String scalar) {
+        return add(key, Yaml.createScalar(scalar));
     }
     
-    @Override
-    public void close() throws IOException {
-        reader.close();
+    YamlMappingBuilder add(String key, YamlNode value);
+    
+    default YamlMappingBuilder addNull(String key) {
+        return add(key, YamlNode.NULL);
     }
+    
+    YamlMappingBuilder add(String key, YamlMappingBuilder value);
+    
+    YamlMappingBuilder add(String key, YamlSequenceBuilder value);
 
-    public YamlLocation getLocation() {
+    default YamlMappingBuilder remove(String key) {
         throw new UnsupportedOperationException();
     }
+
+    YamlMapping build();
 }

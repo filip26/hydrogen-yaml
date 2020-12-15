@@ -13,8 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.parser;
 
-public interface YamlDocument {
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Reader;
 
+final class YamlTokenizer implements Closeable {
+
+    private final Reader reader;
+    
+    public YamlTokenizer(final Reader reader) {
+        this.reader = reader;
+    }
+    
+    @Override
+    public void close() throws IOException {
+        reader.close();
+    }
+
+    public YamlLocation getLocation() {
+        throw new UnsupportedOperationException();
+    }
 }

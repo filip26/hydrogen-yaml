@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.provider;
 
 import java.util.AbstractList;
 import java.util.List;
 
-import com.apicatalog.yaml.YamlMapping;
-import com.apicatalog.yaml.YamlNode;
-import com.apicatalog.yaml.YamlScalar;
-import com.apicatalog.yaml.YamlSequence;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.YamlScalar;
+import com.apicatalog.yaml.node.YamlSequence;
 
-public class YamlSequenceImpl extends AbstractList<YamlNode> implements YamlSequence {
+final class YamlSequenceImpl extends AbstractList<YamlNode> implements YamlSequence {
 
     private final List<YamlNode> items;
     

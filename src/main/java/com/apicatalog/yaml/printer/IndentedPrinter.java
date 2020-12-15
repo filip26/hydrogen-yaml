@@ -21,7 +21,7 @@ import java.io.Writer;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-public final class IndentedPrinter implements Closeable {
+final class IndentedPrinter implements Closeable {
 
     private final Writer writer;
     

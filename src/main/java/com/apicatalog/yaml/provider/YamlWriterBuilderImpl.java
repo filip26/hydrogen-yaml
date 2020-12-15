@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.provider;
 
 import java.io.Writer;
 
-import com.apicatalog.yaml.YamlWriterBuilder;
 import com.apicatalog.yaml.printer.DefaultYamlPrinter;
-import com.apicatalog.yaml.printer.IndentedPrinter;
 import com.apicatalog.yaml.writer.DefaultYamlWriter;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
+import com.apicatalog.yaml.writer.YamlWriterBuilder;
 
-public final class YamlWriterBuilderImpl implements YamlWriterBuilder {
+final class YamlWriterBuilderImpl implements YamlWriterBuilder {
 
     private final YamlPrintStyle style;
     
@@ -47,7 +46,7 @@ public final class YamlWriterBuilderImpl implements YamlWriterBuilder {
     }
     
     public static final YamlWriter build(final Writer writer, final YamlPrintStyle style) {
-        return new DefaultYamlWriter(new DefaultYamlPrinter(new IndentedPrinter(writer), style));
+        return new DefaultYamlWriter(new DefaultYamlPrinter(writer, style));
     }
 
     @Override

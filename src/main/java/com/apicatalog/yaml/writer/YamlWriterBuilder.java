@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.writer;
 
-import com.apicatalog.yaml.YamlScalar;
-
-public class YamlScalarImpl implements YamlScalar {
-
-    final String value;
+public interface YamlWriterBuilder {
     
-    public YamlScalarImpl(final String value) {
-        this.value = value;
-    }
+    YamlWriterBuilder maxLineWidth(int maxLineWidth);
     
-    public String getValue() {
-        return value;
-    }
+    YamlWriterBuilder compactArrays(boolean enable);
     
-    @Override
-    public String toString() {
-        return "YamlScalarImpl [value=" + value + "]";
-    }
+    YamlWriter build();
 }

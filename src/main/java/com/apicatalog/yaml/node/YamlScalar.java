@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.node;
 
-import com.apicatalog.yaml.writer.YamlWriter;
+public interface YamlScalar extends YamlNode {
 
-public interface YamlWriterBuilder {
+    String getValue();
     
-    YamlWriterBuilder maxLineWidth(int maxLineWidth);
-    
-    YamlWriterBuilder compactArrays(boolean enable);
-    
-    YamlWriter build();
+    @Override
+    default NodeType getNodeType() {
+        return NodeType.SCALAR;
+    }
 }

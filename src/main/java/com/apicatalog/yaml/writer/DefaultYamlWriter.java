@@ -19,7 +19,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import com.apicatalog.yaml.YamlException;
-import com.apicatalog.yaml.YamlNode;
+import com.apicatalog.yaml.node.YamlNode;
 import com.apicatalog.yaml.printer.YamlPrinter;
 
 public class DefaultYamlWriter implements YamlWriter {

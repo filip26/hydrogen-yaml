@@ -18,10 +18,10 @@ package com.apicatalog.yaml.parser;
 import java.io.Closeable;
 import java.io.IOException;
 
-import com.apicatalog.yaml.YamlMapping;
-import com.apicatalog.yaml.YamlNode;
-import com.apicatalog.yaml.YamlScalar;
-import com.apicatalog.yaml.YamlSequence;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.YamlScalar;
+import com.apicatalog.yaml.node.YamlSequence;
 
 public interface YamlParser extends Closeable {
 

@@ -37,9 +37,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.apicatalog.yaml.TestDescription;
 import com.apicatalog.yaml.Yaml;
 import com.apicatalog.yaml.YamlException;
-import com.apicatalog.yaml.YamlMappingBuilder;
-import com.apicatalog.yaml.YamlNode;
-import com.apicatalog.yaml.YamlSequenceBuilder;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.builder.YamlMappingBuilder;
+import com.apicatalog.yaml.node.builder.YamlSequenceBuilder;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;
@@ -56,7 +56,7 @@ class YamlWriterTest {
 
         final TestOutputStream output = new TestOutputStream();
         
-        try (final YamlWriter writer = Yaml.createWriter(output).build()) {
+        try (final YamlWriter writer = Yaml.createWriterBuilder(output).build()) {
             assertFalse(output.isClosed());
             
         } catch (IOException e) {
@@ -71,7 +71,7 @@ class YamlWriterTest {
 
         final TestWriter output = new TestWriter();
         
-        try (final YamlWriter writer = Yaml.createWriter(output).build()) {
+        try (final YamlWriter writer = Yaml.createWriterBuilder(output).build()) {
             assertFalse(output.isClosed());
             
         } catch (IOException e) {

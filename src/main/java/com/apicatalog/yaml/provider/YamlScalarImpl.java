@@ -13,21 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.provider;
 
-public interface YamlSequenceBuilder {
+import com.apicatalog.yaml.node.YamlScalar;
 
-    YamlSequenceBuilder add(YamlNode node);
+final class YamlScalarImpl implements YamlScalar {
 
-    default YamlSequenceBuilder add(String scalar) {
-        return add(Yaml.createScalar(scalar));
+    final String value;
+    
+    public YamlScalarImpl(final String value) {
+        this.value = value;
     }
     
-    YamlSequenceBuilder addNull();
+    public String getValue() {
+        return value;
+    }
     
-    YamlSequenceBuilder add(YamlMappingBuilder builder);
-    
-    YamlSequenceBuilder add(YamlSequenceBuilder builder);
-    
-    YamlSequence build();
+    @Override
+    public String toString() {
+        return "YamlScalarImpl [value=" + value + "]";
+    }
 }

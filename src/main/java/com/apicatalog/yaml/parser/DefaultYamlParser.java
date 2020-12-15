@@ -13,26 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.parser.impl;
+package com.apicatalog.yaml.parser;
 
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import com.apicatalog.yaml.YamlMapping;
-import com.apicatalog.yaml.YamlNode;
-import com.apicatalog.yaml.YamlScalar;
-import com.apicatalog.yaml.YamlSequence;
-import com.apicatalog.yaml.parser.YamlLocation;
-import com.apicatalog.yaml.parser.YamlParser;
-import com.apicatalog.yaml.parser.YamlParsingException;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.YamlScalar;
+import com.apicatalog.yaml.node.YamlSequence;
 
-class YamlParserImpl implements YamlParser {
+class DefaultYamlParser implements YamlParser {
 
     private final YamlTokenizer tokenizer;
     
     private Event currentEvent;
     
-    public YamlParserImpl(YamlTokenizer tokenizer) {
+    public DefaultYamlParser(YamlTokenizer tokenizer) {
         this.tokenizer = tokenizer;
     }
 

@@ -16,14 +16,11 @@
 package com.apicatalog.yaml.printer;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URI;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import com.apicatalog.yaml.printer.scalar.DoubleQuotedPrinter;
-import com.apicatalog.yaml.printer.scalar.FoldedPrinter;
-import com.apicatalog.yaml.printer.scalar.SingleQuotedPrinter;
-import com.apicatalog.yaml.writer.YamlCharacters;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 
 public class DefaultYamlPrinter implements YamlPrinter {
@@ -41,8 +38,8 @@ public class DefaultYamlPrinter implements YamlPrinter {
 
     private final Deque<Context> context;
     
-    public DefaultYamlPrinter(final IndentedPrinter writer, final YamlPrintStyle style) {
-        this.printer = writer;
+    public DefaultYamlPrinter(final Writer writer, final YamlPrintStyle style) {
+        this.printer = new IndentedPrinter(writer);
         this.style = style;
         
         this.context = new ArrayDeque<>(10);

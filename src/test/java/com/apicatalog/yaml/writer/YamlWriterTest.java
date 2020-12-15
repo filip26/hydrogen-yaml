@@ -37,9 +37,9 @@ import org.junit.jupiter.params.provider.MethodSource;
 import com.apicatalog.yaml.TestDescription;
 import com.apicatalog.yaml.Yaml;
 import com.apicatalog.yaml.YamlException;
-import com.apicatalog.yaml.YamlMappingBuilder;
-import com.apicatalog.yaml.YamlSequenceBuilder;
 import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.builder.YamlMappingBuilder;
+import com.apicatalog.yaml.node.builder.YamlSequenceBuilder;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;

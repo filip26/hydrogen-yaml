@@ -23,11 +23,14 @@ import java.io.Writer;
 import com.apicatalog.yaml.node.YamlMapping;
 import com.apicatalog.yaml.node.YamlScalar;
 import com.apicatalog.yaml.node.YamlSequence;
+import com.apicatalog.yaml.node.builder.YamlMappingBuilder;
+import com.apicatalog.yaml.node.builder.YamlSequenceBuilder;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.provider.DefaultYamlProvider;
 import com.apicatalog.yaml.provider.YamlProvider;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
+import com.apicatalog.yaml.writer.YamlWriterBuilder;
 
 /**
  * This class provides common methods for YAML processing.

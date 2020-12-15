@@ -17,11 +17,11 @@ package com.apicatalog.yaml.provider;
 
 import java.io.Writer;
 
-import com.apicatalog.yaml.YamlWriterBuilder;
 import com.apicatalog.yaml.printer.DefaultYamlPrinter;
 import com.apicatalog.yaml.writer.DefaultYamlWriter;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
+import com.apicatalog.yaml.writer.YamlWriterBuilder;
 
 final class YamlWriterBuilderImpl implements YamlWriterBuilder {
 

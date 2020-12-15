@@ -13,24 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.writer;
 
-import com.apicatalog.yaml.node.YamlNode;
-import com.apicatalog.yaml.node.YamlSequence;
-
-public interface YamlSequenceBuilder {
-
-    YamlSequenceBuilder add(YamlNode node);
-
-    default YamlSequenceBuilder add(String scalar) {
-        return add(Yaml.createScalar(scalar));
-    }
+public interface YamlWriterBuilder {
     
-    YamlSequenceBuilder addNull();
+    YamlWriterBuilder maxLineWidth(int maxLineWidth);
     
-    YamlSequenceBuilder add(YamlMappingBuilder builder);
+    YamlWriterBuilder compactArrays(boolean enable);
     
-    YamlSequenceBuilder add(YamlSequenceBuilder builder);
-    
-    YamlSequence build();
+    YamlWriter build();
 }

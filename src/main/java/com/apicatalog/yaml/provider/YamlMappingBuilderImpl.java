@@ -19,10 +19,10 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import com.apicatalog.yaml.YamlMappingBuilder;
-import com.apicatalog.yaml.YamlSequenceBuilder;
 import com.apicatalog.yaml.node.YamlMapping;
 import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.builder.YamlMappingBuilder;
+import com.apicatalog.yaml.node.builder.YamlSequenceBuilder;
 
 final class YamlMappingBuilderImpl implements YamlMappingBuilder {
 

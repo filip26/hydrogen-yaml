@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.apicatalog.yaml.YamlMappingBuilder;
-import com.apicatalog.yaml.YamlSequenceBuilder;
 import com.apicatalog.yaml.node.YamlNode;
 import com.apicatalog.yaml.node.YamlSequence;
+import com.apicatalog.yaml.node.builder.YamlMappingBuilder;
+import com.apicatalog.yaml.node.builder.YamlSequenceBuilder;
 
 final class YamlSequenceBuilderImpl implements YamlSequenceBuilder {
 

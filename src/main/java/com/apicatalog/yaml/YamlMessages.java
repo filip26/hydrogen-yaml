@@ -13,24 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml;
 
-import com.apicatalog.yaml.YamlScalar;
+import java.util.ResourceBundle;
 
-public class YamlScalarImpl implements YamlScalar {
+public final class YamlMessages {
 
-    final String value;
+    private YamlMessages() {}
     
-    public YamlScalarImpl(final String value) {
-        this.value = value;
-    }
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("com.apicatalog.yaml.impl.messages");
     
-    public String getValue() {
-        return value;
-    }
-    
-    @Override
-    public String toString() {
-        return "YamlScalarImpl [value=" + value + "]";
-    }
 }

@@ -13,14 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml;
+package com.apicatalog.yaml.provider;
 
-public interface YamlScalar extends YamlNode {
+import com.apicatalog.yaml.node.YamlScalar;
 
-    String getValue();
+final class YamlScalarImpl implements YamlScalar {
+
+    final String value;
+    
+    public YamlScalarImpl(final String value) {
+        this.value = value;
+    }
+    
+    public String getValue() {
+        return value;
+    }
     
     @Override
-    default NodeType getNodeType() {
-        return NodeType.SCALAR;
+    public String toString() {
+        return "YamlScalarImpl [value=" + value + "]";
     }
 }

@@ -18,10 +18,10 @@ package com.apicatalog.yaml.parser.impl;
 import java.io.IOException;
 import java.util.NoSuchElementException;
 
-import com.apicatalog.yaml.YamlMapping;
-import com.apicatalog.yaml.YamlNode;
-import com.apicatalog.yaml.YamlScalar;
-import com.apicatalog.yaml.YamlSequence;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.YamlScalar;
+import com.apicatalog.yaml.node.YamlSequence;
 import com.apicatalog.yaml.parser.YamlLocation;
 import com.apicatalog.yaml.parser.YamlParser;
 import com.apicatalog.yaml.parser.YamlParsingException;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.provider;
 
 import java.io.Writer;
 
@@ -24,7 +24,7 @@ import com.apicatalog.yaml.writer.DefaultYamlWriter;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
 
-public final class YamlWriterBuilderImpl implements YamlWriterBuilder {
+final class YamlWriterBuilderImpl implements YamlWriterBuilder {
 
     private final YamlPrintStyle style;
     

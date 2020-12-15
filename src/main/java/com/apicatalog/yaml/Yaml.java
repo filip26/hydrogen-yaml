@@ -17,101 +17,65 @@ package com.apicatalog.yaml;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 
-import com.apicatalog.yaml.impl.YamlMappingBuilderImpl;
-import com.apicatalog.yaml.impl.YamlScalarImpl;
-import com.apicatalog.yaml.impl.YamlSequenceBuilderImpl;
-import com.apicatalog.yaml.impl.YamlWriterBuilderImpl;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlScalar;
+import com.apicatalog.yaml.node.YamlSequence;
 import com.apicatalog.yaml.parser.YamlParser;
+import com.apicatalog.yaml.provider.DefaultYamlProvider;
+import com.apicatalog.yaml.provider.YamlProvider;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
 
 public final class Yaml {
 
+    private static final YamlProvider DEFAULT_PROVIDER = new DefaultYamlProvider();
+    
     private Yaml() {}
     
-    public static final YamlParser createParser(InputStream input) {
-        throw new UnsupportedOperationException();
+    public static final YamlParser createParser(final InputStream inputStream) {
+        return DEFAULT_PROVIDER.createParser(inputStream);
     }
 
-    public static final YamlParser createParser(Reader reader) {
-        if (reader == null) {
-            throw new IllegalArgumentException();
-        }
-
-        throw new UnsupportedOperationException();
+    public static final YamlParser createParser(final Reader reader) {
+        return DEFAULT_PROVIDER.createParser(reader);
     }
     
-    public static final YamlWriterBuilder createWriter(OutputStream output) {
-        if (output == null) {
-            throw new IllegalArgumentException();
-        }
-
-        return new YamlWriterBuilderImpl(new OutputStreamWriter(output));
+    public static final YamlWriterBuilder createWriter(final OutputStream outputStream) {
+        return DEFAULT_PROVIDER.createWriter(outputStream);
     }
     
-    public static final YamlWriterBuilder createWriter(Writer writer) {
-        if (writer == null) {
-            throw new IllegalArgumentException();
-        }
-        
-        return new YamlWriterBuilderImpl(writer);
+    public static final YamlWriterBuilder createWriter(final Writer writer) {
+        return DEFAULT_PROVIDER.createWriter(writer);
     }
     
-    public static YamlWriter createWriter(Writer writer, YamlPrintStyle style) {
-        if (writer == null) {
-            throw new IllegalArgumentException();
-        }
-        if (style == null) {
-            throw new IllegalArgumentException();
-        }
-
-        return YamlWriterBuilderImpl.build(writer, style);
+    public static YamlWriter createWriter(final Writer writer, final YamlPrintStyle style) {
+        return DEFAULT_PROVIDER.createWriter(writer, style);
     }
 
-    public static YamlWriter createWriter(OutputStream output, YamlPrintStyle style) {
-        if (output == null) {
-            throw new IllegalArgumentException();
-        }
-        if (style == null) {
-            throw new IllegalArgumentException();
-        }
-
-        return YamlWriterBuilderImpl.build(new OutputStreamWriter(output), style);
+    public static YamlWriter createWriter(final OutputStream output, final YamlPrintStyle style) {
+        return DEFAULT_PROVIDER.createWriter(output, style);
     }
 
     public static final YamlMappingBuilder createMappingBuilder() {
-        return new YamlMappingBuilderImpl();
+        return DEFAULT_PROVIDER.createMappingBuilder();
     }
 
-    public static final YamlMappingBuilder createMappingBuilder(YamlMapping mapping) {
-        if (mapping == null) {
-            throw new IllegalArgumentException();
-        }
-
-        return YamlMappingBuilderImpl.of(mapping);
+    public static final YamlMappingBuilder createMappingBuilder(final YamlMapping mapping) {
+        return DEFAULT_PROVIDER.createMappingBuilder(mapping);
     }
 
     public static final YamlSequenceBuilder createSequenceBuilder() {
-        return new YamlSequenceBuilderImpl();
+        return DEFAULT_PROVIDER.createSequenceBuilder();
     }
     
-    public static final YamlSequenceBuilder createSequenceBuilder(YamlSequence sequence) {
-        if (sequence == null) {
-            throw new IllegalArgumentException();
-        }
-
-        return YamlSequenceBuilderImpl.of(sequence);
+    public static final YamlSequenceBuilder createSequenceBuilder(final YamlSequence sequence) {
+        return DEFAULT_PROVIDER.createSequenceBuilder(sequence);
     }
     
-    public static final YamlScalar createScalar(String value) {        
-        if (value == null) {
-            throw new IllegalArgumentException();
-        }
-        
-        return new YamlScalarImpl(value);        
+    public static final YamlScalar createScalar(final String value) {
+        return DEFAULT_PROVIDER.createScalar(value);        
     }
 }

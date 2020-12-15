@@ -19,7 +19,7 @@ import java.io.Closeable;
 import java.io.IOException;
 
 import com.apicatalog.yaml.YamlException;
-import com.apicatalog.yaml.YamlNode;
+import com.apicatalog.yaml.node.YamlNode;
 
 /**
  * Writes a {@link YamlNode node} to an output source.

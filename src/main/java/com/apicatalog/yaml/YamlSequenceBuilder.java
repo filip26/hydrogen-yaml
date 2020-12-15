@@ -15,6 +15,9 @@
  */
 package com.apicatalog.yaml;
 
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.YamlSequence;
+
 public interface YamlSequenceBuilder {
 
     YamlSequenceBuilder add(YamlNode node);

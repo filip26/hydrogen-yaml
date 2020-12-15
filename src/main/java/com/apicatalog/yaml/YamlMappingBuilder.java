@@ -15,6 +15,9 @@
  */
 package com.apicatalog.yaml;
 
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
+
 public interface YamlMappingBuilder {
     
     default YamlMappingBuilder add(String key, String scalar) {

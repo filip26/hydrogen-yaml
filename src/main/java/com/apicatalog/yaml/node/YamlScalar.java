@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.node;
 
-import java.util.ResourceBundle;
+public interface YamlScalar extends YamlNode {
 
-public final class YamlMessages {
-
-    private YamlMessages() {}
+    String getValue();
     
-    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle("com.apicatalog.yaml.impl.messages");
-    
+    @Override
+    default NodeType getNodeType() {
+        return NodeType.SCALAR;
+    }
 }

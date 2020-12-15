@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.apicatalog.yaml.impl;
+package com.apicatalog.yaml.provider;
 
 import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
 
-import com.apicatalog.yaml.YamlMapping;
-import com.apicatalog.yaml.YamlNode;
-import com.apicatalog.yaml.YamlScalar;
-import com.apicatalog.yaml.YamlSequence;
+import com.apicatalog.yaml.node.YamlMapping;
+import com.apicatalog.yaml.node.YamlNode;
+import com.apicatalog.yaml.node.YamlScalar;
+import com.apicatalog.yaml.node.YamlSequence;
 
-public class YamlMappingImpl extends AbstractMap<String, YamlNode> implements YamlMapping {
+final class YamlMappingImpl extends AbstractMap<String, YamlNode> implements YamlMapping {
 
     private final Map<String, YamlNode> mapping;
 

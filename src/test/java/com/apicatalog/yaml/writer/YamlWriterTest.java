@@ -38,8 +38,8 @@ import com.apicatalog.yaml.TestDescription;
 import com.apicatalog.yaml.Yaml;
 import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.YamlMappingBuilder;
-import com.apicatalog.yaml.YamlNode;
 import com.apicatalog.yaml.YamlSequenceBuilder;
+import com.apicatalog.yaml.node.YamlNode;
 
 import jakarta.json.Json;
 import jakarta.json.JsonArray;

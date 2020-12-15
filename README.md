@@ -7,10 +7,12 @@
 Hydrogen YAML is the simplest human-readable data-serialization language inspired by [StrictYAML](https://github.com/crdoconnor/strictyaml). Some YAML features are not intentionally supported.
 
 ## Hydrogen Features
+- Fully decoupled data model from a representation
 - Implicit serialization style
-  * autodetection
-  * decoupled data model
+  * an intelligent YAML generator
+  * customizable print style
 - Explicit typing
+  * target class adapters
 
 ## Unsupported YAML Features
 - Implicit typing

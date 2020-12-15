@@ -30,7 +30,7 @@ public interface YamlProvider {
      * @param in byte stream from which YAML is to be read
      * @return a YAML parser
      */
-    default YamlParser createParser(final InputStream inputStream) {
+    default YamlParser createParser(final InputStream in) {
         throw new UnsupportedOperationException();
     }
 
@@ -50,7 +50,7 @@ public interface YamlProvider {
      * @param out byte stream to which YAML is written
      * @return a YAML writer builder
      */
-    default YamlWriterBuilder createWriterBuilder(final OutputStream outputStream) {
+    default YamlWriterBuilder createWriterBuilder(final OutputStream out) {
         throw new UnsupportedOperationException();
     }
     
@@ -82,7 +82,7 @@ public interface YamlProvider {
      * @param style a print style
      * @return a YAML writer
      */
-    default  YamlWriter createWriter(final OutputStream output, final YamlPrintStyle style) {
+    default  YamlWriter createWriter(final OutputStream out, final YamlPrintStyle style) {
         throw new UnsupportedOperationException();
     }
 

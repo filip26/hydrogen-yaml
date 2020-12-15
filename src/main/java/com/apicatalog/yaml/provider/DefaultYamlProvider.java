@@ -16,7 +16,7 @@ import com.apicatalog.yaml.writer.YamlWriter;
 public final class DefaultYamlProvider implements YamlProvider {
 
     @Override
-    public final YamlWriterBuilder createWriter(final OutputStream outputStream) {
+    public final YamlWriterBuilder createWriterBuilder(final OutputStream outputStream) {
         if (outputStream == null) {
             throw new IllegalArgumentException();
         }
@@ -25,7 +25,7 @@ public final class DefaultYamlProvider implements YamlProvider {
     }
     
     @Override
-    public final YamlWriterBuilder createWriter(final Writer writer) {
+    public final YamlWriterBuilder createWriterBuilder(final Writer writer) {
         if (writer == null) {
             throw new IllegalArgumentException();
         }

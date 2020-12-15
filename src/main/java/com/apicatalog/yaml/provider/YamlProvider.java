@@ -29,11 +29,11 @@ public interface YamlProvider {
         throw new UnsupportedOperationException();
     }
     
-    default YamlWriterBuilder createWriter(final OutputStream outputStream) {
+    default YamlWriterBuilder createWriterBuilder(final OutputStream outputStream) {
         throw new UnsupportedOperationException();
     }
     
-    default  YamlWriterBuilder createWriter(final Writer writer) {
+    default  YamlWriterBuilder createWriterBuilder(final Writer writer) {
         throw new UnsupportedOperationException();
     }
     

@@ -56,7 +56,7 @@ class YamlWriterTest {
 
         final TestOutputStream output = new TestOutputStream();
         
-        try (final YamlWriter writer = Yaml.createWriter(output).build()) {
+        try (final YamlWriter writer = Yaml.createWriterBuilder(output).build()) {
             assertFalse(output.isClosed());
             
         } catch (IOException e) {
@@ -71,7 +71,7 @@ class YamlWriterTest {
 
         final TestWriter output = new TestWriter();
         
-        try (final YamlWriter writer = Yaml.createWriter(output).build()) {
+        try (final YamlWriter writer = Yaml.createWriterBuilder(output).build()) {
             assertFalse(output.isClosed());
             
         } catch (IOException e) {

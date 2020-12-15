@@ -29,52 +29,123 @@ import com.apicatalog.yaml.provider.YamlProvider;
 import com.apicatalog.yaml.writer.YamlPrintStyle;
 import com.apicatalog.yaml.writer.YamlWriter;
 
+/**
+ * This class provides common methods for YAML processing.
+ * 
+ * All methods are thread-safe.
+ */
 public final class Yaml {
 
     private static final YamlProvider DEFAULT_PROVIDER = new DefaultYamlProvider();
     
     private Yaml() {}
     
-    public static final YamlParser createParser(final InputStream inputStream) {
-        return DEFAULT_PROVIDER.createParser(inputStream);
+    /**
+     * Creates a YAML parser from {@link InputStream}.
+     *
+     * @param in byte stream from which YAML is to be read
+     * @return a YAML parser
+     */
+    public static final YamlParser createParser(final InputStream in) {
+        return DEFAULT_PROVIDER.createParser(in);
     }
 
+    /**
+     * Creates a YAML parser from {@link Reader}.
+     *
+     * @param reader a reader from which YAML is to be read
+     * @return a YAML parser
+     */
     public static final YamlParser createParser(final Reader reader) {
         return DEFAULT_PROVIDER.createParser(reader);
     }
     
-    public static final YamlWriterBuilder createWriter(final OutputStream outputStream) {
-        return DEFAULT_PROVIDER.createWriter(outputStream);
+    /**
+     * Creates a YAML writer builder.
+     *
+     * @param out byte stream to which YAML is written
+     * @return a YAML writer builder
+     */
+    public static final YamlWriterBuilder createWriterBuilder(final OutputStream out) {
+        return DEFAULT_PROVIDER.createWriterBuilder(out);
     }
-    
-    public static final YamlWriterBuilder createWriter(final Writer writer) {
-        return DEFAULT_PROVIDER.createWriter(writer);
+
+    /**
+     * Creates a YAML writer builder.
+     *
+     * @param writer a writer to which YAML is written
+     * @return a YAML writer builder
+     */
+    public static final YamlWriterBuilder createWriterBuilder(final Writer writer) {
+        return DEFAULT_PROVIDER.createWriterBuilder(writer);
     }
-    
+
+    /**
+     * Creates a YAML writer.
+     *
+     * @param writer a writer to which YAML is written
+     * @param style a print style
+     * @return a YAML writer
+     */
     public static YamlWriter createWriter(final Writer writer, final YamlPrintStyle style) {
         return DEFAULT_PROVIDER.createWriter(writer, style);
     }
 
-    public static YamlWriter createWriter(final OutputStream output, final YamlPrintStyle style) {
-        return DEFAULT_PROVIDER.createWriter(output, style);
+    /**
+     * Creates a YAML writer.
+     *
+     * @param out byte stream to which YAML is written
+     * @param style a print style
+     * @return a YAML writer
+     */
+    public static YamlWriter createWriter(final OutputStream out, final YamlPrintStyle style) {
+        return DEFAULT_PROVIDER.createWriter(out, style);
     }
 
+    /**
+     * Creates a YAML mapping builder
+     *
+     * @return a YAML mapping builder
+     */
     public static final YamlMappingBuilder createMappingBuilder() {
         return DEFAULT_PROVIDER.createMappingBuilder();
     }
 
+    /**
+     * Creates a YAML mapping builder. Initialized with the given mapping.
+     *
+     * @param mapping an initial mapping
+     * @return a YAML mapping builder
+     */
     public static final YamlMappingBuilder createMappingBuilder(final YamlMapping mapping) {
         return DEFAULT_PROVIDER.createMappingBuilder(mapping);
     }
 
+    /**
+     * Creates a YAML sequence builder
+     *
+     * @return a YAML sequence builder
+     */
     public static final YamlSequenceBuilder createSequenceBuilder() {
         return DEFAULT_PROVIDER.createSequenceBuilder();
     }
     
+    /**
+     * Creates a YAML sequence builder. Initialized with the given sequence.
+     *
+     * @param sequence an initial sequence
+     * @return a YAML sequence builder
+     */
     public static final YamlSequenceBuilder createSequenceBuilder(final YamlSequence sequence) {
         return DEFAULT_PROVIDER.createSequenceBuilder(sequence);
     }
     
+    /**
+     * Creates a YAML scalar.
+     *
+     * @param value the value represented as a string
+     * @return a YAML scalar
+     */
     public static final YamlScalar createScalar(final String value) {
         return DEFAULT_PROVIDER.createScalar(value);        
     }

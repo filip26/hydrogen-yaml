@@ -22,7 +22,7 @@ import com.apicatalog.yaml.YamlException;
 import com.apicatalog.yaml.node.YamlNode;
 
 /**
- * Writes a {@link YamlNode node} to an output source.
+ * Writes a {@link YamlNode node}.
  *
  */
 public interface YamlWriter extends Closeable {

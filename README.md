@@ -2,6 +2,9 @@
 
 ![Java CI with Maven](https://github.com/filip26/hydrogen-yaml/workflows/Java%20CI%20with%20Maven/badge.svg)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/filip26/hydrogen-yaml.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/filip26/hydrogen-yaml/context:java)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=filip26_hydrogen-yaml&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=filip26_hydrogen-yaml)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=filip26_hydrogen-yaml&metric=coverage)](https://sonarcloud.io/dashboard?id=filip26_hydrogen-yaml)
+
 [![Maven Central](https://img.shields.io/maven-central/v/com.apicatalog/hydrogen-yaml.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22com.apicatalog%22%20AND%20a:%22hydrogen-yaml%22)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 

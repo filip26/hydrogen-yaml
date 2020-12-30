@@ -18,7 +18,17 @@ package com.apicatalog.yaml.printer;
 import java.io.IOException;
 
 final class DoubleQuotedPrinter {
-    
+
+    private static final char[] ESCAPED_CHARS = new char[] {
+            0x00, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x1b, 0xa0, 0x85, 0x2028, 0x2029,
+            '\\', '"', '/'
+    };
+
+    private static final char[] ESCAPED_CODES = new char[] {
+            '0', 'a', 'b', 't', 'n', 'v', 'f', 'r', 'e', '_', 'N', 'L', 'P',
+            '\\', '"', '/'
+    };
+
     private final IndentedPrinter printer;
     
     public DoubleQuotedPrinter(final IndentedPrinter printer) {
@@ -114,89 +124,14 @@ final class DoubleQuotedPrinter {
         // escape non-printable characters
         for (int i = 0; i < length; i++) {
             
-            char[] escaped = null;
-
-            if (chars[offset + i] == '\\') {                
-                escaped = new char[] { '\\', '\\'};
-                
-            } else if (chars[offset + i] == 0x0) {
-                escaped = new char[] { '\\', '0'};
-
-            } else if (chars[offset + i] == 0x9) {
-                escaped = new char[] { '\\', 't'};
-                
-            } else if (chars[offset + i] == 0xa) {
-                escaped = new char[] { '\\', 'n'};
-
-            } else if (chars[offset + i] == '\r') {
-                escaped = new char[] { '\\', 'r'};
-
-            } else if (chars[offset + i] == 0x07) {
-                escaped = new char[] { '\\', 'a'};
-
-            } else if (chars[offset + i] == 0x8) {
-                escaped = new char[] { '\\', 'b'};
-
-            } else if (chars[offset + i] == 0xb) {
-                escaped = new char[] { '\\', 'v'};
-
-            } else if (chars[offset + i] == 0xc) {
-                escaped = new char[] { '\\', 'f'};
-
-            } else if (chars[offset + i] == 0x1b) {
-                escaped = new char[] { '\\', 'e'};
-
-            } else if (chars[offset + i] == '"') {
-                escaped = new char[] { '\\', '"'};
-
-            } else if (chars[offset + i] == '/') {
-                escaped = new char[] { '\\', '/'};
-
-            } else if (chars[offset + i] == 0xa0) {
-                escaped = new char[] { '\\', '_'};
-
-            } else if (chars[offset + i] == 0x85) {
-                escaped = new char[] { '\\', 'N'};
-
-            } else if (chars[offset + i] == 0x02028) {
-                escaped = new char[] { '\\', 'L'};
-
-            } else if (chars[offset + i] == 0x2029) {
-                escaped = new char[] { '\\', 'P'};
-
-            } else if (chars[offset + i] < 0x20 
-                    || (chars[offset + i] > 0x7e && chars[offset + i] < 0xa0)) {
-
-                final char[] hex = Integer.toHexString(chars[offset + i] | 0x100).substring(1).toCharArray();
-
-                escaped = new char[4];
-                escaped[0] = '\\';
-                escaped[1] = 'x';
-                escaped[2] = hex[0];
-                escaped[3] = hex[1];
-
-            } else if ((chars[offset + i] > 0xd7ff && chars[offset + i] < 0xe000)
-                    || (chars[offset + i] > 0xfffd && chars[offset + i] < 0x10000)) {
-
-                final char[] hex = Integer.toHexString(chars[offset + i] | 0x10000).substring(1).toCharArray();
-
-                escaped = new char[6];
-                escaped[0] = '\\';
-                escaped[1] = 'u';
-                escaped[2] = hex[0];
-                escaped[3] = hex[1];
-                escaped[4] = hex[2];
-                escaped[5] = hex[3];
-
-            } else {
-                continue;
-            }
+            final char[] escaped = doubleEscape(chars[offset + i]);
             
-            if (escaped != null) {
+            if (escaped.length > 0) {
                 // flush previous chars
                 if (i > start) {
                     printer.print(chars, offset + start, i - start);
                 }
+                printer.print('\\');
                 printer.print(escaped);
                 start = i + 1;
             }
@@ -207,4 +142,29 @@ final class DoubleQuotedPrinter {
             printer.print(chars, offset + start, length - start);
         }
     }
+    
+    private static char[] doubleEscape(char ch) {
+                
+        for (int i = 0; i < ESCAPED_CHARS.length; i++) {
+            if (ESCAPED_CHARS[i] == ch) {
+                return new char[] {ESCAPED_CODES[i]};
+            }
+        }
+        
+        if (ch < 0x20 || (ch > 0x7e && ch < 0xa0)) {
+
+            final char[] hex = Integer.toHexString(ch | 0x100).substring(1).toCharArray();
+
+            return new char[] { 'x', hex[0], hex[1]};
+        }
+        
+        if ((ch > 0xd7ff && ch < 0xe000) || (ch > 0xfffd && ch < 0x10000)) {
+
+            final char[] hex = Integer.toHexString(ch | 0x10000).substring(1).toCharArray();
+
+            return new char[] {'u', hex[0], hex[1], hex[2], hex[3]};
+        }
+        
+        return new char[] {};
+    }    
 }

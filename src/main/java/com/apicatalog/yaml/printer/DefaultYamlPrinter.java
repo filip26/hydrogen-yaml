@@ -255,43 +255,6 @@ public class DefaultYamlPrinter implements YamlPrinter {
     }
 
     @Override
-    public YamlPrinter beginBlockSequence() throws IOException {
-        
-        final boolean newBlock;
-        if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
-            printer.print('-');
-            
-            if (style.isCompactArrays()) {
-                printer.print(' ');
-                
-            } else {
-                printer.println();  
-            }
-
-            newBlock = true;
-            
-        } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
-            printer.println();
-            newBlock = true;
-            
-        } else if (Context.DOCUMENT_BEGIN.equals(context.peek())) {
-            context.pop();
-            context.push(Context.DOCUMENT_END);
-            newBlock = false;
-            
-        } else {
-            throw new IllegalStateException();
-        }
-        
-        context.push(Context.BLOCK_SEQUENCE);
-        
-        if (newBlock) {
-            printer.beginBlock();
-        }
-        return this;
-    }
-
-    @Override
     public YamlPrinter endBlockSequence() {
         
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
@@ -305,12 +268,22 @@ public class DefaultYamlPrinter implements YamlPrinter {
         
         return this;
     }
-
+    
+    @Override
+    public YamlPrinter beginBlockSequence() throws IOException {
+        return beginBlock(Context.BLOCK_SEQUENCE);        
+    }
+    
+    
     @Override
     public YamlPrinter beginBlockMapping() throws IOException {
-        
-        final boolean newBlock;
+        return beginBlock(Context.BLOCK_MAPPING_KEY);
+    }
 
+    protected YamlPrinter beginBlock(Context blockKey) throws IOException {
+
+        final boolean newBlock;
+        
         if (Context.BLOCK_SEQUENCE.equals(context.peek())) {
             printer.print('-');
 
@@ -321,8 +294,8 @@ public class DefaultYamlPrinter implements YamlPrinter {
                 printer.println();  
             }
 
-            newBlock = true;
-            
+            newBlock = true;            
+
         } else if (Context.BLOCK_MAPPING_VALUE.equals(context.peek())) {
             printer.println();
             newBlock = true;
@@ -335,8 +308,9 @@ public class DefaultYamlPrinter implements YamlPrinter {
         } else {
             throw new IllegalStateException();
         }
+        
 
-        context.push(Context.BLOCK_MAPPING_KEY);
+        context.push(blockKey);
         
         if (newBlock) {
             printer.beginBlock();
@@ -344,7 +318,7 @@ public class DefaultYamlPrinter implements YamlPrinter {
 
         return this;
     }
-
+    
     @Override
     public YamlPrinter endBlockdMapping() {
         

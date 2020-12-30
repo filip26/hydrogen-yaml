@@ -114,85 +114,9 @@ final class DoubleQuotedPrinter {
         // escape non-printable characters
         for (int i = 0; i < length; i++) {
             
-            char[] escaped = null;
-
-            if (chars[offset + i] == '\\') {                
-                escaped = new char[] { '\\', '\\'};
-                
-            } else if (chars[offset + i] == 0x0) {
-                escaped = new char[] { '\\', '0'};
-
-            } else if (chars[offset + i] == 0x9) {
-                escaped = new char[] { '\\', 't'};
-                
-            } else if (chars[offset + i] == 0xa) {
-                escaped = new char[] { '\\', 'n'};
-
-            } else if (chars[offset + i] == '\r') {
-                escaped = new char[] { '\\', 'r'};
-
-            } else if (chars[offset + i] == 0x07) {
-                escaped = new char[] { '\\', 'a'};
-
-            } else if (chars[offset + i] == 0x8) {
-                escaped = new char[] { '\\', 'b'};
-
-            } else if (chars[offset + i] == 0xb) {
-                escaped = new char[] { '\\', 'v'};
-
-            } else if (chars[offset + i] == 0xc) {
-                escaped = new char[] { '\\', 'f'};
-
-            } else if (chars[offset + i] == 0x1b) {
-                escaped = new char[] { '\\', 'e'};
-
-            } else if (chars[offset + i] == '"') {
-                escaped = new char[] { '\\', '"'};
-
-            } else if (chars[offset + i] == '/') {
-                escaped = new char[] { '\\', '/'};
-
-            } else if (chars[offset + i] == 0xa0) {
-                escaped = new char[] { '\\', '_'};
-
-            } else if (chars[offset + i] == 0x85) {
-                escaped = new char[] { '\\', 'N'};
-
-            } else if (chars[offset + i] == 0x02028) {
-                escaped = new char[] { '\\', 'L'};
-
-            } else if (chars[offset + i] == 0x2029) {
-                escaped = new char[] { '\\', 'P'};
-
-            } else if (chars[offset + i] < 0x20 
-                    || (chars[offset + i] > 0x7e && chars[offset + i] < 0xa0)) {
-
-                final char[] hex = Integer.toHexString(chars[offset + i] | 0x100).substring(1).toCharArray();
-
-                escaped = new char[4];
-                escaped[0] = '\\';
-                escaped[1] = 'x';
-                escaped[2] = hex[0];
-                escaped[3] = hex[1];
-
-            } else if ((chars[offset + i] > 0xd7ff && chars[offset + i] < 0xe000)
-                    || (chars[offset + i] > 0xfffd && chars[offset + i] < 0x10000)) {
-
-                final char[] hex = Integer.toHexString(chars[offset + i] | 0x10000).substring(1).toCharArray();
-
-                escaped = new char[6];
-                escaped[0] = '\\';
-                escaped[1] = 'u';
-                escaped[2] = hex[0];
-                escaped[3] = hex[1];
-                escaped[4] = hex[2];
-                escaped[5] = hex[3];
-
-            } else {
-                continue;
-            }
+            final char[] escaped = doubleEscape(chars[offset + i]);
             
-            if (escaped != null) {
+            if (escaped.length > 0) {
                 // flush previous chars
                 if (i > start) {
                     printer.print(chars, offset + start, i - start);
@@ -206,5 +130,88 @@ final class DoubleQuotedPrinter {
         if (length > start) {
             printer.print(chars, offset + start, length - start);
         }
+    }
+    
+    private static char[] doubleEscape(char ch) {
+        
+        if (ch == '\\') {                
+            return new char[] { '\\', '\\'};    
+        } 
+        
+        if (ch == 0x0) {
+            return new char[] { '\\', '0'};
+        } 
+        
+        if (ch == 0x9) {
+            return new char[] { '\\', 't'};    
+        } 
+        
+        if (ch == 0xa) {
+            return new char[] { '\\', 'n'};
+        }
+        
+        if (ch == '\r') {
+            return new char[] { '\\', 'r'};
+        }
+        
+        if (ch == 0x07) {
+            return new char[] { '\\', 'a'};
+        }
+        
+        if (ch == 0x8) {
+            return new char[] { '\\', 'b'};
+        } 
+        
+        if (ch == 0xb) {
+            return new char[] { '\\', 'v'};
+        }
+        
+        if (ch == 0xc) {
+            return new char[] { '\\', 'f'};
+        } 
+        
+        if (ch == 0x1b) {
+            return new char[] { '\\', 'e'};
+        }
+        
+        if (ch == '"') {
+            return new char[] { '\\', '"'};
+        } 
+        
+        if (ch == '/') {
+            return new char[] { '\\', '/'};
+        } 
+        
+        if (ch == 0xa0) {
+            return new char[] { '\\', '_'};
+        }
+        
+        if (ch == 0x85) {
+            return new char[] { '\\', 'N'};
+        } 
+        
+        if (ch == 0x02028) {
+            return new char[] { '\\', 'L'};
+        }
+        
+        if (ch == 0x2029) {
+            return new char[] { '\\', 'P'};
+        }
+        
+        if (ch < 0x20 || (ch > 0x7e && ch < 0xa0)) {
+
+            final char[] hex = Integer.toHexString(ch | 0x100).substring(1).toCharArray();
+
+            return new char[] { '\\', 'x', hex[0], hex[1]};
+        }
+        
+        if ((ch > 0xd7ff && ch < 0xe000) || (ch > 0xfffd && ch < 0x10000)) {
+
+            final char[] hex = Integer.toHexString(ch | 0x10000).substring(1).toCharArray();
+
+            return new char[] {'\\', 'u', hex[0], hex[1], hex[2], hex[3]};
+        }
+        
+        return new char[] {};
     }
 }

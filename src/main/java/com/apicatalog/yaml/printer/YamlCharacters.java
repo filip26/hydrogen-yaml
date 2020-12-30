@@ -19,19 +19,27 @@ import java.util.function.Predicate;
 
 final class YamlCharacters {
 
-    public static final Predicate<Character> IS_PRINTABLE = ch ->
-                                                                ch == 0x9 || ch == 0xA || ch == 0xD
-                                                                || (ch >= 0x20 && ch <= 0x7E)
-                                                                || ch == 0x85
-                                                                || (ch >= 0xA0 && ch <= 0xD7FF)
-                                                                || (ch >= 0xE000 && ch <= 0xFFFD);
+    static final Predicate<Character> IS_PRINTABLE = ch ->
+                                                        ch == 0x9 || ch == 0xA || ch == 0xD
+                                                        || (ch >= 0x20 && ch <= 0x7E)
+                                                        || ch == 0x85
+                                                        || (ch >= 0xA0 && ch <= 0xD7FF)
+                                                        || (ch >= 0xE000 && ch <= 0xFFFD);
 
-    public static final Predicate<Character> IS_CONTROL = ch ->  ch == ':'
-                                                                || ch == '{' || ch == '}' || ch == '['  || ch == ']'
-                                                                || ch == ',' || ch == '&' || ch == '*' || ch == '#' 
-                                                                || ch == '?' || ch == '|' || ch == '-' || ch == '<' 
-                                                                || ch == '>' || ch == '=' || ch == '!' || ch == '%' 
-                                                                || ch == '@' || ch == '`';
+    static final Predicate<Character> IS_CONTROL = ch ->  ch == ':'
+                                                            || ch == '{' || ch == '}' || ch == '['  || ch == ']'
+                                                            || ch == ',' || ch == '&' || ch == '*' || ch == '#' 
+                                                            || ch == '?' || ch == '|' || ch == '-' || ch == '<' 
+                                                            || ch == '>' || ch == '=' || ch == '!' || ch == '%' 
+                                                            || ch == '@' || ch == '`';
+
+    static final char[][] DOUBLE_ESCAPE_MAPPING = new char[][] {
+        new char[] {0x00, '0'}, new char[] {0x07, 'a'}, new char[] {0x08, 'b'}, new char[] {0x09, 't'}, 
+        new char[] {0x0a, 'n'}, new char[] {0x0b, 'v'}, new char[] {0x0c, 'f'}, new char[] {0x0d, 'r'}, 
+        new char[] {0x1b, 'e'}, new char[] {0xa0, '_'}, new char[] {0x85, 'N'}, new char[] {0x2028, 'L'}, 
+        new char[] {0x2029, 'P'},
+        new char[] { '\\', '\\'}, new char[] {'"', '"'}, new char[] {'/', '/'}
+    };
 
     private YamlCharacters() {}
 }

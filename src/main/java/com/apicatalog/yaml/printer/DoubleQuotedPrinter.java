@@ -18,7 +18,17 @@ package com.apicatalog.yaml.printer;
 import java.io.IOException;
 
 final class DoubleQuotedPrinter {
-    
+
+    private static final char[] ESCAPED_CHARS = new char[] {
+            0x00, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x1b, 0xa0, 0x85, 0x2028, 0x2029,
+            '\\', '"', '/'
+    };
+
+    private static final char[] ESCAPED_CODES = new char[] {
+            '0', 'a', 'b', 't', 'n', 'v', 'f', 'r', 'e', '_', 'N', 'L', 'P',
+            '\\', '"', '/'
+    };
+
     private final IndentedPrinter printer;
     
     public DoubleQuotedPrinter(final IndentedPrinter printer) {
@@ -134,36 +144,12 @@ final class DoubleQuotedPrinter {
     }
     
     private static char[] doubleEscape(char ch) {
-        
-        if (ch == '\\' || ch == '"' || ch == '/') {                
-            return new char[] {ch};    
-        } 
-        
-        if (ch == 0x00) return new char[] {'0'};
-        
-        if (ch == 0x07) return new char[] {'a'};
-        
-        if (ch == 0x08) return new char[] {'b'};
-
-        if (ch == 0x09) return new char[] {'t'};    
-
-        if (ch == 0x0a) return new char[] {'n'};
-        
-        if (ch == 0x0b) return new char[] {'v'};
-        
-        if (ch == 0x0c) return new char[] {'f'};
-
-        if (ch == 0x0d) return new char[] {'r'};
-        
-        if (ch == 0x1b) return new char[] {'e'};
-        
-        if (ch == 0xa0) return new char[] {'_'};
-        
-        if (ch == 0x85) return new char[] {'N'};
-        
-        if (ch == 0x02028) return new char[] {'L'};
-        
-        if (ch == 0x2029) return new char[] {'P'};
+                
+        for (int i = 0; i < ESCAPED_CHARS.length; i++) {
+            if (ESCAPED_CHARS[i] == ch) {
+                return new char[] {ESCAPED_CODES[i]};
+            }
+        }
         
         if (ch < 0x20 || (ch > 0x7e && ch < 0xa0)) {
 

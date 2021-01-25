@@ -55,7 +55,5 @@ final class YamlMappingImpl extends AbstractMap<String, YamlNode> implements Yam
     @Override
     public Set<Entry<String, YamlNode>> entrySet() {
         return mapping.entrySet();
-    }
-    
-    
+    }    
 }

@@ -19,16 +19,6 @@ import java.io.IOException;
 
 final class DoubleQuotedPrinter {
 
-    private static final char[] ESCAPED_CHARS = new char[] {
-            0x00, 0x07, 0x08, 0x09, 0x0a, 0x0b, 0x0c, 0x0d, 0x1b, 0xa0, 0x85, 0x2028, 0x2029,
-            '\\', '"', '/'
-    };
-
-    private static final char[] ESCAPED_CODES = new char[] {
-            '0', 'a', 'b', 't', 'n', 'v', 'f', 'r', 'e', '_', 'N', 'L', 'P',
-            '\\', '"', '/'
-    };
-
     private final IndentedPrinter printer;
     
     public DoubleQuotedPrinter(final IndentedPrinter printer) {
@@ -131,7 +121,6 @@ final class DoubleQuotedPrinter {
                 if (i > start) {
                     printer.print(chars, offset + start, i - start);
                 }
-                printer.print('\\');
                 printer.print(escaped);
                 start = i + 1;
             }
@@ -145,9 +134,9 @@ final class DoubleQuotedPrinter {
     
     private static char[] doubleEscape(char ch) {
                 
-        for (int i = 0; i < ESCAPED_CHARS.length; i++) {
-            if (ESCAPED_CHARS[i] == ch) {
-                return new char[] {ESCAPED_CODES[i]};
+        for (int i = 0; i < YamlCharacters.DOUBLE_ESCAPE_MAPPING.length; i++) {
+            if (YamlCharacters.DOUBLE_ESCAPE_MAPPING[i][0] == ch) {
+                return new char[] {'\\', YamlCharacters.DOUBLE_ESCAPE_MAPPING[i][1]};
             }
         }
         
@@ -155,14 +144,14 @@ final class DoubleQuotedPrinter {
 
             final char[] hex = Integer.toHexString(ch | 0x100).substring(1).toCharArray();
 
-            return new char[] { 'x', hex[0], hex[1]};
+            return new char[] { '\\', 'x', hex[0], hex[1]};
         }
         
         if ((ch > 0xd7ff && ch < 0xe000) || (ch > 0xfffd && ch < 0x10000)) {
 
             final char[] hex = Integer.toHexString(ch | 0x10000).substring(1).toCharArray();
 
-            return new char[] {'u', hex[0], hex[1], hex[2], hex[3]};
+            return new char[] { '\\', 'u', hex[0], hex[1], hex[2], hex[3]};
         }
         
         return new char[] {};

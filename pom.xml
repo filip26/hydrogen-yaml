@@ -34,7 +34,7 @@
     <scm>
         <connection>scm:git:git://github.com/filip26/hydrogen-yaml.git</connection>
         <developerConnection>scm:git:git://github.com/filip26/hydrogen-yaml.git</developerConnection>
-        <url>https://github.com/filip26/hydrogen-yaml/tree/master</url>
+        <url>https://github.com/filip26/hydrogen-yaml/tree/main</url>
     </scm>
 
     <developers>

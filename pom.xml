@@ -59,7 +59,7 @@
         
         <!--  test resources -->
         <jakarta.json-p.version>2.0.1</jakarta.json-p.version> 
-        <junit.jupiter.version>5.7.2</junit.jupiter.version>               
+        <junit.jupiter.version>5.8.2</junit.jupiter.version>               
 
         <sonar.projectKey>filip26_hydrogen-yaml</sonar.projectKey>
         <sonar.organization>apicatalog</sonar.organization>
